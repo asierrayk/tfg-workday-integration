@@ -1,6 +1,6 @@
 import time, json, requests
-from configuration import hs_cfg
-from log import logger
+from modules.configuration import hs_cfg
+from modules.log import logger
 
 
 class Authorization:

@@ -1,12 +1,12 @@
 import json
-import requests
 
+import requests
 import unicodecsv as csv
 
-from customer import Customer
-from modules.authorization import hs_autho
+from hubspot.authorization import hs_autho
 from modules.database import db
 from modules.log import logger
+from workday.customer import Customer
 
 nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
                'wd': 'urn:com.workday/bsvc'}

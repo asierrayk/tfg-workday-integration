@@ -1,14 +1,14 @@
 from datetime import date
 
-from modules.log import logger
-import modules.mail as mail
+from workday.customer import Customer
+from hubspot.deal import Deal
 
-from deal import Deal
-from company import Company
+import modules.mail as mail
+from hubspot.company import Company
 from modules.configuration import mapping
 from modules.database import db
-from customer import Customer
-from project import Project
+from modules.log import logger
+from workday.project import Project
 
 
 def init():

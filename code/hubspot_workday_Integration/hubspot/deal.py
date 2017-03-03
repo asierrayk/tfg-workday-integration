@@ -4,13 +4,9 @@ from datetime import date
 import requests
 import unicodecsv as csv
 
-from company import Company
-from customer import Customer
-from modules.authorization import hs_autho
-from modules.log import logger
+from hubspot.authorization import hs_autho
 from modules.configuration import mapping
-from modules.database import db
-from project import Project
+from modules.log import logger
 
 nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
                'wd': 'urn:com.workday/bsvc'}

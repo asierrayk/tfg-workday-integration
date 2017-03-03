@@ -128,10 +128,6 @@ class Project:
         string_result = ET.tostring(result, method="html")
 
 
-        with open('tmp/soap_tmp.xml', 'w') as f:
-            f.write(string_result)
-
-
         r = requests.post(wd_cfg.get("wws", "url_resource_management"), data=string_result)
         print "Submit Project " + str(r.status_code)
         print r.content
