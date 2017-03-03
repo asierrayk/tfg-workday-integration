@@ -1,6 +1,7 @@
 *.pyc*
 *.log*
-*.ini*
+*.ini
+.idea/
 /output
 /tmp
 /db
