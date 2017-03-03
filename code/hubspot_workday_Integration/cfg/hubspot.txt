@@ -1,0 +1,13 @@
+[DEFAULT]
+client_id = <client_id>
+client_secret = <client_secret>
+appid = <appid>
+portalid = <portalid>
+
+[authentication]
+access_token = 
+refresh_token = 
+expires_at = 
+
+[urls]
+authorization_url = https://app.hubspot.com/oauth/authorize?client_id=%(client_id)s&scope=contacts&redirect_uri=https://www.hubspot.com/

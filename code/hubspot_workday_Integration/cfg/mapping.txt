@@ -1,0 +1,15 @@
+[projectstatus]
+<dealstage hubspot> = <status project workday>
+...
+
+[company]
+<legal_entity hubspot> = <company workday>
+...
+
+[custom_org]
+<hubspot practice> = <custom organization workday>
+...
+
+[position_id]
+<hubspot_owner_id hubspot> = <position_ID workday>
+...

@@ -1,0 +1,8 @@
+[DEFAULT]
+tenant = <tenant>
+user = <user>
+password = <password>
+[wws]
+url_resource_management = https://wd3-impl-services1.workday.com/ccx/service/%(tenant)s/Resource_Management/v27.2
+url_revenue_management = https://wd3-impl-services1.workday.com/ccx/service/%(tenant)s/Revenue_Management/v27.2
+url_staffing = https://wd3-impl-services1.workday.com/ccx/service/%(tenant)s/Staffing/v27.2

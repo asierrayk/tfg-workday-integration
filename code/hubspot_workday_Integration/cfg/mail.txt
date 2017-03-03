@@ -1,0 +1,4 @@
+[DEFAULT]
+user = <mail address>
+password = <password>
+notify-to = <list of mails separated with comma>
