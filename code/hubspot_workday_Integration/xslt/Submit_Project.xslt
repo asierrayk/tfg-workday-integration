@@ -25,14 +25,17 @@
             </bsvc:Comment_Data>
          </bsvc:Business_Process_Parameters>
          <bsvc:Project_Data>
-            <!--<bsvc:Workday_Project_ID>test4</bsvc:Workday_Project_ID>-->
             <bsvc:Locked_in_Workday>true</bsvc:Locked_in_Workday>
 
-             <xsl:if test="hierarchy">
+            <xsl:if test="external_project_reference">
+            <bsvc:External_Project_Reference_Name><xsl:value-of select="external_project_reference"/></bsvc:External_Project_Reference_Name>
+            </xsl:if>
+
+            <xsl:if test="hierarchy">
             <bsvc:Project_Hierarchy_Reference bsvc:Descriptor="hierarchy">
                <bsvc:ID bsvc:type="Project_Hierarchy_ID"><xsl:value-of select="hierarchy"/></bsvc:ID>
             </bsvc:Project_Hierarchy_Reference>
-             </xsl:if>
+            </xsl:if>
 
              <xsl:if test="optional_hierarchy">
             <bsvc:Optional_Project_Hierarchy_Reference bsvc:Descriptor="?">
@@ -53,7 +56,6 @@
 
             <bsvc:Include_Project_ID_in_Name>false</bsvc:Include_Project_ID_in_Name>
             <bsvc:Start_Date><xsl:value-of select="start_date"/></bsvc:Start_Date>
-            <!--<bsvc:End_Date></bsvc:End_Date>-->
 
             <xsl:if test="currency">
             <bsvc:Currency_Reference bsvc:Descriptor="currency">
@@ -63,7 +65,7 @@
 
             <bsvc:Billable>true</bsvc:Billable>
             <bsvc:Capital>false</bsvc:Capital>
-            <!--<bsvc:Description></bsvc:Description>-->
+            <bsvc:Description><xsl:value-of select="description"/></bsvc:Description>
             <bsvc:Overall_Percent_Complete>0</bsvc:Overall_Percent_Complete>
 
             <xsl:if test="company">

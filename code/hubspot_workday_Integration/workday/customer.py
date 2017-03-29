@@ -3,6 +3,7 @@ from lxml import etree as ET
 from modules.log import logger
 from modules.configuration import wd_cfg
 from modules.database import db
+from dicttoxml import dicttoxml
 
 nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
                'wd': 'urn:com.workday/bsvc'}
@@ -24,15 +25,15 @@ class Customer:
         return cls(id, name, company_id)
 
     def submit(self):
+        d = {
+            "user": wd_cfg.get("DEFAULT", "user"),
+            "password": wd_cfg.get("DEFAULT", "password"),
+            "tenant": wd_cfg.get("DEFAULT", "tenant"),
+            "customer": {key: value for key, value in self.__dict__.items() if value}
+        }
 
-        root = ET.Element("root")
-
-        ET.SubElement(root, "user").text = wd_cfg.get("DEFAULT", "user")
-        ET.SubElement(root, "password").text = wd_cfg.get("DEFAULT", "password")
-        ET.SubElement(root, "tenant").text = wd_cfg.get("DEFAULT", "tenant")
-        customer = ET.SubElement(root, "customer")
-        ET.SubElement(customer, "name").text = self.name
-        # ET.SubElement(customer, "id").text = str(self.companyId)
+        xml = dicttoxml(d, attr_type=False)
+        root = ET.fromstring(xml)
 
 
         xslt_root = ET.parse('xslt/Put_Customer.xslt')
@@ -40,20 +41,27 @@ class Customer:
         result = transform(root)
         string_result = ET.tostring(result, method="html")
 
-        r = requests.post(wd_cfg.get("wws", "url_revenue_management"), data=string_result)
-        print r.status_code
-        print r.content
 
-        reply_soap = ET.fromstring(r.content)
-        wid, self.id = map(lambda x: x.text, reply_soap.findall('.//wd:ID', namespaces=nsd))
+        r = requests.post(wd_cfg.get("wws", "url_revenue_management"), data=string_result)
 
         if r.status_code != 200:
-            logger.error("Submit_Customer failed %s\n %s" % (r.status_code, r.content))
+            logger.warning("Submit_Customer failed %s\n %s" % (r.status_code, r.content))
+            print "Submit_Customer failed %s" % r.status_code
             return False
 
-        logger.warning("Customer submitted successfully. customer_ID %s" % self.id)
-        print "Customer submitted successfully. customer_ID %s" % self.id
+        reply_soap = ET.fromstring(r.content)
+
+        ids = reply_soap.find('.//wd:Put_Customer_Response/wd:Customer_Reference', namespaces=nsd)
+        wid = ids.find('wd:ID[@wd:type="WID"]', namespaces=nsd).text
+        try:
+            cust_ref_id = ids.find('wd:ID[@wd:type="Customer_Reference_ID"]', namespaces=nsd).text
+        except:
+            cust_ref_id = None
+        self.id = ids.find('wd:ID[@wd:type="Customer_ID"]', namespaces=nsd).text
 
         #update database
         db.insert("company_customer", self.company_id, self.id)
+        logger.info("Customer submitted successfully. customer_ID %s, company_id %s" % (self.id, self.company_id))
+
+        print "Customer submitted successfully. customer_ID %s" % self.id
         return True

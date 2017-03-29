@@ -34,7 +34,7 @@ class Authorization:
         print r.status_code
         print r.content
         if r.status_code != 200:
-            print r.content
+            print "Invalid code"
             logger.warning("Invalid code")
 
         result = json.loads(r.content)

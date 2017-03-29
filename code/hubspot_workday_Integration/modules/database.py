@@ -10,8 +10,8 @@ class DataBase:
 
 
         # Create table
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS deal_project (deal text primary key, project text)''')
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS company_customer (company text primary key, customer text)''')
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS deal_project (deal text primary key, project text not null)''')
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS company_customer (company text primary key, customer text not null)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS deals_excluded (deal text)''')
 
         self.conn.commit()
@@ -36,12 +36,17 @@ class DataBase:
                 self.cur.executemany("INSERT INTO deal_project VALUES (?,?)", values)
             elif table == "company_customer":
                 self.cur.executemany("INSERT INTO company_customer VALUES (?,?)", values)
-
+            elif table == "deals_excluded":
+                self.cur.executemany("INSERT INTO deals_excluded VALUES (?)", values)
+            else:
+                return False
             # Save (commit) the changes
             self.conn.commit()
             return True
-        except:
+        except Exception as e:
             return False
+
+
 
     def get_project(self, deal):
         d = (deal,)
@@ -83,29 +88,32 @@ class DataBase:
 
         return None
 
+    def insert_excluded(self, value):
+        try:
+            self.cur.execute("INSERT INTO deals_excluded VALUES (?)", (value,))
+            return True
+        except:
+            return False
+
     def __del__(self):
         self.conn.close()
 
     def export_db(self):
-        self.cur.execute("SELECT * FROM deal_project")
-        table = self.cur.fetchall()
-        print(table)
-
         # to export as csv file
-        with open("export_deal_project.csv", "wb") as csvfile:
+        with open("output/export_deal_project.csv", "wb") as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"', lineterminator='\n')
             cursor = self.conn.cursor()
             for row in cursor.execute("SELECT * FROM deal_project"):
                 # writeRow = ",".join(row)
                 spamwriter.writerow(row)
 
-        with open("export_company_customer.csv", "wb") as csvfile:
+        with open("output/export_company_customer.csv", "wb") as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"', lineterminator='\n')
             cursor = self.conn.cursor()
             for row in cursor.execute("SELECT * FROM company_customer"):
                 spamwriter.writerow(row)
 
-        with open("export_deals_excluded.csv", "wb") as csvfile:
+        with open("output/export_deals_excluded.csv", "wb") as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"', lineterminator='\n')
             cursor = self.conn.cursor()
             for row in cursor.execute("SELECT * FROM deals_excluded"):
@@ -113,13 +121,5 @@ class DataBase:
 
 db = DataBase()
 
-if __name__=="__main__":
-    db.cur.execute("INSERT INTO deals_excluded VALUES (?)", ('23',))
-    v = [('2','2'), ('3','3')]
-    db.insert_bulk("deal_project",v)
-    print db.get_project('1')
-    print db.get_project('2')
-    print db.get_project('3')
-    db.export_db()
 
 

@@ -2,9 +2,10 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="/">
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bsvc="urn:com.workday/bsvc">
-   <xsl:for-each select="root">
+    <xsl:for-each select="root">
    <soapenv:Header>
       <bsvc:Workday_Common_Header>
+         <!--Optional:-->
          <bsvc:Include_Reference_Descriptors_In_Response>true</bsvc:Include_Reference_Descriptors_In_Response>
       </bsvc:Workday_Common_Header>
 
@@ -16,15 +17,17 @@
       </wsse:Security>
    </soapenv:Header>
    <soapenv:Body>
-      <bsvc:Get_Projects_Request bsvc:version="v27.2">
+      <bsvc:Get_Workday_Project_Hierarchies_Request bsvc:version="v27.2">
+
          <bsvc:Request_References>
-            <bsvc:Project_Reference bsvc:Descriptor="project">
-               <bsvc:ID bsvc:type="Project_ID"><xsl:value-of select="project_id"/></bsvc:ID>
-            </bsvc:Project_Reference>
+            <bsvc:Project_Hierarchy_Reference bsvc:Descriptor="optional_hierarchy">
+               <bsvc:ID bsvc:type="Project_Hierarchy_ID"><xsl:value-of select="optional_hierarchy"/></bsvc:ID>
+            </bsvc:Project_Hierarchy_Reference>
          </bsvc:Request_References>
-      </bsvc:Get_Projects_Request>
+
+      </bsvc:Get_Workday_Project_Hierarchies_Request>
    </soapenv:Body>
-   </xsl:for-each>
+    </xsl:for-each>
 </soapenv:Envelope>
 </xsl:template>
 </xsl:stylesheet>

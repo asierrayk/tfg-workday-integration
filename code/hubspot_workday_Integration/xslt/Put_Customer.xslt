@@ -19,32 +19,14 @@
    <soapenv:Body>
       <xsl:for-each select="customer">
       <bsvc:Put_Customer_Request bsvc:Add_Only="true" bsvc:version="v27.2">
-         <!--Optional:-->
-         <!--<bsvc:Customer_Reference bsvc:Descriptor="?">-->
-            <!--Zero or more repetitions:-->
-            <!--<bsvc:ID bsvc:type="?">?</bsvc:ID>-->
-         <!--</bsvc:Customer_Reference>-->
          <bsvc:Customer_Data>
-            <!--Optional:-->
-            <!--<bsvc:Customer_ID>test6</bsvc:Customer_ID>-->
-            <!--Optional:-->
-            <!--<bsvc:Customer_Reference_ID>test5</bsvc:Customer_Reference_ID>-->
             <bsvc:Customer_Name><xsl:value-of select="name"/></bsvc:Customer_Name>
-            <!--Optional:-->
             <bsvc:Worktag_Only>false</bsvc:Worktag_Only>
+            <bsvc:Customer_Reference_ID><xsl:value-of select="company_id"/></bsvc:Customer_Reference_ID>
 
             <bsvc:Customer_Category_Reference bsvc:Descriptor="category">
-               <!--Zero or more repetitions:-->
-               <bsvc:ID bsvc:type="Customer_Category_ID">GENERAL</bsvc:ID>
+               <bsvc:ID bsvc:type="Customer_Category_ID">PROSPECT</bsvc:ID>
             </bsvc:Customer_Category_Reference>
-            <!--<bsvc:Customer_Group_Reference bsvc:Descriptor="group">-->
-               <!--Zero or more repetitions:-->
-               <!--<bsvc:ID bsvc:type="Customer_Group_ID">BANKING</bsvc:ID>-->
-            <!--</bsvc:Customer_Group_Reference>-->
-            <!--<bsvc:Currency_Reference bsvc:Descriptor="currency">-->
-               <!--Zero or more repetitions:-->
-               <!--<bsvc:ID bsvc:type="Currency_ID">EUR</bsvc:ID>-->
-            <!--</bsvc:Currency_Reference>-->
 
 		  <bsvc:Business_Entity_Data>
                <bsvc:Business_Entity_Name><xsl:value-of select="name"/></bsvc:Business_Entity_Name>
@@ -52,16 +34,8 @@
 
             <bsvc:Customer_Status_Data>
                <bsvc:Customer_Status_Value_Reference bsvc:Descriptor="?">
-                  <!--Zero or more repetitions:-->
                   <bsvc:ID bsvc:type="Business_Entity_Status_Value_ID">ACTIVE</bsvc:ID>
                </bsvc:Customer_Status_Value_Reference>
-               <!--Optional:-->
-               <!--<bsvc:Reason_for_Customer_Status_Change_Reference bsvc:Descriptor="?">-->
-                  <!--Zero or more repetitions:-->
-                  <!--<bsvc:ID bsvc:type="?">?</bsvc:ID>-->
-               <!--</bsvc:Reason_for_Customer_Status_Change_Reference>-->
-               <!--Optional:-->
-               <!--<bsvc:Customer_Status_Change_Reason_Description>?</bsvc:Customer_Status_Change_Reason_Description>-->
             </bsvc:Customer_Status_Data>
          </bsvc:Customer_Data>
       </bsvc:Put_Customer_Request>

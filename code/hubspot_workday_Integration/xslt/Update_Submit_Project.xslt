@@ -25,18 +25,74 @@
             </bsvc:Comment_Data>
          </bsvc:Business_Process_Parameters>
          <bsvc:Project_Reference bsvc:Descriptor="string">
-         <!-- Zero or more repetitions: -->
          <bsvc:ID bsvc:type="Project_ID"><xsl:value-of select="id"/></bsvc:ID>
          </bsvc:Project_Reference>
          <bsvc:Project_Data>
+
+            <xsl:if test="external_project_reference">
+            <bsvc:External_Project_Reference_Name><xsl:value-of select="external_project_reference"/></bsvc:External_Project_Reference_Name>
+            </xsl:if>
+
+            <xsl:if test="name">
+             <bsvc:Project_Name><xsl:value-of select="name"/></bsvc:Project_Name>
+            </xsl:if>
+
+            <xsl:if test="start_date">
+            <bsvc:Start_Date><xsl:value-of select="start_date"/></bsvc:Start_Date>
+            </xsl:if>
+
+            <xsl:if test="currency">
+            <bsvc:Currency_Reference bsvc:Descriptor="currency">
+               <bsvc:ID bsvc:type="Currency_ID"><xsl:value-of select="currency"/></bsvc:ID>
+            </bsvc:Currency_Reference>
+            </xsl:if>
+
+            <xsl:if test="description">
+            <bsvc:Description><xsl:value-of select="description"/></bsvc:Description>
+            </xsl:if>
+
+            <xsl:if test="company">
+            <bsvc:Company_Reference bsvc:Descriptor="company">
+               <bsvc:ID bsvc:type="Company_Reference_ID"><xsl:value-of select="company"/></bsvc:ID>
+            </bsvc:Company_Reference>
+            </xsl:if>
+
+            <xsl:if test="hierarchy">
             <bsvc:Project_Hierarchy_Reference bsvc:Descriptor="hierarchy">
                <bsvc:ID bsvc:type="Project_Hierarchy_ID"><xsl:value-of select="hierarchy"/></bsvc:ID>
             </bsvc:Project_Hierarchy_Reference>
+            </xsl:if>
+
+            <xsl:if test="optional_hierarchy">
+            <bsvc:Optional_Project_Hierarchy_Reference bsvc:Descriptor="?">
+                <bsvc:ID bsvc:type="Project_Hierarchy_ID"><xsl:value-of select="optional_hierarchy"/></bsvc:ID>
+            </bsvc:Optional_Project_Hierarchy_Reference>
+            </xsl:if>
+
+
             <bsvc:Project_Name><xsl:value-of select="name"/></bsvc:Project_Name>
             <bsvc:Project_Status_Reference bsvc:Descriptor="status">
                <bsvc:ID bsvc:type="Project_Status_ID"><xsl:value-of select="status"/></bsvc:ID>
             </bsvc:Project_Status_Reference>
             <bsvc:Start_Date><xsl:value-of select="start_date"/></bsvc:Start_Date>
+
+
+             <xsl:if test="custom_org">
+            <bsvc:Worktags_Data>
+               <bsvc:Related_Worktags_by_Type_Data>
+                  <bsvc:Worktag_Type_Reference bsvc:Descriptor="?">
+                     <bsvc:ID bsvc:type="Accounting_Worktag_Type_ID">CUSTOM_ORGANIZATION_01</bsvc:ID>
+                  </bsvc:Worktag_Type_Reference>
+                  <bsvc:Required_On_Transaction>true</bsvc:Required_On_Transaction>
+                  <bsvc:Required_On_Transaction_For_Validation>true</bsvc:Required_On_Transaction_For_Validation>
+                  <bsvc:Default_Worktag_Data bsvc:Delete_Default_Value="false">
+                     <bsvc:Default_Worktag_Reference bsvc:Descriptor="?">
+                        <bsvc:ID bsvc:type="Custom_Organization_Reference_ID"><xsl:value-of select="custom_org"/></bsvc:ID>
+                     </bsvc:Default_Worktag_Reference>
+                  </bsvc:Default_Worktag_Data>
+               </bsvc:Related_Worktags_by_Type_Data>
+            </bsvc:Worktags_Data>
+             </xsl:if>
          </bsvc:Project_Data>
       </bsvc:Submit_Project_Request>
       </xsl:for-each>
