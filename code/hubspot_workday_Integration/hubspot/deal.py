@@ -1,5 +1,6 @@
 import json
-import datetime as dt
+from datetime import datetime
+import pytz
 
 import requests
 import unicodecsv as csv
@@ -70,11 +71,10 @@ class Deal:
         deal_dic["practice"] = properties.get("practice", {}).get("value")
 
         closedate_ms = properties.get("closedate", {}).get("value")
-        ts = int(closedate_ms)/1000.0
-        utc_hs_offset = dt.timedelta(0, 3600) #Difference between utc and the report settings of hubspot
-        d = dt.datetime.utcfromtimestamp(ts) + utc_hs_offset
-        deal_dic["closedate"] = d.strftime('%Y-%m-%d')
 
+        d = datetime.fromtimestamp(int(closedate_ms)/1000.0, tz=pytz.timezone('Europe/Madrid'))
+
+        deal_dic["closedate"] = d.strftime('%Y-%m-%d')
 
 
         deal_dic["hubspot_owner_id"] = properties.get("hubspot_owner_id",{}).get("value")
@@ -201,32 +201,18 @@ class Deal:
                 offset = result["offset"]
 
                 for d in result["deals"]:
-                    try:
-                        company = d["associations"]["associatedCompanyIds"][0]
-                    except:
-                        company = None
-                    try:
-                        practice = d["properties"]["practice"]["value"]
-                    except:
-                        practice = None
-                    try:
-                        legal_entity = d["properties"]["legal_entity"]["value"]
-                    except:
-                        legal_entity = None
+                    company = next(iter(d.get("associations", {}).get("associatedCompanyIds")), None)
+                    practice = d.get("properties", {}).get("practice", {}).get("value")
+                    legal_entity = d.get("properties", {}).get("legal_entity", {}).get("value")
 
-                    dealstage = d["properties"]["dealstage"]["value"]
+                    dealstage = d.get("properties", {}).get("dealstage", {}).get("value")
                     if mapping.has_option("projectstatus", dealstage):
                         project_status = mapping.get("projectstatus", dealstage)
                     else:
                         project_status = None
-                    try:
-                        opp_number = d["properties"]["opp_number"]["value"]
-                    except:
-                        opp_number = None
-                    try:
-                        hubspot_owner_id = d["properties"]["hubspot_owner_id"]["value"]
-                    except:
-                        hubspot_owner_id = None
+                    opp_number = d.get("properties", {}).get("opp_number", {}).get("value")
+                    hubspot_owner_id = d.get("properties", {}).get("hubspot_owner_id", {}).get("value")
+
 
                     if hubspot_owner_id in owners:
                         ho = owners.get(hubspot_owner_id)

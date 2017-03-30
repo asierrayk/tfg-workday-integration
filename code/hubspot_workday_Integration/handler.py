@@ -176,12 +176,14 @@ def deal_owner_change(dealid, propertyChanged):
         return
     new_emplid, new_positionid = emplid_positionid
 
+    '''
     if new_positionid == project.position_id:
         logger.warning("Project not changed, position_id %s received is the same as the previous one" % new_positionid)
         return
     if new_emplid == project.emplid:
         logger.warning("Project not changed, emplid %s received is the same as the previous one" % new_emplid)
         return
+    '''
 
     project.emplid, project.position_id = emplid_positionid
     #project.update_role("ASSIGNABLE_ROLE-6-231")
@@ -215,10 +217,6 @@ def deal_closedate_change(dealid, propertyChanged):
 
     deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
-
-    #TODO debug
-    logger.debug("DEAL\n %s" % deal.closedate)
-    logger.debug("OLD closedate\n %s" % project.start_date)
 
     if project.start_date == deal.closedate:
         logger.warning("Project start date not changed, start_date: %s received is the same as the previous one" % deal.closedate)

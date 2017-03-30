@@ -10,9 +10,20 @@ class DataBase:
 
 
         # Create table
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS deal_project (deal text primary key, project text not null)''')
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS company_customer (company text primary key, customer text not null)''')
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS deals_excluded (deal text)''')
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS deal_project
+                        (
+                        deal text primary key ON CONFLICT IGNORE not null ON CONFLICT IGNORE,
+                        project text not null ON CONFLICT IGNORE
+                         )''')
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS company_customer
+                        (
+                        company text primary key ON CONFLICT IGNORE,
+                        customer text not null
+                        )''')
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS deals_excluded
+                        (
+                        deal text primary key ON CONFLICT IGNORE
+                        )''')
 
         self.conn.commit()
 

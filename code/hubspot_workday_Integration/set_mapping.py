@@ -123,55 +123,6 @@ def check_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mappin
 
     print f
 
-def load_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mapping - Customers.csv"):
-    with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        header = next(spamreader, None)
-        mapped = []
-        for row in spamreader:
-            cust_id, descr, hubspot_id = row
-            mapped.append((hubspot_id, cust_id))
-        l = [x[0] for x in mapped]
-        print len(l) != len(set(l))
-        s = set(l)
-        for i in s:
-            l.remove(i)
-        print l
-
-
-    db.insert_bulk("company_customer", mapped)
-
-def load_excluded(mapping_file="tmp/mappings/excluded.csv"):
-    with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        header = next(spamreader, None)
-        mapped = []
-        for row in spamreader:
-            excluded = row
-            mapped.append((excluded, ))
-
-
-    db.insert_bulk("deals_excluded", mapped)
-
-
-#TODO adjust to the file
-def load_project_mapping(mapping_file):
-    with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        header = next(spamreader, None)
-        mapped = []
-        for row in spamreader:
-            cust_id, descr, hubspot_id = row
-            mapped.append((hubspot_id, cust_id))
-        l = [x[0] for x in mapped]
-        print len(l) != len(set(l))
-        s = set(l)
-        for i in s:
-            l.remove(i)
-        print l
-
-
-    db.insert_bulk("deal_project", mapped)
 
 def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot - Pipeline Data.csv"):
     hs_deals = Deal.get_all_deals()
@@ -275,12 +226,73 @@ def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot -
 
 
 
+def load_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mapping - Customers.csv"):
+    with open(mapping_file, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        header = next(spamreader, None)
+        mapped = []
+        for row in spamreader:
+            cust_id, descr, hubspot_id = row
+            mapped.append((hubspot_id, cust_id))
+        l = [x[0] for x in mapped]
+        print len(l) != len(set(l))
+        s = set(l)
+        for i in s:
+            l.remove(i)
+        print l
 
+
+    db.insert_bulk("company_customer", mapped)
+
+def load_excluded(mapping_file="tmp/mappings/excluded.csv"):
+    with open(mapping_file, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        header = next(spamreader, None)
+        mapped = []
+        for row in spamreader:
+            [excluded] = row
+            mapped.append((excluded, ))
+
+        l = list(mapped)
+        print len(l) != len(set(l))
+        s = set(l)
+        for i in s:
+            l.remove(i)
+        print l
+
+
+    db.insert_bulk("deals_excluded", mapped)
+
+
+#TODO adjust to the file
+def load_project_mapping(mapping_file="tmp/mappings/project_mapping.csv"):
+    with open(mapping_file, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        header = next(spamreader, None)
+        mapped = []
+        for row in spamreader:
+            deal, project = row
+            if deal == "":
+                deal = None
+            if project == "":
+                project = None
+            mapped.append((deal, project))
+        l = [x[0] for x in mapped]
+        print len(l) != len(set(l))
+        s = set(l)
+        for i in s:
+            l.remove(i)
+        print l
+
+
+    db.insert_bulk("deal_project", mapped)
 
 
 if __name__=="__main__":
     #map_hs_owner()
     #check_customer_mapping()
-    check_deal_mapping()
-    #load_customer_mapping()
+    #check_deal_mapping()
+    load_customer_mapping()
+    load_project_mapping()
+    load_excluded()
 
