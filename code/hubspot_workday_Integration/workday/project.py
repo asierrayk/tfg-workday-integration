@@ -16,6 +16,9 @@ nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
 
 
 class Project:
+    """
+    Object representing a Project Workday object
+    """
     attributes = ["name", "id", "custom_org", "start_date", "currency", "status", "company", "customer",
                   "dealId", "position_id", "hierarchy", "optional_hierarchy", "description"]
 
@@ -27,6 +30,11 @@ class Project:
 
     @classmethod
     def from_deal(cls, deal):
+        """
+        Constructor from a given HubSpot deal
+        :param deal: deal object
+        :return:
+        """
         project_dic={}
         project_dic["id"] = db.get_project(deal.dealId)
         project_dic["name"] = deal.dealname
@@ -55,6 +63,12 @@ class Project:
 
     @staticmethod
     def get_custom_org(practice, transaction_currency):
+        """
+        Depending on the practice and transaction_currency of the deal  compute the custom_org and retrieve it.
+        :param practice: attribute practice of the deal object
+        :param transaction_currency: attribute transaction of the deal object.
+        :return: custom_org attribute of the project object
+        """
         if practice in ["SAP", "ITC&S"]:
             d = json.loads(mapping.get("custom_org", practice))
             if transaction_currency != "ARS":
@@ -66,6 +80,11 @@ class Project:
 
     @classmethod
     def from_workday(cls, project_ID):
+        """
+        Constructor from a given a project id from Workday using web services
+        :param project_ID: id of the Workday Project
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),
@@ -115,10 +134,17 @@ class Project:
 
 
     def valid_to_submit(self):
+        """
+        compute if the project if valid for submit
+        :return: Boolean indicating if the project is valid
+        """
         return self.name and self.start_date and self.hierarchy
 
     def submit(self):
-        '''Create a new project in workday'''
+        '''
+        Create a new project in workday
+        :return: Boolean indicating if the operation has been completed successfully
+        '''
 
         params = {key: value for key, value in self.__dict__.items() if value}
         params["external_project_reference"] = self.dealId
@@ -163,6 +189,10 @@ class Project:
         return True
 
     def update(self):
+        """
+        Update an the corresponding existing project in Workday
+        :return: Boolean indicating if the operation has been completed successfully
+        """
         params = {key: value for key, value in self.__dict__.items() if value}
         params["external_project_reference"] = self.dealId
         d = {
@@ -191,6 +221,11 @@ class Project:
             db.insert_excluded(self.dealId)
 
     def update_hierarchy(self, new_hierarchy_id):
+        """
+        Add a project to a given main hierarchy and remove it from the previous one. After that it submit the changes in both hierarchies
+        :param new_hierarchy_id: id of the new project hierarchy
+        :return:
+        """
         # Workday reference id of practice hierarchy is the same as the practice id
 
         if new_hierarchy_id == self.hierarchy:
@@ -207,6 +242,11 @@ class Project:
 
 
     def update_optional_hierarchy(self, prefix):
+        """
+        Add a project to a given optional hierarchy and remove it from the previous one. After that it submit the changes in both hierarchies
+        :param new_hierarchy_id: id of the new project hierarchy
+        :return:
+        """
         old_hierarchy = next(iter([x for x in self.optional_hierarchy if x.startswith(prefix)]), None)
 
 
@@ -225,6 +265,11 @@ class Project:
 
 
     def assign_role(self, role):
+        """
+        Assign a given role to the employee corresponding to the position_id attribute of the project
+        :param role: Organization_Role_ID to be assigned
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),
@@ -249,10 +294,20 @@ class Project:
         logger.info("Assign_Roles success. project_ID  %s, Customer Manager %s" % (self.id, self.position_id))
 
     def update_role(self, role):
+        """
+        Delete the previous roles and add a new one.
+        :param role: Organization_Role_ID of the role to be updated
+        :return:
+        """
         self.delete_roles(role)
         self.assign_role(role)
 
     def delete_roles(self, role):
+        """
+        Delete the assigned employee to certain role
+        :param role: Organization_Role_ID to be cleared
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),
@@ -279,7 +334,10 @@ class Project:
 
 
     def put_mapping(self):
-
+        """
+        Add the deal_id project_id relation to the Integration_Worktag_Mapping
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),

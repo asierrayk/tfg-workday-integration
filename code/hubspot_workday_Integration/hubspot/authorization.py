@@ -4,6 +4,10 @@ from modules.log import logger
 
 
 class Authorization:
+    """
+    Class for deal with the authorization process in HubSpot.
+    After that the class has generated the necesary tokens for authenticate the requests sent to HubSpot
+    """
     def __init__(self, access_token=hs_cfg.get("authentication", "access_token"), refresh_token=hs_cfg.get("authentication", "refresh_token")):
         self.client_id = hs_cfg.get("DEFAULT", "client_id")
         self.client_secret = hs_cfg.get("DEFAULT", "client_secret")

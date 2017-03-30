@@ -10,6 +10,9 @@ nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
 
 
 class Hierarchy:
+    """
+    Workday Object representing a hierarchy.
+    """
     attributes = ["id", "name", "enable_as_optional", "status", "currency", "included_projects"]
 
     def __init__(self, hierarchy_dic):
@@ -18,6 +21,11 @@ class Hierarchy:
 
     @classmethod
     def from_workday(cls, optional_hierarchy):
+        """
+        Constructor of the hierarchy from Workday
+        :param optional_hierarchy: id of the hierarchy
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),
@@ -60,6 +68,11 @@ class Hierarchy:
         return cls(h_dic)
 
     def add_included_project(self, project_id):
+        """
+        Add the given project to the hierarchy object
+        :param project_id: id of the project to be added to the hierarchy
+        :return:
+        """
         if self.enable_as_optional:
             self.included_projects.add(project_id)
             r = self.submit_included_projects()
@@ -75,6 +88,11 @@ class Hierarchy:
         print "Added project %s to hierarchy %s" % (project_id, self.id)
 
     def remove_included_project(self, project_id):
+        """
+        Remove a project from the hierarchy object
+        :param project_id: project to be removed from the hierarchy
+        :return:
+        """
         if self.enable_as_optional:
             self.included_projects.discard(project_id)
             r = self.submit_included_projects()
@@ -91,6 +109,10 @@ class Hierarchy:
 
 
     def submit_included_projects(self):
+        """
+        Submit the changes done to the hierarchy by the use of the methods add_included_project and remove_included_project.
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),

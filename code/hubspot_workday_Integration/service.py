@@ -57,7 +57,6 @@ def valid_request():
     To ensure that the requests you're getting at your webhook endpoint are actually coming from HubSpot,
     we populate a X-HubSpot-Signature header with a SHA-256 hash of the concatentation of the app-secret
     for your application and the request body we're sending.
-    :param hubspot_signature:
     :return:
     """
     signature = hashlib.sha256(hs_cfg.get("DEFAULT", "client_secret") + web.data()).hexdigest()

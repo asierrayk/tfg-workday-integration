@@ -10,7 +10,7 @@ nsd = {'env': 'http://schemas.xmlsoap.org/soap/envelope/',
 
 class Customer:
     '''
-        Workday Object
+        Workday Object representing a customer
     '''
     def __init__(self, id, name, company_id):
         self.id = id
@@ -19,12 +19,21 @@ class Customer:
 
     @classmethod
     def from_company(cls, company):
+        """
+        Constructor from a HubSpot company
+        :param company:  HubSpot company
+        :return:
+        """
         id = db.get_customer(company.id)
         name = company.name
         company_id = company.id
         return cls(id, name, company_id)
 
     def submit(self):
+        """
+        Submit the Customer to Workday
+        :return:
+        """
         d = {
             "user": wd_cfg.get("DEFAULT", "user"),
             "password": wd_cfg.get("DEFAULT", "password"),

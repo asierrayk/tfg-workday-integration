@@ -138,6 +138,10 @@ class Deal:
         if offset:
             params += ["offset=%s" % offset]
 
+        """
+        This endpoint will only return records created in the last 30 days, or the 10k most recently created records.
+        If you need to get all of your deals, please use
+        """
         url = "https://api.hubapi.com/deals/v1/deal/recent/created?" + "&".join(params)
         r = requests.get(url, headers=headers)
 
