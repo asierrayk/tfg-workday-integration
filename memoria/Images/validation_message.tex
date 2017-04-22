@@ -1,0 +1,37 @@
+\begin{figure}
+\centering
+
+\shorthandoff{'}
+
+
+
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, aspect=2,  minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+    
+\begin{tikzpicture}[node distance = 3cm, auto]
+	
+	\node [io] (message) {Mensaje externo};
+	\node [decision,below of =message] (valid) {¿Válido?};
+	\node [startstop, below right of=valid, xshift=2cm, yshift=1cm] (no_valid) {No válido};
+	\node [decision,below of =valid] (tipo) {¿Tipo?};
+	
+	\node [process, below left of=tipo, xshift=-2cm] (deal_creation) {Crear deal};
+	\node [process, below right of=tipo, xshift=2cm] (deal_modification) {Modificar deal};
+	
+	\path [line] (message) -- (valid);
+	\path [line] (valid.east) -| node {no}(no_valid);
+	\path [line] (valid.south) -- node {sí}(tipo);
+	
+	\path [line] (tipo.west) -| node [left] {deal creation}(deal_creation);
+	\path [line] (tipo.east) -| node {deal modfication}(deal_modification);
+	
+	
+\end{tikzpicture}
+
+
+
+\caption{Validación de los mensajes recibidos por la Interfaz} \label{fig:validation_message}
+\end{figure}

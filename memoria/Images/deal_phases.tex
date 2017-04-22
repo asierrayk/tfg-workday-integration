@@ -1,0 +1,85 @@
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+	scale=0.75,
+	start chain=1 going below, 
+	node distance=1mm,
+	stage/.style={
+		scale=0.75,
+		on chain=1,
+		rectangle,
+		rounded corners,
+		draw=black, 
+		very thick,
+		text centered,
+		text width=8cm,
+		minimum height=12mm
+		},
+	discovery/.style={
+		fill=cyan!30
+	},
+	progress/.style={
+		fill=blue!30
+	},
+	closure/.style={
+		fill=green!30
+	},
+	phase/.style={
+		scale=0.75,
+		on chain=1,
+		minimum height=12mm,
+		text width=2cm,
+		text centered
+	},
+	every node/.style={font=\sffamily}
+]
+
+
+
+% Discovery phase
+\node [stage, discovery] (AS) {Appointment Scheduled};
+\node [stage, discovery, continue chain=going below] (IC) {Initial Contact};
+% Progress phase
+\node [stage, progress] (OI) {Opportunity Identfied};
+\node [stage, progress] (PP) {Preparing Proporsal};
+\node [stage, progress] (PS) {Proporsal Sent};
+\node [stage, progress] (DM) {Decision Maker Bought In};
+\node [stage, progress] (CS) {Contract Sent};
+% Closure phase
+\node [stage, closure] (CW) {Closed Won};
+\node [stage, closure] (CL) {Closed Lost};
+
+\draw [
+    thick,
+    decoration={
+        brace,
+        mirror,
+        raise=0.5cm
+    },
+    decorate
+](AS.west) -- (IC.west) node[midway,xshift=-2cm] {descubrimiento}; 
+
+\draw [
+    thick,
+    decoration={
+        brace,
+        mirror,
+        raise=0.5cm
+    },
+    decorate
+](OI.west) -- (CS.west) node[midway,xshift=-2cm] {Progreso}; 
+
+
+\draw [
+    thick,
+    decoration={
+        brace,
+        mirror,
+        raise=0.5cm
+    },
+    decorate
+](CW.west) -- (CL.west) node[midway,xshift=-2cm] {Cierre};
+
+\end{tikzpicture}
+\caption{Estados por los que pasa un deal} \label{fig:deal_phases}
+\end{figure}

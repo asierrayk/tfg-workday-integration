@@ -1,0 +1,39 @@
+\begin{figure}
+\centering
+
+\shorthandoff{'}
+
+
+
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, aspect=2, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+    
+\begin{tikzpicture}[node distance = 3cm, auto]
+	
+	\node [startstop] (deal_creation) {Crear Deal};
+	\node [decision,below of =deal_creation] (db) {¿Está en BD?};
+	\node [startstop, below right of=db, xshift=2cm, yshift=1cm] (in_db) {Se ignora el mensaje};
+	\node [process,below of =db] (get_deal) {Obtener deal de HubSpot};
+	\node [decision,below of =get_deal] (valid) {\begin{tabular}{c}¿Dealstage \\ válido? \end{tabular}};
+	\node [process, below of=valid] (submit_customer) {Subir customer a Workday};
+	\node [process, below of=submit_customer] (submit_project) {Subir project a Workday};
+	
+	
+	\path [line] (deal_creation) -- (db);
+	\path [line] (db.east) -| node {si}(in_db);
+	\path [line] (db.south) -- node {no}(get_deal);
+	\path [line] (get_deal.south) -- (valid);
+	\path [line] (valid.south) -- node [left] {si} (submit_customer);
+	\path [line] (valid.east) -| node [right] {no} (in_db);
+	\path [line] (submit_customer.south) -- (submit_project);
+	
+	
+\end{tikzpicture}
+
+
+
+\caption{Proceso Crear Deal} \label{fig:validation_message}
+\end{figure}

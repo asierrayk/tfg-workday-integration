@@ -35,7 +35,7 @@ class Deal:
 
 
     @classmethod
-    def from_hubspot(cls, objectId, propertyChanged="dealname"):
+    def from_hubspot(cls, objectId):
         if hs_autho.is_token_expired():
             hs_autho.refresh()
 
@@ -49,11 +49,11 @@ class Deal:
                 r = requests.get("https://api.hubapi.com/deals/v1/deal/" + str(objectId), headers=headers)
 
         if r.status_code != 200:
-            logger.warning("RESPONSE HUBSPOT GET_DEAL %s\n %s\n\n" % (r.status_code, r.content))
+            logger.warning("RESPONSE HUBSPOT GET_DEAL %s\n %s\n" % (r.status_code, r.content))
             return
 
 
-        logger.info("RESPONSE HUBSPOT GET_DEAL 200\n\n")
+        logger.info("RESPONSE HUBSPOT GET_DEAL 200")
         print "deal from hubspot " + str(r.status_code)
 
         result = json.loads(r.content)
@@ -65,17 +65,18 @@ class Deal:
         deal_dic["dealname"] = properties.get("dealname",{}).get("value")
         deal_dic["description"] = properties.get("description", {}).get("value")
 
-        mail = properties.get(propertyChanged, {}).get("sourceId")
-        deal_dic["user_mail"] = mail
+        #mail = properties.get(propertyChanged, {}).get("sourceId")
+        #deal_dic["user_mail"] = mail
 
         deal_dic["practice"] = properties.get("practice", {}).get("value")
 
         closedate_ms = properties.get("closedate", {}).get("value")
 
-        d = datetime.fromtimestamp(int(closedate_ms)/1000.0, tz=pytz.timezone('Europe/Madrid'))
-
-        deal_dic["closedate"] = d.strftime('%Y-%m-%d')
-
+        if closedate_ms:
+            d = datetime.fromtimestamp(int(closedate_ms)/1000.0, tz=pytz.timezone('Europe/Madrid'))
+            deal_dic["closedate"] = d.strftime('%Y-%m-%d')
+        else:
+            deal_dic["closedate"] = None
 
         deal_dic["hubspot_owner_id"] = properties.get("hubspot_owner_id",{}).get("value")
         deal_dic["dealstage"] = properties.get("dealstage", {}).get("value")
@@ -87,6 +88,32 @@ class Deal:
         deal_dic["company_id"] = companies[0] if companies else None
 
         return cls(deal_dic)
+
+    def update(self, new_properties):
+        if hs_autho.is_token_expired():
+            hs_autho.refresh()
+
+        headers = {"Authorization": "Bearer " + hs_autho.access_token, "Content-type": "application/json"}
+
+        data = {
+            "properties": new_properties
+        }
+        r = requests.put("https://api.hubapi.com/deals/v1/deal/" + str(self.dealId), headers=headers, data=json.dumps(data))
+
+        while r.status_code == 401: # Code when the token has expired or is not valid
+            if hs_autho.check_token_expired():
+                hs_autho.refresh()
+                headers = {"Authorization": "Bearer " + hs_autho.access_token, "Content-type": "application/json"}
+                r = requests.get("https://api.hubapi.com/deals/v1/deal/" + str(self.dealId), headers=headers, data=json.dumps(data))
+
+        if r.status_code != 200:
+            logger.warning("RESPONSE HUBSPOT UPDATE_DEAL %s\n %s\n" % (r.status_code, r.content))
+            return
+        logger.warning("RESPONSE HUBSPOT UPDATE_DEAL SUCCEED")
+
+    def update_opp_number(self, opp_number):
+        self.update([{"name": "opp_number", "value": opp_number}])
+
 
     @staticmethod
     def get_page_deals(offset, properties, includeAssociations = True, propertiesWithHistory= False, limit="250"):
@@ -277,5 +304,4 @@ class Deal:
         result = json.loads(r.content)
         return result
 
-if __name__=="__main__":
-    Deal.export_all_deals()
+

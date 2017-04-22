@@ -55,19 +55,20 @@ def check_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mappin
 
 
     companies = Company.get_all_companies()
-
+    companies_ids = map(lambda x: str(x["companyId"]), companies)
+    companies_unlinked = set(companies_ids)
     with open(mapping_file, 'rb') as csvfile:
          spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
          header = next(spamreader, None)
          mapped = []
          for row in spamreader:
-             cust_id, descr, hubspot_id = row
+             cust_id, descr, hubspot_id, _ = row
              mapped.append({"cust_id": cust_id, "descr": descr, "hubspot_id": hubspot_id})
 
     f = 0
+
     for m in mapped:
-        test = map(lambda x: str(x["companyId"]), companies)
-        if m["hubspot_id"] not in test:
+        if m["hubspot_id"] not in companies_ids:
             print "No mapeado"
             print m
             print "sugerencias"
@@ -95,13 +96,14 @@ def check_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mappin
             print "\n"
             f += 1
         else:
-            ix = test.index(m["hubspot_id"])
+            ix = companies_ids.index(m["hubspot_id"])
+            companies_unlinked.remove(str(companies[ix]["companyId"]))
             try:
                 company_name = companies[ix]["properties"]["name"]["value"].encode("utf8").lower()
             except:
                 company_name = ""
             try:
-                company_descr = companies[ix]["properties"]["description"]["value"].lower()
+                company_descr = companies[ix]["properties"]["description"]["value"].encode("utf8").lower()
             except:
                 company_descr = ""
             descr = m["descr"].encode('utf8').lower() if "descr" in m else None
@@ -120,33 +122,23 @@ def check_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mappin
                     print m
                     print company_name + ": " + company_descr
                     print "\n"
-
     print f
+    print companies_unlinked
+    print len(companies_unlinked)
 
-
-def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot - Pipeline Data.csv"):
+def check_deal_mapping(mapping_file="tmp/mappings/opps.csv"):
     hs_deals = Deal.get_all_deals()
+    hs_deals_progress = [d for d in hs_deals if d.get("properties", {}).get("dealstage", {}).get("value") not in ["closedwon", "closedlost"]]
+
 
     with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
         header = next(spamreader, None)
         pipe_opps = []
         for row in spamreader:
-            hs_practica, OPP, HashKey, cliente, recurso, lider, probabilidad = row
-            pipe_opps.append({"practica": hs_practica, "OPP": OPP, "HashKey": HashKey, "cliente": cliente,
+            practica, OPP, cliente, recurso, lider, probabilidad = row
+            pipe_opps.append({"practica": practica, "OPP": OPP, "cliente": cliente,
                               "recurso": recurso, "lider": lider, "probabilidad": probabilidad})
-
-    '''
-    with open("tmp/mappings/Verificacion Mapping HubSpot - HubSpot Data.csv", 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        header = next(spamreader, None)
-        remain_d = []
-        for row in spamreader:
-            dealid = row[0] #dealId
-            remain_d.append(dealid)
-    '''
-
-    #remain_deals = [x for x in hs_deals if str(x["dealId"]) in remain_d]
 
 
     with open("output/check_deal_mapping.csv", 'wb') as csvfile:
@@ -155,7 +147,7 @@ def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot -
         spamwriter.writerow(("dealid", "dealname", "company", "practice", "legal_entity", "dealstage", "project_status",
                              "opp_number", "owner_name", "owner_email", "error", "practice_pipe", "nombre_Oportunidad", "Customer_Manager", "Estado"))
         owners = {}
-        for h in hs_deals:
+        for h in hs_deals_progress:
             company = next(iter(h.get("associations", {}).get("associatedCompanyIds", [])), None)
             practice = h.get("properties", {}).get("practice", {}).get("value")
             legal_entity = h.get("properties", {}).get("legal_entity", {}).get("value")
@@ -175,7 +167,20 @@ def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot -
 
             hs_opp_number = h.get("properties", {}).get("opp_number", {}).get("value")
             hs_practica = mapping.get("practicepipe", h.get("properties", {}).get("practice", {}).get("value"))
-            opp = next((x for x in pipe_opps if x["OPP"] == hs_opp_number and x["practica"] == hs_practica), {})
+
+            if str(h["dealId"]) == "95984744":
+                pass
+
+            if hs_opp_number == "32" and hs_practica == "CLOUD":
+                pass
+
+            opp = next((x for x in pipe_opps if x["OPP"] == hs_opp_number and x["practica"].encode("utf-8") == hs_practica), {})
+
+
+            try:
+                pipe_opps.remove(opp)
+            except Exception as e:
+                pass
 
             if dealstage == "closedwon" or dealstage == "closedlost" or dealstage not in mapping.options("projectstatus"):
                 continue
@@ -206,6 +211,7 @@ def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot -
             lider = opp.get("lider").encode('latin-1').decode('utf-8') if opp.get("lider") else None
             probabilidad = opp.get("probabilidad")
 
+
             row = (h["dealId"],
                    h["properties"]["dealname"]["value"],
                    company,
@@ -224,15 +230,45 @@ def check_deal_mapping(mapping_file="tmp/mappings/Verificacion Mapping HubSpot -
                    )
             spamwriter.writerow(row)
 
+    with open("output/missed_in_hs.csv", 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"')
+        spamwriter.writerow(("practica", "OPP", "cliente", "recurso", "lider", "probabilidad"))
+        for p in pipe_opps:
+            if p["probabilidad"] in ["0", "100"]:
+                continue
+            try:
+                spamwriter.writerow((p["practica"],
+                                     p["OPP"],
+                                     p["cliente"],
+                                     p["recurso"].encode('latin-1').decode('utf-8'),
+                                     p["lider"].encode('latin-1').decode('utf-8'),
+                                     p["probabilidad"]))
+
+            except Exception as e:
+                print p
+                print e
+
+def generate_excluded():
+    deals = Deal.get_all_deals()
+
+    with open("output/excluded.csv", 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',', quotechar='"')
+        spamwriter.writerow(("excluded",))
+        for d in deals:
+            dealid = d.get("dealId")
+            dealstage = d.get("properties", {}).get("dealstage", {}).get("value")
+            if dealstage in ["closedwon", "closedlost"]:
+                spamwriter.writerow((dealid,))
 
 
-def load_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mapping - Customers.csv"):
+
+def load_customer_mapping(mapping_file="tmp/mappings/import/CONV_Customer.csv"):
     with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
         header = next(spamreader, None)
         mapped = []
         for row in spamreader:
-            cust_id, descr, hubspot_id = row
+            cust_id, hubspot_id, _ = row
             mapped.append((hubspot_id, cust_id))
         l = [x[0] for x in mapped]
         print len(l) != len(set(l))
@@ -244,7 +280,7 @@ def load_customer_mapping(mapping_file="tmp/mappings/Customers - HubSpot mapping
 
     db.insert_bulk("company_customer", mapped)
 
-def load_excluded(mapping_file="tmp/mappings/excluded.csv"):
+def load_excluded(mapping_file="tmp/mappings/import/excluded.csv"):
     with open(mapping_file, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         header = next(spamreader, None)
@@ -265,17 +301,19 @@ def load_excluded(mapping_file="tmp/mappings/excluded.csv"):
 
 
 #TODO adjust to the file
-def load_project_mapping(mapping_file="tmp/mappings/project_mapping.csv"):
+def load_project_mapping(mapping_file="tmp/mappings/import/CONV_Projects.csv"):
     with open(mapping_file, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
         header = next(spamreader, None)
         mapped = []
         for row in spamreader:
-            deal, project = row
+            project, deal, customer, project_name = row
             if deal == "":
                 deal = None
             if project == "":
                 project = None
+            if not deal or not project:
+                continue
             mapped.append((deal, project))
         l = [x[0] for x in mapped]
         print len(l) != len(set(l))
@@ -293,6 +331,6 @@ if __name__=="__main__":
     #check_customer_mapping()
     #check_deal_mapping()
     load_customer_mapping()
-    load_project_mapping()
-    load_excluded()
-
+    #load_project_mapping()
+    #load_excluded("tmp/mappings/import/excluded.csv")
+    #generate_excluded()

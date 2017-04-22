@@ -9,57 +9,14 @@ from modules.configuration import mapping, mail_cfg
 from modules.database import db
 from modules.log import logger
 from workday.project import Project
+from helper import *
 
 
 
-def init():
-    """
-    This process submit to workday all the deals of HubSpot
-    :return:
-    """
-    deals = Deal.get_all_deals()
-    hits = 0
-    fails = 0
-    deals_fail = []
-    for d in deals:
-        deal_dic = {}
-        deal_dic["dealId"] = str(d["dealId"])
-        companies = d.get("associations", {}).get("associatedCompanyIds")
-        deal_dic["company_id"] = companies[0] if companies else None
-        #deal_dic.update({k: v["value"] for k, v in d["properties"].items()})
-
-        p = d.get("properties", {})
-
-        deal_dic["dealname"] = p.get("dealname", {}).get("value")
-        deal_dic["practice"] = p.get("practice", {}).get("value")
-        deal_dic["hubspot_owner_id"] = p.get("hubspot_owner_id", {}).get("value")
-        deal_dic["dealstage"] = p.get("dealstage", {}).get("value")
-        deal_dic["legal_entity"] = p.get("legal_entity", {}).get("value")
-        deal_dic["transaction_currency"] = p.get("transaction_currency", {}).get("value")
-        deal_dic["opp_number"] = p.get("opp_number", {}).get("value")
-        closedate_ms = d["properties"].get("closedate", {}).get("timestamp")
-        deal_dic["closedate"] = date.fromtimestamp(closedate_ms / 1000.0).strftime('%Y-%m-%d') if closedate_ms else None
-        deal = Deal(deal_dic)
-        if not db.get_project(deal.dealId) or db.is_excluded(deal.dealId):
-            rc = project_submit(deal)
-            if rc:
-                hits += 1
-            else:
-                fails += 1
-                deals_fail.append(deal.dealId)
-
-    print "%s pending projects submitted successfully" % hits
-    print "%s pending projects failed at submit" % fails
-    print deals_fail
-
-
-
-def deal_creation(dealid, propertyChanged="dealname"):
+def deal_creation(dealid):
     """
     Handler of the event deal creation from HubSpot. Call project_submit in case that the deal is not aready in the DB.
     :param dealid: HubSpot id of the deal that has been created
-    :param propertyChanged: In case that a deal has been modified, and it's already not created on workday.
-    This parameter is containing the field modified.
     :return:
     """
     # If the project with same ID has been created, it doesn't create again.
@@ -69,7 +26,7 @@ def deal_creation(dealid, propertyChanged="dealname"):
         print "A project already has been created associated with the same deal. dealid %s, project_id %s" % (dealid, project_id)
         return False
 
-    deal = Deal.from_hubspot(dealid, propertyChanged)
+    deal = Deal.from_hubspot(dealid)
     project_submit(deal)
 
 
@@ -101,6 +58,7 @@ def project_submit(deal):
 
     if project.valid_to_submit():
         if project.submit():
+            deal.update_opp_number(project.id)
             if project.position_id:
                 pass
                 #project.assign_role("ASSIGNABLE_ROLE-6-231")
@@ -126,6 +84,8 @@ def project_submit(deal):
         return False
 
 
+
+
 def deal_change(dealid, propertyChanged):
     """
     Handler of the event deal change from HubSpot. Call to the corresponding method according to the propertyChanged
@@ -137,40 +97,48 @@ def deal_change(dealid, propertyChanged):
         logger.warning("Project not changed, the project is in a final status")
         return
 
+    project_ID = db.get_project(dealid)
+    if not project_ID:
+        return deal_creation(dealid)
+
+    deal = Deal.from_hubspot(dealid)
+
     if propertyChanged == "dealstage":
-        deal_stage_change(dealid)
+        deal_stage_change(deal, project_ID)
     elif propertyChanged == "hubspot_owner_id":
-        deal_owner_change(dealid)
+        deal_owner_change(deal, project_ID)
     elif propertyChanged == "practice":
-        deal_practice_change(dealid)
+        deal_practice_change(deal, project_ID)
     elif propertyChanged == "closedate":
-        deal_closedate_change(dealid)
+        deal_closedate_change(deal, project_ID)
     elif propertyChanged == "description":
-        deal_description_change(dealid)
+        deal_description_change(deal, project_ID)
     elif propertyChanged == "legal_entity":
-        deal_legal_entity_change(dealid)
+        deal_legal_entity_change(deal, project_ID)
     elif propertyChanged == "dealname":
-        deal_name_change(dealid)
+        deal_name_change(deal, project_ID)
     elif propertyChanged == "transaction_currency":
-        deal_transaction_currency_change(dealid)
+        deal_transaction_currency_change(deal, project_ID)
+    elif propertyChanged == "associatedcompanyid":
+        deal_associatedcompanyid_change(deal, project_ID)
+    elif propertyChanged == "hs_lastmodifieddate":
+        deal_hs_lastmodifieddate(deal, project_ID)
     else:
         logger.warning("propertyChanged '%s' ignored" % propertyChanged)
 
 
+    if deal.opp_number != project_ID:
+        deal.update_opp_number(project_ID)
 
-def deal_stage_change(dealid):
+
+
+def deal_stage_change(deal, project_ID):
     """
     Modify the project status according to the deal stage.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    # First of all, we need to get the project from workday since the web service we are using to update changes more than one field (not only the status). So wee need to get these fields
-    project_ID = db.get_project(dealid)
-
-    if not project_ID:
-        return deal_creation(dealid)
-
-    deal = Deal.from_hubspot(dealid, "dealstage")
 
     if deal.dealstage not in mapping._sections["projectstatus"]:
         logger.warning("Project not changed, dealstage %s received is not valid" % deal.dealstage)
@@ -183,23 +151,16 @@ def deal_stage_change(dealid):
         project.status = new_status
         project.update()
     else:
-        logger.info("Project status ame as the previous one. Not changed")
+        logger.info("Project status same as the previous one. Not changed")
 
 
-def deal_owner_change(dealid):
+def deal_owner_change(deal, project_ID):
     """
     Modify the project optional hierarchy according to the deal hubspot_owner_id.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    # First of all, we need to get the project from workday since the web service we are using to update changes more than one field (not only the status). So wee need to get these fields
-    project_ID = db.get_project(dealid)
-
-    if not project_ID:
-        return deal_creation(dealid)
-
-    deal = Deal.from_hubspot(dealid, "hubspot_owner_id")
-
     project = Project.from_workday(project_ID)
 
     emplid_positionid = mapping.get("emplid_positionid", deal.hubspot_owner_id).split(',')
@@ -223,17 +184,13 @@ def deal_owner_change(dealid):
 
 
 
-def deal_practice_change(dealid):
+def deal_practice_change(deal, project_ID):
     """
     Modify the project custom organization according to the deal practice.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "practice")
-
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
     new_custom_org = Project.get_custom_org(deal.practice, deal.transaction_currency)
@@ -247,17 +204,13 @@ def deal_practice_change(dealid):
     project.update_hierarchy(project.custom_org)
 
 
-def deal_closedate_change(dealid):
+def deal_closedate_change(deal, project_ID):
     """
     Modify the project start_date according to the deal closedate.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "closedate")
-
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
     if project.start_date == deal.closedate:
@@ -268,17 +221,14 @@ def deal_closedate_change(dealid):
     project.update()
 
 
-def deal_description_change(dealid):
+def deal_description_change(deal, project_ID):
     """
     Modify the project description according to the deal description.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "description")
 
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
     if project.description == deal.description:
@@ -288,17 +238,13 @@ def deal_description_change(dealid):
 
     project.update()
 
-def deal_name_change(dealid):
+def deal_name_change(deal, project_ID):
     """
     Modify the project name according to the deal dame.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "dealname")
-
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
 
@@ -309,17 +255,13 @@ def deal_name_change(dealid):
     project.update()
 
 
-def deal_legal_entity_change(dealid):
+def deal_legal_entity_change(deal, project_ID):
     """
     Modify the project company according to the deal legal_entity.
-    :param dealid: HubSpot id of the deal
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "legal_entity")
-
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
     new_company = mapping.get("company", deal.legal_entity)
@@ -330,17 +272,13 @@ def deal_legal_entity_change(dealid):
     project.update()
 
 
-def deal_transaction_currency_change(dealid):
+def deal_transaction_currency_change(deal, project_ID):
     """
-    Modify the project currencyaccording to the deal transaction_currency.
-    :param dealid: HubSpot id of the deal
+    Modify the project currency according to the deal transaction_currency.
+    :param deal: object representing the deal changed
+    :param project_ID: id of the project linked to the deal
     :return:
     """
-    project_ID = db.get_project(dealid)
-    if not project_ID:
-        return deal_creation(dealid, "transaction_currency")
-
-    deal = Deal.from_hubspot(dealid)
     project = Project.from_workday(project_ID)
 
     if project.currency == deal.transaction_currency:
@@ -351,4 +289,21 @@ def deal_transaction_currency_change(dealid):
     if project.custom_org != new_custom_org:
         project.custom_org = new_custom_org
         project.update_hierarchy(project.custom_org)
+    project.update()
+
+def deal_hs_lastmodifieddate(deal, project_ID):
+    project = Project.from_workday(project_ID)
+    new_customer = db.get_customer(deal.company_id)
+    if project.customer == new_customer:
+        logger.warning(
+            "Project customer not changed, customer: %s received is the same as the previous one" % new_customer)
+        return
+
+    if deal.company_id and not new_customer:
+        company = Company.from_hubspot(deal.company_id)
+        customer = Customer.from_company(company)
+        customer.submit()
+
+
+    project.customer = new_customer
     project.update()

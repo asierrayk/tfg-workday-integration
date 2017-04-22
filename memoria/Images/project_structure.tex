@@ -1,0 +1,50 @@
+\begin{figure}
+\centering
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{python}=[draw=blue,very thick, fill=blue!10, rounded corners]
+\tikzstyle{folder}=[draw=orange,very thick,fill=orange!10]
+%\tikzstyle{cfg}=[draw=red,fill=gray!50]
+%\tikzstyle{xslt}=[draw=red,fill=gray!50]
+\begin{tikzpicture}[
+	scale=0.9,
+  grow via three points={one child at (0.5,-1) and
+  two children at (0.5,-1) and (0.5,-2)},
+  edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+	
+	\node [folder]{ \Large Interfaz}
+    child { node [python]{service.py}}		
+    child { node [python]{handler.py}}
+    child { node [folder] {hubspot}
+      child { node [python]{deal.py}}
+      child { node [python]{company.py}}
+      child { node [python]{authorization.py}}
+    }
+	child [missing] {}				
+    child [missing] {}				
+    child [missing] {}
+	child { node [folder] {workday}
+      child { node [python]{project.py}}
+      child { node [python]{customer.py}}
+      child { node [python]{hierarchy.py}}
+    }
+	child [missing] {}				
+    child [missing] {}				
+    child [missing] {}
+	child { node [folder] {modules}
+      child { node [python]{configuration.py}}
+      child { node [python]{database.py}}
+      child { node [python]{log.py}}
+	  child { node [python]{mail.py}}
+    }
+	child [missing] {}				
+    child [missing] {}				
+    child [missing] {}
+	child [missing] {}				
+	child { node [folder] {cfg}}
+	child { node [folder] {xslt}};
+	
+	
+	
+\end{tikzpicture}
+\caption{Estructura de la interfaz} \label{fig:project_structure}
+\end{figure}

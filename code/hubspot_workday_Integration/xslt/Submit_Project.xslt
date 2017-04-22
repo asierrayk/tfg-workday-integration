@@ -18,14 +18,8 @@
    <soapenv:Body>
       <xsl:for-each select="project">
       <bsvc:Submit_Project_Request bsvc:Add_Only="true" bsvc:version="v27.2">
-         <bsvc:Business_Process_Parameters>
-            <bsvc:Auto_Complete>true</bsvc:Auto_Complete>
-            <bsvc:Comment_Data>
-               <bsvc:Comment>test</bsvc:Comment>
-            </bsvc:Comment_Data>
-         </bsvc:Business_Process_Parameters>
          <bsvc:Project_Data>
-            <bsvc:Locked_in_Workday>true</bsvc:Locked_in_Workday>
+            <bsvc:Locked_in_Workday>false</bsvc:Locked_in_Workday>
 
             <xsl:if test="external_project_reference">
             <bsvc:External_Project_Reference_Name><xsl:value-of select="external_project_reference"/></bsvc:External_Project_Reference_Name>

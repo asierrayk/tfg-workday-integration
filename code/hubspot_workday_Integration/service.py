@@ -21,7 +21,6 @@ class index:
             logger.warning(web.data())
             print "A request unauthorized has been received from IP %s" % web.ctx.env["REMOTE_ADDR"]
             print web.data()
-            # TODO
             return
 
 
@@ -36,7 +35,7 @@ class index:
         logger.info("AUTHORIZED REQUEST RECEIVED \n" + str(data[0]))
 
         if db.is_excluded(objectId):
-            logger.warning("The deal received %s is excluded, and it'll not be uploaded to workday" % objectId)
+            logger.warning("The deal received %s is excluded, and it won't be uploaded to workday" % objectId)
             print "The deal received %s is excluded, and it'll not be uploaded to workday" % objectId
             return
 
@@ -85,5 +84,4 @@ if __name__ == "__main__":
 
     #init()
     app = web.application(urls, globals())
-    app.run()
-
+    run = app.run()

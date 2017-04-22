@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper,spanish,openright,twoside]{report}
-\usepackage[spanish,activeacute]{babel}
+\usepackage[spanish,activeacute,es-noquoting]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[top=2.25cm, bottom=2.25cm, outer=2.5cm, inner=2.5cm, heightrounded, marginparwidth=2.5cm, marginparsep=0.3cm]{geometry}
 
@@ -7,11 +7,72 @@
 \usepackage{graphicx}
 \graphicspath{{Images/}}
 
+%math
+\usepackage{amssymb}
+
+%tikz pictures
+\usepackage{tikz}
+\usetikzlibrary{babel, decorations.pathreplacing, shapes, arrows, chains, patterns, trees, matrix, calc} 
+
+%\usepackage{smartdiagram}
+%\usesmartdiagramlibrary{additions}
+
+%Links in the document
+\usepackage{hyperref} 
+%Avoid numbers on blank pages
+\usepackage{emptypage}
+%To create list without indentation \begin{itemize}[leftmargin=*]
+\usepackage{enumitem}
+%Glossary
+%\usepackage[acronym,toc]{glossaries}
+\usepackage[toc,acronym]{glossaries}
+
+%set document parameters
+\addto\captionsspanish{\renewcommand{\contentsname}{\'{I}ndice General}}
+\addto\captionsspanish{\renewcommand{\listfigurename}{\'{I}ndice de figuras}}
+\addto\captionsspanish{\renewcommand{\listtablename}{\'{I}ndice de tablas}}
+\addto\captionsspanish{\renewcommand{\appendixname}{Ap\'{e}ndice}}
+\addto\captionsspanish{\renewcommand{\chaptername}{Cap\'{i}tulo}}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+\addto\captionsspanish{\renewcommand{\bibname}{Bibliograf\'{i}a}}
+\addto\captionsspanish{\renewcommand{\glossaryname}{Glosario}}
+\addto\captionsspanish{\renewcommand{\acronymname}{Acronimos}}
+
 \makeindex
 
+\makeglossaries
+
+\input{Others/glossary.tex}
+
 \begin{document}
-	%título
+	
+	%title
 	\input{Others/title.tex}
+	\input{Others/dedication.tex}
+	%\input{Others/declaration.tex}
+	\input{Others/acknowledgments.tex}
+	
+	\input{Others/abstract.tex}
+	
+	\tableofcontents 
+	\listoffigures
+	\listoftables
+	
+	\input{Chapters/introduction.tex}
+	%\input{Chapters/related_work.tex}
+	%\input{Chapters/goals.tex}
+	\input{Chapters/explanation.tex}
+	\input{Chapters/conclusion.tex}
+	\input{Chapters/future_work.tex}
+
+	
+	
+	\input{Others/bibliography.tex}
+	
+	%\printglossary[type=\acronymtype]
+	\printglossary[type=\acronymtype, title=Acrónimos,toctitle=Acrónimos]
+ 
+	\printglossary
 
 \end{document}
 

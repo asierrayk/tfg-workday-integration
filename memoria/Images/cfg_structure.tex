@@ -1,0 +1,24 @@
+\begin{figure}
+\centering
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{python}=[draw=blue,very thick, fill=blue!10, rounded corners]
+\tikzstyle{folder}=[draw=orange,very thick,fill=orange!10]
+\tikzstyle{cfg}=[draw=red,fill=red!5]
+%\tikzstyle{xslt}=[draw=red,fill=gray!50]
+\begin{tikzpicture}[
+	scale=0.9,
+  grow via three points={one child at (0.5,-1) and
+  two children at (0.5,-1) and (0.5,-2)},
+  edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+	
+	\node [folder]{ \Large cfg}
+    child { node [cfg]{hubspot.ini}}
+    child { node [cfg]{workday.ini}}
+    child { node [cfg]{mapping.ini}}
+	child { node [cfg]{mail.ini}};
+	
+	
+	
+\end{tikzpicture}
+\caption{Estructura de los archivos de configuración} \label{fig:cfg_structure}
+\end{figure}

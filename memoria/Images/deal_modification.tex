@@ -1,0 +1,34 @@
+\begin{figure}
+\centering
+
+\shorthandoff{'}
+
+
+
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, aspect=2, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+    
+\begin{tikzpicture}[node distance = 3cm, auto]
+	
+	\node [startstop] (deal_modification) {Modificar Deal};
+	\node [decision,below of =deal_modification] (db) {¿Está en BD?};
+	\node [process, below right of=db, xshift=2cm, yshift=1cm] (not_in_db) {Crear Deal};
+	\node [process,below of =db] (get_deal) {Obtener deal de HubSpot};
+	\node [process, below of=get_deal] (update_project) {Subir project en Workday};
+	
+	
+	\path [line] (deal_modification) -- (db);
+	\path [line] (db.east) -| node {no}(not_in_db);
+	\path [line] (db.south) -- node {si}(get_deal);
+	\path [line] (get_deal.south) -- (update_project);
+	
+	
+\end{tikzpicture}
+
+
+
+\caption{Proceso Modificar Deal} \label{fig:validation_message}
+\end{figure}

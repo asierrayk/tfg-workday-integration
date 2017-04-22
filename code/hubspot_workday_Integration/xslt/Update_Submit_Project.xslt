@@ -18,17 +18,11 @@
    <soapenv:Body>
       <xsl:for-each select="project">
       <bsvc:Submit_Project_Request bsvc:Add_Only="false" bsvc:version="v27.2">
-         <bsvc:Business_Process_Parameters>
-            <bsvc:Auto_Complete>true</bsvc:Auto_Complete>
-            <bsvc:Comment_Data>
-               <bsvc:Comment>test</bsvc:Comment>
-            </bsvc:Comment_Data>
-         </bsvc:Business_Process_Parameters>
          <bsvc:Project_Reference bsvc:Descriptor="string">
          <bsvc:ID bsvc:type="Project_ID"><xsl:value-of select="id"/></bsvc:ID>
          </bsvc:Project_Reference>
          <bsvc:Project_Data>
-
+            <bsvc:Locked_in_Workday>false</bsvc:Locked_in_Workday>
             <xsl:if test="external_project_reference">
             <bsvc:External_Project_Reference_Name><xsl:value-of select="external_project_reference"/></bsvc:External_Project_Reference_Name>
             </xsl:if>
@@ -76,6 +70,12 @@
             </bsvc:Project_Status_Reference>
             <bsvc:Start_Date><xsl:value-of select="start_date"/></bsvc:Start_Date>
 
+
+            <xsl:if test="customer">
+            <bsvc:Customer_Reference bsvc:Descriptor="customer">
+               <bsvc:ID bsvc:type="Customer_ID"><xsl:value-of select="customer"/></bsvc:ID>
+            </bsvc:Customer_Reference>
+            </xsl:if>
 
              <xsl:if test="custom_org">
             <bsvc:Worktags_Data>

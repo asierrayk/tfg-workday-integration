@@ -208,9 +208,12 @@ class Project:
         result = transform(root)
         string_result = ET.tostring(result, method="html")
 
+        logger.debug(string_result)
+
 
         r = requests.post(wd_cfg.get("wws", "url_resource_management"), data=string_result)
-        print "Update Project" + str(r.status_code)
+        logger.debug("Update Project" + str(r.status_code))
+        logger.debug(r.content)
 
         if r.status_code != 200:
             logger.error("Update_Submit_Project failed %s\n %s" % (r.status_code, r.content))
