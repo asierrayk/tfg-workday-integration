@@ -9,4 +9,8 @@
 *.out*
 *.pdf*
 *.synctex.gz*
+*.acr*
+*.alg*
+*.glg*
+*.gls*
 *.toc*
