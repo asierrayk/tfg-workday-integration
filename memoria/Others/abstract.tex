@@ -8,21 +8,22 @@
 	En estas situaciones, a pesar de que las aplicaciones suelen proporcionar herramientas que facilitan este trabajo, todavía se necesita desarrollar esta
 	caja negra que sirva de puente entre ambas aplicaciones.\\
 	
-	Este trabajo de fin de grado se ha realizado en colaboración con una empresa.
-	En este trabajo de fin de grado, se ha integrado dos aplicaciones cloud. El ERP Workday, él cual la empresa pretende empezar a usar,
-	con el \gls{crm} Hubspot que se quiere continuar usando, él cual permite llevar un seguimiento de las oportunidades de negocio de la empresa.
+	Este trabajo de fin de grado se ha realizado en colaboración con la empresa \textit{\acrfull{bnb}}.
+	En este trabajo de fin de grado, se ha integrado dos aplicaciones cloud. El \acrshort{erp} Workday, él cual la empresa pretende empezar a usar,
+	con el \acrshort{crm} Hubspot que se quiere continuar usando, él cual permite llevar un seguimiento de las oportunidades de negocio de la empresa.
 	El trabajo consiste en el desarrollo de una interfaz que haga de puente entre ambas aplicaciones, 
 	y conseguir la integridad de los datos entre las dos aplicaciones. \\
 	
 	
-	Nuestro servicio estara escuchando aquellos mensajes que le lleguen desde Hubspot, para posteriormente tratarlos y comunicarse con Workday.
+	Para ello he desarrollado una Interfaz que está escuchando aquellos mensajes que le llegan desde Hubspot, para posteriormente tratarlos y comunicarse con Workday.
 	De esta forma, cuando un deal u oportunidad de negocio se cree en Hubspot un mensaje llegará al servicio que lo procesará y enviará el correspondiente
 	mensaje a Workday que refleje la creación de esa nueva oportunidad.\\
 	
 	
-	Adicionalmente en el trabajo se ha hecho un estudio de los datos, de las diferentes oportunidades. Algunas de ellas convertidas en proyectos y otras con
-	menos suerte que finalmente fueron oportunidades perdidas. El estudio tiene como intención el análisis de los datos de estas oportunidades,
-	para que a partir de ellos se pueda predecir el resultado que se puede obtener con las oportunidades que están pendientes. 
+	Adicionalmente en el trabajo se ha hecho un estudio de los empleados de una empresa.
+	Con este estudio se pretende construir un modelo capaz de predecir si un empleado va a dejar la empresa. 
+	Para ello contamos con los datos de los empleados que incluyen información como el salario, tiempo en la empresa,
+	si han dejado o no el trabajo\ldots
 
 	\
 	
@@ -38,17 +39,20 @@
 	In these situations we are forced to use multiple applications that should communicate between them.
 	Applications usually provide services to make easier these integrations. Even though it's still necessary a lot of work to be done, in order to build this black box that will serve as bridge between the applications.\\
 	
-	This project has been carried out in collaboration with a company.
+	This project has been carried out in collaboration with the company \acrfull{bnb}.
 	In this final degree project, I have integrated two cloud applications. One of them is Workday a relatively recent ERP cloud based. 
-	And the other is Hubspot a cloud CRM application to manage marketing and sales. Hubspot allows to have tracking of the different opportunities.\\
+	And the other is Hubspot a cloud \acrshort{crm} application to manage marketing and sales. Hubspot allows to have tracking of the different opportunities.\\
 	
-	Our interface will be listening to those messages coming from Hubspot, it will proccess them and then communicating with Workday.
+	I have developped an \textit{Interface} that will be listening to those messages coming from Hubspot, it will proccess them and then it will communicae with Workday.
 	When a deal or business opportunity is created or modified in Hubspot, then our interface will received a message, after proccessing it,
 	the interface will send a message to Workday to execute the corresponding operations to the project related to the Hubspot deal.\\
 	
-	Besides in this project, I have studied the data of the different opportunities.
-	Some of them has ended up with success, and they become a real project. And some others unluckily has ended up as lost opportunities. 
-	The study has as aim to analyze the data of these opportunities, and be able to forecast the outcome of the pending opportunities.
+	
+	Besides in this project, I have studied the data of the employees of a company.
+	The objective of this study is to build a model able to predict future cases of job attrition.
+	To do that we count with a set of data that include information as, the income of the employee, time in the company,
+	if the employee has left the company\ldots
+	
 	
 	\
 	

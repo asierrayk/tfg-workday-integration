@@ -1,0 +1,12 @@
+*.acn*
+*.aux*
+*.glo*
+*.idx*
+*.ist*
+*.lof*
+*.log*
+*.lot*
+*.out*
+*.pdf*
+*.synctex.gz*
+*.toc*

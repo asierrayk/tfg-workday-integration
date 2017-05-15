@@ -1,0 +1,331 @@
+\chapter{Predicción}
+
+
+El estudio de los datos se ha hecho en \textit{python}. La librería que nos permitirá usar distintos modelos de clasificación es \textit{scikit-learn}\cite{scikit-learn}.
+
+También se han usado las librerías \textit{pandas} \cite{pandas} para la transformación y análisis de datos. Por último las librerías \textit{matplotlib} \cite{matplotlib} para las gráficas.
+
+
+En este estudio vamos a realizar un aprendizaje supervisado, ya que contamos con una columna que nos indica si el empleado en cuestión ha dejado o no el trabajo.
+es decir, nos podemos basar en esa columna para decidir como de bueno es el modelo que estamos construyendo, y como esperamos que se comporte ante muestras fuera de nuestra población inicial.
+
+\section{Datos}
+
+Los datos con los que cuento para este estudio es una tabla con información sobre los empleados de una empresa \cite{sample_resource}.
+
+Para el uso de los datos he descargado la hoja de cálculo para poder trabajar localmente.
+después la he convertido a \acrshort{csv} para poder manejar los datos de manera cómoda.
+
+Se trata de una única tabla, donde cada fila hace referencia a la información de un empleado y donde cada columna nos da información sobre una característica.
+
+Hay un total de 1471 empleados (filas) con 35 características (columnas).
+
+Algunas de las características con las que contamos son las siguientes:
+\begin{itemize}
+\item \textbf{Age}: \textit{Número}. indicando la edad.
+\item \textbf{Attrition}: \textit{Texto}. indicando si ha abandonado el trabajo o no.
+\item \textbf{BusinessTravel}: \textit{Texto}. indicando la frecuencia con la que viaja.
+\item \textbf{DailyRate}: \textit{Número}. indicando la tasa diaria del trabajador.
+\item \textbf{Department}: \textit{Texto}. con el departamento al que pertenece el empleado.
+\item \textbf{DistanceFromHome}: \textit{Número}. con la distancia de casa al trabajo.
+\item \textbf{Education}: \textit{Número}. indicando el nivel de educación
+\item \textbf{EducationField}: \textit{Texto}. con la rama de educación del trabajador.
+\item \textbf{EmployeeCount}: \textit{Número}. que siempre es uno.
+\item \textbf{EmployeeNumber}: \textit{Número}. que etiqueta con un identificador a cada empleado.
+\item \textbf{EnvironmentSatisfaction}: \textit{Número}. que indica el nivel de satisfacción del trabajador.
+\item \textbf{Gender}: \textit{Texto}. especificando el género
+\item \textbf{HourlyRate}: \textit{Número}. indicando la tasa por hora del empleado.
+\item \textbf{JobInvolvement}: \textit{Número}. indicando el grado de involucración en el trabajo.
+\item \textbf{JobLevel}: \textit{Número}. especificando el nivel en el trabajo.
+\item \textbf{JobRole}: \textit{Texto}. indicando el puesto de trabajo del empleado.
+\item \textbf{JobSatisfaction}: \textit{Número}. especificando el nivel de satisfacción
+\item \textbf{MaritalStatus}: \textit{Texto}. indicando el estado civil.
+\item \textbf{MonthlyIncome}: \textit{Número}. Salario mensual.
+\item \textbf{NumCompaniesWorked}: \textit{Número}. Cantidad de empresas en las que ha trabajado anteriormente.
+\item \textbf{Over18}: \textit{Texto}. Si el trabajador es mayor de edad, todas las filas tienen el valor \textit{Y}.
+\item \textbf{OverTime}: \textit{Texto}. Si el trabajador realiza horas extra.
+\item \textbf{PercentSalaryHike}: \textit{Número}. Porcentaje de aumento de salario.
+\item \textbf{PerformanceRating}: \textit{Número}. Desempeño del trabajador.
+\item \textbf{RelationshipSatisfaction}: \textit{Número}. Nivel de satisfacción con las relaciones en el trabajo.
+\item \textbf{TotalWorkingYears}: \textit{Número}. Años totales trabajados.
+\item \textbf{TrainingTimesLastYear}: \textit{Número}. Cantidad de veces que has recibido formación en el último año.
+\item \textbf{WorkLifeBalance}: \textit{Número}. Conciliación de la vida laboral y familiar.
+\item \textbf{YearsAtCompany}: \textit{Número}. Años en la compañía.
+\item \textbf{YearsInCurrentRole}: \textit{Número}. Años en el puesto actual.
+\item \textbf{YearsSinceLastPromotion}: \textit{Número}. Años desde el último ascenso.
+\item \textbf{YearsWithCurrManager}: \textit{Número}. Años con el actual jefe.
+
+\end{itemize}
+
+
+
+Lo que queremos hacer es ser capaz de predecir si un trabajador se va o no de una empresa. Esta información la tenemos accesible en la columna \textit{Attrition}. Para ello trataremos de construir un modelo, y calcularemos su precisión para estimar como se comportara ante muestras fuera de nuestro conjunto.\\
+
+Todos los pasos que he ido realizando están accesibles en un \textit{Jupyter Notebook} \cite{jupyter_notebook}. Vamos a ir explicando en detalle cada uno de los detalles que he ido realizando.
+
+
+
+Primero tenemos que deshacernos de aquellas columnas que no nos aporten información
+\begin{itemize}
+	\item \textbf{Over18} que siempre tiene el valor \textit{Y}.
+	\item \textbf{EmployeeCount} que siempre tiene el valor 1.
+	\item \textbf{EmployeeNumber} que no aporta información del empleado al ser solo un identificador.
+	\item \textbf{StandardHours} que siempre tiene un valor de 80.
+\end{itemize}
+
+Después debemos transformar los datos para que tengan un formato que \textit{scikit-learn} pueda entender. En definitiva que \textit{numpy} pueda entender ya que es sobre lo que esta construido \textit{scikit-learn}.
+Así que tenemos que pasar las características de formato texto a numérico.
+
+\begin{itemize}
+	\item \textbf{Attrition} contiene los valores \textit{Yes} y \textit{No} y los convertimos en 1 y 0 respectivamente.
+	\item \textbf{BusinessTravel} puede tomar los valores \textit{Travel\_Rarely}, \textit{Travel\_Frequently} y \textit{Non\-Travel}. 
+	Convertimos esta columna en dos columnas numéricas.
+	Las columnas resultantes serian \textit{BusinessTravel\_Travel\_Frequently} \textit{BusinessTravel\_Travel\_Rarely} y podrían tomar los valores $0$ y $1$.
+	En caso de que ambas estén a $0$, representarían el valor \textit{Non\-Travel}.
+	\item \textbf{BusinessTravel} puede tomar los valores \textit{Sales}, \textit{Research \& Development}, \textit{Human Resources}. 
+	Por tanto queda también transformada en dos columnas.
+	\item \textbf{EducationField} tiene como posibles valores \textit{Human Resources}, \textit{Life Sciences}, \textit{Marketing}, \textit{Medical}, \textit{Technical Degree} y \textit{Other}. 
+	Y por ello esta columna se transforma en en 5 columnas numéricas. 
+	\item \textbf{Gender} contiene los valores \textit{Male} y \textit{Female} y los convertimos en 1 y 0 respectivamente en una nueva columna \textit{Gender\_Male}.
+	\item \textbf{JobRole} se transforma en 8 columnas numéricas, ya que tenemos 9 posibles valores.
+	\item \textbf{MaritalStatus} puede tener los valores \textit{Single}, \textit{Married}, \textit{Divorced} y por tanto se crean dos columnas numéricas.
+	\item \textbf{OverTime} contiene los valores \textit{Yes} y \textit{No} y los convertimos en 1 y 0 respectivamente.
+\end{itemize}
+
+El siguiente paso es analizar los datos y ver is podemos crear más variables que nos puedan servir de utilidad.
+Es importante saber que todas las columnas a excepción de \textbf{Attrition} se usarán para la construcción del modelo. La columna \textbf{Attrition} solo se usara para comprobar su precisión.\\
+
+El primer dato en el que nos queremos fijar lógicamente es el abandono, de las 1470 empleados un total de 237 han abandonado la empresa, mientras que 1233 han permanecido en ella.
+Esto supone que en nuestros datos hay un 16,12 \% por ciento de abandono que podemos apreciar en la figura ~\ref{fig:attrition}.
+
+%default colors pgf pie  color={blue!60, cyan!60, yellow!60, orange!60, red!60, blue!60!cyan!60, cyan!60!yellow!60, red!60!cyan!60, red!60!blue!60, orange!60!cyan!60}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+	\pie [rotate = 180] {16.12/yes, 83.88/no}
+\end{tikzpicture}
+\caption{Tasa de abandono}
+\label{fig:attrition}
+\end{figure}
+
+
+La primera variable que suponemos tendrá una gran relación con con la predicción del abandono en el trabajo es la de si el trabajador realiza horas extra, \textbf{OverTime}.
+De los 1470 empleados 1054 no realizan horas extra y 416 sí, es decir, un 28,29 \% realizan horas extra.
+De aquellos que realizan horas extra 127 han abandonado la empresa mientras que 289 no, lo que supone un abandono del 30,52 \%.
+En cuanto a aquellos que no realizan horas extra 944 no han abandonado la empresa mientras que 110 sí. Nos encontramos ante una tasa de abandono del 10,43 \%. En la figura \ref{fig:attrition_overtime} podemos ver reflejados todos estos datos.
+
+Podemos apreciar que la variable nos puede aportar información valiosa para realizar las predicciones.\\
+
+\begin{figure}
+\centering
+\subfloat[Con horas extra]{
+\begin{tikzpicture}
+	\pie [text=inside, before number=\phantom, after number =, rotate = 180] {28.29/Yes, 71.71/No}
+\end{tikzpicture}
+}
+\qquad
+\subfloat[Sin horas extra]{
+\begin{tikzpicture}
+	\pie [text=inside, before number=\phantom, after number =, color={orange!60, yellow!60}, rotate = 180] {10.43/Yes, 89.57/No}
+\end{tikzpicture}
+}
+\caption{Tasa de abandono según horas extra}
+\label{fig:attrition_overtime}
+\end{figure}
+
+Dado que a diferentes personas les puede afectar de forma distinta el hacer horas extra, he creado una nueva variable que pueda ser de utilidad.
+esta variable trata de reunir información de dos columnas diferentes. \textbf{OverTime} y \textbf{WorkLifeBalance}. 
+Como \textit{WorkLifeBalance} toma valores entre 1 y 4, significando valores más altos una mejor conciliación.\\
+
+Con la siguiente formula podemos crear una nueva variable \textbf{OverTime\_Balance}. 
+Con valores altos significa que realiza horas extra y tiene mala conciliación, mientras que valores bajos representan que no hace horas extra o si las hace tiene una buena conciliación.
+
+\[ \mathit{OverTime\_Balance} = \mathit{OverTime} (5-\mathit{WorkLifeBalance\_Balance})\]
+
+La siguiente variable que vamos a observar es \textbf{Gender}. En los datos 882 empleados son hombres y 588 mujeres.
+Si comprobamos la tasa de abandono en hombres es de un 17 \% y en mujeres de un 14,79 \%, por lo que no parece ser una variable que aporte gran información.\\
+
+
+En el caso de \textbf{YearsAtCompany} podemos comprobar que si dividimos los datos en aquellos mayores y menores al valor de la mediana.
+Encontramos que la proporción de abandono es mayor en aquellos empleados que llevan menos de 5 años en la empresa.
+Dado esta situación creo una nueva variable \textbf{AtCompany\_Over} que toma los valores 1 y 0 e indica si el empleado lleva más de 5 años en la empresa.\\
+
+Relacionando la variable \textit{YearsAtCompany} con la variable \textbf{YearsInCurrentRole} podemos crear otra variable \textbf{YearsAtCurrRole\_Rate} que refleje
+la proporción de tiempo que lleva el empleado en el puesto actual en relación con el tiempo en la empresa.\\
+
+Con la variable \textbf{MonthlyIncome} podemos ver que al dividir los empleados en aquellos que tienen un salario superior a la mediana de los que no. nos encontramos que la tasa de abandono en los que tienen un menor salario presentan un abandono del 21,76 \% mientras que los de mayor salario tienen un 10,47 \%. Puede ser interesante tener en cuenta esta variable para realizar las predicciones.\\
+
+
+Puede ser una buena idea crear una variable \textbf{IncomeYears\_Rate} que refleje la relación entre las variables \textbf{MonthlyIncome} \textbf{YearsAtCompany}\\
+
+Poniendo atención en la variable \textbf{DistanceFromhome} podemos apreciar que aquellos trabajadores que se encuentran a mayor distancia de sus casas son más propensos a abandonar el trabajo.
+Por ejemplo un 18,35 \% de los trabajadores con una distancia mayor de 7 de sus casas abandonan el trabajo mientras que un 13,6 \% lo hace cuando la distancia es menor de 7. En la figura \ref{fig:attrition_distance} podemos visualizar estos datos. Como podemos observar no supone una gran diferencia, pero puede aportar información.\\
+
+
+\begin{figure}
+\centering
+\subfloat[Más de 7]{
+\begin{tikzpicture}
+	\pie [text=inside, before number=\phantom, after number =, rotate = 180] {18.35/Yes, 81.65/No}
+\end{tikzpicture}
+}
+\qquad
+\subfloat[Menos de 7]{
+\begin{tikzpicture}
+	\pie [text=inside, before number=\phantom, after number =, color={orange!60, yellow!60}, rotate = 180] {13.6/Yes, 86.4/No}
+\end{tikzpicture}
+}
+\label{fig:attrition_distance}
+\caption{Tasa de abandono según \textit{DistanceFromHome}}
+\end{figure}
+
+
+En la variable \textbf{Age}, podemos comprobar que la tasa de abandono es  mayor en aquellos empleados más jóvenes frente a los de mayor edad.
+Por ejemplo existe un abandono del 21,94 \% en los empleados menores a 36 años, mientras que en los mayores de 36 es de 10,39 \%.
+
+Otro buen indicador de que una empleado tiene más posibilidades de marcharse de una empres es su trayectoria previa. La variable \textbf{NumCompaniesWorked} nos da una idea de la trayectoria empresarial del trabajador.
+Sin embargo, por si sola parece que esta variable no nos aporta mucha información. Por ello podemos combinarla con la variable \textbf{TotalWorkingYears} para conseguir una nueva variable \textbf{YearsPerCompany} que muestre la media de años trabajados por empresa.\\
+
+
+
+
+
+\section{Construcción del modelo}
+
+
+
+Una parte importante a la hora de construir un modelo es elegir un estimador correcto. Para ello nos vamos a ayudar de la figura~\ref{fig:scheme_estimators}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{scheme_estimators.png}
+	\caption{Esquema scikit-learn para la elección de un estimador}
+	\label{fig:scheme_estimators}
+\end{figure}
+
+
+En nuestro caso contamos con más de 50 muestras, queremos predecir a que categoría pertenecen y contamos con los datos etiquetados gracias a la columna \textit{Attrition}.
+Por tanto, nos encontramos en la burbuja \textit{classification} de la figura~\ref{fig:scheme_estimators}.
+Y vamos a elaborar un proceso para decidir cual de ellos nos conviene más.
+
+Para construir un modelo es necesario determinar las características que se van a usar, con que estimador se va a realizar la predicción y bajo que parámetros.
+
+\subsection{Cálculo de la precisión de un modelo}
+Una vez elegido el modelo existen distintas formas de evaluar dicho modelo. Esto es posible en problemas supervisados, como es nuestro caso en el que conocemos el resultado para ciertos datos.\\
+
+Con el modelo elegido es necesario entrenarlo con un conjunto de datos, si lo entrenamos con todos los datos con los que contamos, solo podremos realizar predicciones con muestras que pertenecen al conjunto de entrenamiento. lo cual no es muy revelador, pues es normal que el modelo se comporte bien ante muestras con las cuales se le ha entrenado.
+
+Para evitar caer en este error existe el método de separación de los datos en un conjunto de entrenamiento y otro de pruebas (\textbf{Split Training}).
+
+Este método consiste en separar los datos en dos conjuntos: uno de entrenamiento (\textit{train}), y otro de pruebas (\textit{test})
+Se entrena al modelo con el conjunto de entrenamiento y se realiza la predicción con los datos de prueba. Una vez realizada la predicción se compara con el resultado correcto utilizando alguna sistema de puntuación (accuracy, f1, roc\_auc \ldots).\\
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[every node/.append style={draw, rounded corners, inner sep=10pt}]
+    \node [ text width=3cm, text centered,rectangle split, rectangle split horizontal, rectangle split parts=2, rectangle split part fill={green!50, red!50}]
+        {Training
+		 \nodepart{three} Test};
+		 
+\end{tikzpicture}
+\caption{Split training}
+\label{splittraining}
+\end{figure}
+
+Sin embargo, puede que al hacer la separación en estos dos conjuntos se de un caso óptimo o por el contrario un caso fatal. Es por eso que se introduce otro nuevo método de evaluación Validación Cruzada (\textbf{Cross Validation}). Este método consiste en dividir los datos en una partición con $k$ conjuntos. Y realizar $k$ veces el método Split Training, donde el conjunto de \textit{test} está formado por un elemento de la partición y el conjunto de \textit{training} está formado por los $k-1$ restantes.
+Una vez finalizadas se realiza la media de las k puntuaciones obtenidas, dando lugar a la puntuación con \textit{Cross Validation}.
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+%[every node/.append style={draw, rounded corners, inner sep=10pt}]
+\tikzset{
+	block/.style={
+		draw, rounded corners, inner sep=10pt,	
+       text width=3cm, text centered,rectangle split, rectangle split horizontal, rectangle split parts=3
+       }
+}
+
+    \node [block, rectangle split part fill={red!50, green!50, green!50}] (uno)
+        {Test
+         \nodepart{two} Training
+		 \nodepart{three} Training};
+		 
+	\node [block, below=1cm of uno, rectangle split part fill={green!50, red!50, green!50}] (dos)
+        {Training
+         \nodepart{two} Test
+		 \nodepart{three} Training};
+		 
+	\node [block, below=1cm of dos, rectangle split part fill={green!50, green!50, red!50}] (tres)
+        {Training
+         \nodepart{two} Training
+		 \nodepart{three} Test};
+		 
+	\node[right=of uno] (num_uno){87\%};
+	\node[right=of dos] (num_dos){92\%};
+	\node[right=of tres](num_tres){88\%};
+	\node[below=of num_tres] (num_total){89\%}
+	(num_tres.south) -- coordinate (aux) (num_tres.south|-num_total.north);
+	
+	\draw ([xshift=-1cm]num_total.north west|-aux) -- ([xshift=1cm]num_total.north east|-aux);   
+		 
+\end{tikzpicture}
+\caption{Cross Validation}
+\label{crossvalidation}
+\end{figure}
+
+
+\subsection{Selección de características}
+Esta fase consiste en la elección de aquellas características que aporten más información, para poder ser usadas en los distintos estimadores.
+Una pregunta común sería, ¿Por qué no usamos todas las características para realizar la predicción? la respuesta es sencilla, y es que en este caso más no significa mejor,
+ya que puede haber variables que no nos interesen ya que introducen ruido, dando lugar a una peor predicción.
+
+
+La librería \textit{scikit-learn} proporciona mecanismo para la selección automática de características. Vamos a ver cuales hemos usado:
+
+\begin{itemize}
+\item \textbf{Recursive Feature Elimination}. Dado un estimador que asigne pesos a las características RFE comienza con todas las características y recursivamente va considerando conjuntos más peque;os de características.
+si usamos la clase \verb|sklearn.feature_selection.RFECV| de \textit{scikit-learn} podemos realizar este proceso de eliminación encontrando el número óptimo de características.
+
+\item \textbf{Feature selection}. Únicamente puede ser usado con estimadores que asigna importancia a las características tras ser entrenado. Podemos hacer uso de este método de selección de características gracias a la clase \verb|sklearn.feature_selection.SelectFromModel| d \textit{scikit-learn}.
+
+\end{itemize}
+
+\subsection{Optimización de parámetros}
+Una vez elegido un estimador, es necesario configurar los parámetros para obtener el mejor resultado posible con dicho estimador. Para ello existe una clase en \textit{scikit-learn} llamada \verb|sklearn.model_selection.GridSearchCV| a la cual le podemos pasar como argumentos un diccionario de python con los valores que debe explorar para cada uno de los parámetros del estimador. Y lo que hace \textit{gridSearchCV} es ejecutar \textit{Cross Validation} para las distintas combinaciones de parámetros.
+Una vez finalizadas, podemos acceder tanto a la puntuación como a los parámetros del estimador que han dado lugar a dicha puntuación.
+
+
+\subsection{Selección del estimador}
+Los diferente estimadores que he probado son:
+
+\begin{itemize}
+\item \textbf{Linear Support Vector Classification}. Perteneciente a la familia de estimadores \textit{lineales}, cuyo objetivo es la construcción de un hiperplano del espacio donde se encuentran los datos. De manera que un punto se clasificará dependiendo de a que lado del hiperplano se encuentre.
+
+\item \textbf{K-vecinos más cercanos o K nearest neighbors Classifier}. Este estimador tiene como parámetros un valor $k$ que indica el número de vecinos en los que debe fijarse y \textit{weight\_options} que puede tomar los valores \textit{uniform} y \textit{distance}.
+A la hora de clasificar un punto el estimador se fija en los $k$ puntos de entrenamiento más cercano y detecta que clase es más común. Cuando el parámetro \textit{weight\_options} tiene el valor \textit{distance} se ponderan los valores con el inverso de la distancia al punto que deseamos clasificar.
+
+\item \textbf{Regresión logística} se trata de un tipo de análisis de regresión usado para predecir el resultado de una variable categórica.
+
+\end{itemize}
+
+
+El resultado de todo el proceso ha dado lugar al modelo formado por el estimador Regresión logística, con las características obtenidas tras aplicar el método de \textit{Recursive Feature Elimination with cross validation}.\\
+
+Resultando ser 42 el número óptimo de características. La búsqueda de los parámetros con \textit{GridSearchCV} dio lugar a la siguiente configuración.\\
+
+\begin{lstlisting}[language=python, breaklines]
+	LogisticRegression(penalty= 'l2',C=1, fit_intercept=True, intercept_scaling=0.1, tol=0.001, class_weight=None)
+\end{lstlisting}
+
+Dando lugar a un porcentaje de acierto de 89,38 \%
+
+
+
+
+
+
+
+
