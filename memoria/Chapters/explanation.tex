@@ -17,7 +17,9 @@
 
 \chapter{Integración}
 
-Para poder entender la Interfaz que he desarrollado debemos poder observar el contexto en el que se encuentra. En el siguiente esquema podemos ver cada aplicación y las relaciones de comunicación que existen entre ellas.
+Para poder entender la Interfaz que he desarrollado debemos poder observar el contexto en el que se encuentra. En la figura \ref{fig:general_diagram} podemos ver cada aplicación y las relaciones de comunicación que existen entre ellas.\\
+
+\input{Images/general_diagram.tex}
 
 La Interfaz esta conectada tanto a HubSpot como a Workday. A HubSpot se conecta a través de una aplicación que hay que crear en HubSpot y la comunicación  puede ser bidireccional.
 Con Workday también estamos conectados y la comunicación es unidireccional, de la Interfaz hacia Workday. Hay que mencionar que Workday sí que responde a los mensajes HTTP con información, pero en nuestra integración no  nunca iniciará un mensaje hacia la Interfaz.
@@ -266,7 +268,9 @@ En nuestra intrfaz existen dos tipos de almacenamiento persistente.
 En estos archivos se guarda información como usuarios, contraseñas, \textit{token} de sesión, direcciones url \ldots
 De esta forma se evita que estos datos estén \textit{Hardcodeados} en el código, nos facilita su modificación e
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
-Para su implementación he usado la librería ConfigParser \cite{ConfigParser}.
+Para su implementación he usado el módulo \textit{ConfigParser} \cite{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración, a los que se les sule poner \textit{ini} como extensión de archivo.
+%TODO ejemplo archivo de configuración
+Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 
 \input{Images/cfg_structure.tex}
 

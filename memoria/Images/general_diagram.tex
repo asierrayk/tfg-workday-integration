@@ -1,0 +1,25 @@
+\begin{figure}
+\centering
+
+    
+\pagestyle{empty}
+\begin{tikzpicture}
+  \path[mindmap,concept color=black,text=white]
+    node[concept] {\Large \textbf{Interfaz}}
+    [clockwise from=120]
+    child[concept color=orange, text=black] {
+      node[concept] {App HubSpot}
+      [clockwise from=90, inner sep=0.2cm]
+      child { node[concept] {\textbf{HubSpot}} }
+    }
+	child[concept color=blue!35!cyan, text=black] {
+      node[concept] {\textbf{Workday}}
+    }
+    ;
+\end{tikzpicture}
+
+
+
+\caption{Diagrama general del sistema} 
+\label{fig:general_diagram}
+\end{figure}
