@@ -21,40 +21,63 @@ Para poder entender la Interfaz que he desarrollado debemos poder observar el co
 
 \input{Images/general_diagram.tex}
 
-La Interfaz esta conectada tanto a HubSpot como a Workday. A HubSpot se conecta a través de una aplicación que hay que crear en HubSpot y la comunicación  puede ser bidireccional.
-Con Workday también estamos conectados y la comunicación es unidireccional, de la Interfaz hacia Workday. Hay que mencionar que Workday sí que responde a los mensajes HTTP con información, pero en nuestra integración no  nunca iniciará un mensaje hacia la Interfaz.
+La Interfaz esta conectada tanto a HubSpot como a Workday. A HubSpot se conecta a través de una aplicación que hay que crear en HubSpot y la comunicación  puede ser bidireccional. De la \textit{Interfaz} hacia Hubspot se hace mediante peticiones \acrshort{http} a la \acrshort{api} de Hubspot. La otra comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de Hubspot.\\
+
+Sin embargo en Workday la comunicación es unidireccional, únicamente de la Interfaz hacia Workday. Workday sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la Interfaz.
 
 \section{HubSpot}
-En esta sección vamos a describir toda la información que necesitamos saber sobre HubSpot para entender la interfaz.
+En esta sección vamos a describir toda la información que necesitamos saber sobre HubSpot para entender la \textit{Interfaz}.
 
-Hubspot se encuentra organizado en objetos, cada uno de ellos con sus propiedades, que son las que diferencian cada instancia
-En Hubspot existen múltiples objetos, pero los objetos que nos interesan para nuestra integración son \verb|deal| y \verb|company|
+Hubspot se encuentra organizado en objetos y cada objeto tiene un conjunto de propiedades.
+En Hubspot existen múltiples objetos, pero los objetos que nos interesan para nuestra integración son \textit{deal} y \textit{company}
 
 
-
-En HubSpot un deal puede estar asociado a una o más companies. Para el caso de nuestra integración a lo sumo habrá un company asociado.
+En HubSpot un deal puede estar asociado a una o más \textit{companies}. Para el caso de nuestra integración a lo sumo habrá un \textit{company} asociado a cada \textit{deal}.
 
 \subsection{Deal}
 	Es un objeto de Hubspot que representa una oportunidad de negocio con cierto cliente. Por defecto en Hubspot tenemos las siguientes propiedades asociadas a un deal:			
-		Deal Id, Amount,Close Date, Closed Lost Reason, Closed Won Reason, Create Date, Deal Description, Deal Name, Deal Stage, Deal Type, HubSpot Owner, Last Activity Date, Last Modified Date, Number of Contacts
+		Deal Id, Amount, Close Date, Closed Lost Reason, Closed Won Reason, Create Date, Deal Description, Deal Name, Deal Stage, Deal Type, HubSpot Owner, Last Activity Date, Last Modified Date, Number of Contacts
 		,Opp number,Owner Assigned Date, Pipeline y las personalizadas de la empresa: Practice, Transaction Amount, Transaction Currency
 		
-		Es de especial importancia la propiedad \verb|deal_stage|, ya que dependiendo de su valor se realizara o no la integración.
-		La propiedad \verb|deal_stage| representa el estado en el que se encuentra un deal. Para facilitar la explicación, vamos a clasificar los estados del deal en tres fases.
+		Las propiedades más importantes a tener en cuenta en la integración son las siguientes:
+		\begin{itemize}
+			\item \textbf{Deal id}: Identificador unívoco del \textit{deal} de HubSpot.
+			\item \textbf{Close date}: Se trata de la fecha en la que se ha cerrado el acuerdo.
+			\item \textbf{Deal Description}: Información describiendo el \textit{deal}.
+			\item \textbf{Deal name}: Nombre del \textit{deal}.
+			\item \textbf{Deal Stage}: estado en el que se encuentra el \textit{deal}. Esta se trata de una de las propiedades más importantes. 
+				Esta propiedad puede tomar los siguientes valores.
+				\begin{itemize}
+					\item[$\circ$] Appointment Scheduled: Cuando se ha fijado una cita con el cliente.
+					\item[$\circ$] Initial Contact: Si ya se ha tenido un primer contacto con el cliente.
+					\item[$\circ$] Opportunity Identfied: En caso de que se haya identificado una oportunidad de negocio con el cliente.
+					\item[$\circ$] Preparing Proporsal: Si se está preparando una proposición de oferta al cliente.
+					\item[$\circ$] Proporsal Sent: Una vez se haya enviado la proposición de oferta al cliente.
+					\item[$\circ$] Decision Maker Bought In: Una vez la oferta ya esta hecha y el cliente tiene la posibilidad de decidir si la acepta o no.
+					\item[$\circ$] Contract Sent: Cuando el contrato se ha enviado al cliente.
+					\item[$\circ$] Closed Won: Si la oportunidad de negocio se ha cerrado favorablemente.
+					\item[$\circ$] Closed Lost: En caso de que se haya perdido la oportunidad con el cliente.
+				\end{itemize}
+		\end{itemize}
+		
+		
+		Es de especial importancia la propiedad \textit{Deal Stage}, ya que dependiendo de su valor se realizará o no la sincronización.
+		La propiedad \textit{Deal Stage} representa el estado en el que se encuentra un \textit{deal}. Un \textit{deal} se clasifica en las siguientes fases:
 		\begin{enumerate}
-			\item Fase de descubrimiento
-			\item Fase de progreso 
-			\item fase de cierre
+			\item \textbf{Fase de descubrimiento}: Fase inicial del \textit{deal}. Cuando un \textit{deal} se encuentra en esta fase, no se sincroniza con Workday. La información del \textit{deal} solo reside en Hubspot.
+			\item \textbf{Fase de progreso}: fase intermedia del proceso en la que todavía esta por decidir si la oportunidad se va a ganar o no. Todos los \textit{deals} en esta fase se mantienen sincronizados con el correspondiente proyecto de Workday.
+			\item \textbf{Fase de cierre}: Fase final del proyecto. Una vez un \textit{deal} ha alcanzado esta fase, se excluye la oportunidad y no se continua sincronizando. Desde este momento se trata de manera independiente el proyecto en Workday, y el \textit{deal} no se modifica más. 
 		\end{enumerate}
-		Para tener una idea general del ciclo de vida de un deal, vamos a dar una descripción. Todo deal empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo deal termina en uno de los dos estados de la fase de cierre: \verb|closed_won| y \verb|closed_lost|.
 		
 		\input{Images/deal_phases.tex}
+		
+		Todo \textit{deal} empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo deal termina en uno de los dos estados de la fase de cierre: \textit{Closed Won} y \textit{Closed Lost}.
 			
 			
 			
-		Además de propiedades, los objetos pueden tener asociaciones. En el caso del deal puede tener una o más companies asociadas. Nuestra interfaz, dará por hecho que cada deal está asociado a una company.
+		Además de propiedades, los objetos pueden tener asociaciones. En el caso del deal puede tener una o más \textit{companies} asociadas. La \textit{Interfaz}, dará por hecho que cada \textit{deal} está asociado a lo sumo a una \textit{company}.
 			
-		Desde el portal de HubSpot es posible tanto crear nuevos deals como modificar cualquier propiedad (con excepción del Deal Id) o asociación de los ya existentes.
+		Desde el portal de HubSpot es posible tanto crear nuevos \textit{deals} como modificar cualquier propiedad (con excepción del Deal Id) o asociación de los \textit{deals} ya existentes.
 		
 		\begin{figure}
 			\centering
@@ -268,7 +291,10 @@ En nuestra intrfaz existen dos tipos de almacenamiento persistente.
 En estos archivos se guarda información como usuarios, contraseñas, \textit{token} de sesión, direcciones url \ldots
 De esta forma se evita que estos datos estén \textit{Hardcodeados} en el código, nos facilita su modificación e
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
-Para su implementación he usado el módulo \textit{ConfigParser} \cite{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración, a los que se les sule poner \textit{ini} como extensión de archivo.
+Para su implementación he usado el módulo \textit{ConfigParser} \cite{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}.
+Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
+Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor es que puedes referenciar un valor definido en la seccion \textit{DEFAULTS}.
+%ejmplo workday.ini
 %TODO ejemplo archivo de configuración
 Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 
