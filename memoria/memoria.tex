@@ -25,6 +25,15 @@
 %pie-charts
 \usepackage{pgf-pie}
 
+
+%headings
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+
+\lhead{\nouppercase{\rightmark}}
+\rhead{\nouppercase{\leftmark}}
+
 %\usepackage{smartdiagram}
 %\usesmartdiagramlibrary{additions}
 
@@ -38,8 +47,17 @@
 %\usepackage[acronym,toc]{glossaries}
 \usepackage[toc,acronym]{glossaries}
 
+
+%Custom commands
+\newcommand{\hs}{\textit{HubSpot}}
+\newcommand{\wday}{\textit{Workday}}
+\newcommand{\iface}{Interfaz \textit{HubSpot-Workday}}
+
+
+
+
 %set document parameters
-\addto\captionsspanish{\renewcommand{\contentsname}{\'{I}ndice General}}
+\addto\captionsspanish{\renewcommand{\contentsname}{\'{I}ndice}}
 \addto\captionsspanish{\renewcommand{\listfigurename}{\'{I}ndice de figuras}}
 \addto\captionsspanish{\renewcommand{\listtablename}{\'{I}ndice de tablas}}
 \addto\captionsspanish{\renewcommand{\appendixname}{Ap\'{e}ndice}}
@@ -70,13 +88,14 @@
 	\listoftables
 	
 	\input{Chapters/introduction.tex}
+	\input{Chapters/related_work.tex}
 	\input{Chapters/explanation.tex}
 	\input{Chapters/prediction.tex}
 	\input{Chapters/conclusion.tex}
 
 	
 	
-	\input{Others/bibliography	.tex}
+	\input{Others/bibliography.tex}
 	
 	%\printglossary[type=\acronymtype]
 	\printglossary[type=\acronymtype, title=Acrónimos,toctitle=Acrónimos]

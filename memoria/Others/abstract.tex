@@ -1,26 +1,24 @@
 \chapter*{Resumen}
 	\addcontentsline{toc}{chapter}{Resumen} %evitamos que se numere
 	
-	Muchos estareis de acuerdo en que puede ser ventajoso tener unificado en una aplicación multiples funcionalidades.
-	Sin embargo hay ocasiones en las que esto no es posible, o simplemente poco conveniente.
-	En estos casos nos vemos obligados a usar más de una aplicación que necesitarán comunicarse y relacionarse entre sí.\\
+	Es una buena práctica intentar tener unificadas en una aplicación multiples funcionalidades.
+	Sin embargo hay ocasiones en las que esto no es posible, o poco conveniente.
+	En estos casos nos vemos obligados a usar más de una aplicación que necesitan comunicarse y relacionarse entre sí.\\
 	
 	En estas situaciones, a pesar de que las aplicaciones suelen proporcionar herramientas que facilitan este trabajo de integración, todavía se necesita desarrollar esta
 	caja negra que sirva de puente entre ambas aplicaciones.\\
 	
 	Este trabajo de fin de grado se ha realizado en colaboración con la empresa \textit{\acrfull{bnb}}.
-	En este trabajo de fin de grado, se han integrado dos aplicaciones cloud. La primera de ellas es el \acrshort{erp} Workday, que la empresa pretende empezar a usar,
+	En este trabajo de fin de grado, se han integrado dos aplicaciones cloud. La primera de ellas es el \acrshort{erp} \wday{}, que la empresa pretende empezar a usar,
 	con el \acrshort{crm} Hubspot que se quiere continuar usando, él cual permite llevar un seguimiento de las oportunidades de negocio de la empresa.
-	El trabajo consiste en el desarrollo de una interfaz que haga de puente entre ambas aplicaciones, 
-	y conseguir la integridad de los datos entre las dos. \\
+	El trabajo consiste en el desarrollo de una Interfaz que haga de puente entre ambas aplicaciones y conseguir la integridad de los datos entre las dos. \\
 	
 	
-	Para ello he desarrollado una \textit{Interfaz} que se está escuchando los mensajes enviados por Hubspot, para tratarlos y realizar las operaciones de integración correspondientes en Workday.
-	De esta forma, cuando un deal u oportunidad de negocio se cree o modifique en Hubspot un mensaje llegará la \textit{Interfaz} que lo procesará e interactuará
-	con Workday para realizar las correspondientes operaciones de sincronización.\\
+	Para ello se ha desarrollado la Interfaz de integración entre \hs{} y \wday{}. Esta Interfaz escucha los mensajes enviados desde \hs{}, los trata y realiza las operaciones de integración correspondientes en \wday{}.\\
+
 	
 	
-	Adicionalmente en el trabajo se ha hecho un estudio de la plantilla de una empresa.
+	Adicionalmente en el trabajo se ha hecho un estudio de la plantilla de empresa.
 	Con las conclusiones de este estudio y usando técnicas de \textit{Machine Learning} se ha construido
 	un modelo basado en la información de los empleados. Este modelo es capaz de predecir futuros casos de empleados que abandonan el trabajo.
 	
@@ -29,28 +27,28 @@
 	
 	\textbf{Palabras clave}
     
-    Workday, Hubspot, Integration, \acrfull{erp}, \acrfull{crm}, Cloud, Analisis de datos, Machine learning.
+    Workday, Hubspot, Integración, \acrfull{erp}, \acrfull{crm}, Cloud, Analisis de datos, Machine learning.
 
 
 \chapter*{Abstract}
 	\addcontentsline{toc}{chapter}{Abstract} %evitamos que se numere
 	
-	Most of you probably agree on the notion that it’s better to have several functionalities in one application, instead of having them distributed in multiple ones. But there are some cases in which
+	It's a good practice to have several functionalities in one application, instead of having them distributed in multiple ones. But there are some cases in which
 	it’s not possible to accomplish that, or maybe it's simply not recommended. In these situations we are
 	forced to use multiple applications that should be able to interact together.\\
 
 	Applications usually provide services to make these integrations easier. However a lot of work is still necessary, in order to build this black box that will function as bridge between the applications.\\
 	
 	This project has been carried out in collaboration with the company \acrfull{bnb}. In this final degree project, I have integrated two cloud applications. One of
-	them is Workday a relatively recent cloud based \acrshort{erp}. And the other is Hubspot a cloud based \acrshort{crm}.
+	them is \wday{} a relatively recent cloud based \acrshort{erp}. And the other is \hs{} a cloud based \acrshort{crm}.
 	Hubspot allows users to keep track of the different business opportunities a company has.\\
 	
-	I have developed an \textit{Interface} that listens to the automatic messages sent by Hubspot,
-	processes them and then delivers the corresponding messages to Workday. When a deal or business
-	opportunity is created or modified in Hubspot, our interface receives and processes the message, and then sends Workday requests to execute the corresponding operations.\\
+	I have developed Interface \textit{HubSpot-Workday} that listens to the automatic messages sent by Hubspot,
+	processes them and then delivers the corresponding messages to \wday{}. When a deal or business
+	opportunity is created or modified in \hs{}, our interface receives and processes the message, and then sends \wday{} requests to execute the corresponding operations.\\
 
 	As a complementary part of the project, I have studied the data of a company’s personnel. 
-	With the conclussion of this study and different techniques of \textit{Machine Learning} I have
+	With the conclussion of this study and different techniques of \textit{Machine Learning}, I have
 	built a model based on the employee's information able to predict future cases of job attrition.\\
 
 	

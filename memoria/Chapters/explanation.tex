@@ -4,44 +4,83 @@
 %\section{Tecnologías utilizadas}
 
 %Para el desarrollo del proyecto he usado el lenguaje de programación \textbf{python}, con el IDE PyCharm. La librería principal, bajo la que se sustenta el servidor es \textit{web.py}. Alternativas a esta librería pueden ser Flask o Django. Sin embargo esta última es para proyectos mucho más grandes. La ventaja de web.py es lo ligera qué es y la facilidad de ponerla en marcha.
-%Otra librería muy utilizada ha sido requests, para realizar peticiones HTTP tanto a la API Hubspot como el envio de mensajes Soap a los servicios web de Workday.
+%Otra librería muy utilizada ha sido requests, para realizar peticiones HTTP tanto a la API \hs{} como el envio de mensajes Soap a los servicios web de \wday.
 %Para la prueba de los mensajes Soap, he utilizado la herramienta SoapUI.
 
 %También he hecho uso de la paquete \textbf{lxml} para la creación de árboles \textbf{\acrshort{xml}} y la transformaciones \acrshort{xslt}.
 
-%Internamente he usado como base de datos SQLite3 para python. En esta base de datos se almacena la correspondencia entre los deals de HubSpot y los proyectos de Workday.
+%Internamente he usado como base de datos SQLite3 para python. En esta base de datos se almacena la correspondencia entre los deals de \hs{} y los proyectos de \wday.
 
-%Para el uso de los servicios web de Workday, se mandan mensajes \acrshort{soap} por HTTP.
+%Para el uso de los servicios web de \wday{}, se mandan mensajes \acrshort{soap} por HTTP.
 
 
 
 \chapter{Integración}
 
-Para poder entender la Interfaz que he desarrollado debemos poder observar el contexto en el que se encuentra. En la figura \ref{fig:general_diagram} podemos ver cada aplicación y las relaciones de comunicación que existen entre ellas.\\
+En este capítulo vamos a ver como funciona el sitema de integración. Para ello explicaremos en detalle cada uno de los componentes del sistema.\\
 
-\input{Images/general_diagram.tex}
+Si nos fijamos en la Figura \ref{fig:general_diagram} podemos ver como la \iface{} actua como puente entre \hs{} y \wday{}. 
 
-La Interfaz esta conectada tanto a HubSpot como a Workday. A HubSpot se conecta a través de una aplicación que hay que crear en HubSpot y la comunicación  puede ser bidireccional. De la \textit{Interfaz} hacia Hubspot se hace mediante peticiones \acrshort{http} a la \acrshort{api} de Hubspot. La otra comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de Hubspot.\\
+\input{images/general_diagram.tex}
 
-Sin embargo en Workday la comunicación es unidireccional, únicamente de la Interfaz hacia Workday. Workday sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la Interfaz.
+Explicaremos como funcionan \hs{} y \wday{}. Como están organizados y cual es su estructura. También explicaremos los métodos de integración con los que cuenta cada una de las aplicaciones.
+Por último, explicaremos en detalle el diseño de la \iface{} así como sus características.\\
 
-\section{HubSpot}
-En esta sección vamos a describir toda la información que necesitamos saber sobre HubSpot para entender la \textit{Interfaz}.
+La \iface{} esta conectada tanto a \hs{} como a \wday. 
 
-Hubspot se encuentra organizado en objetos y cada objeto tiene un conjunto de propiedades.
-En Hubspot existen múltiples objetos, pero los objetos que nos interesan para nuestra integración son \textit{deal} y \textit{company}
+A \hs{} se conecta a través de una aplicación que hay que crear en \hs{} y la comunicación  puede ser bidireccional. De la \iface{} hacia \hs{} se hace mediante peticiones \acrshort{http} a la \acrshort{api} de \hs{}. 
+La comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de \hs{}\\
+
+Por otro lado está \wday{} cuya comunicación es unidireccional. Únicamente existe comunicación propiamente dicha de la \iface{} hacia \wday. \wday{} sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la \iface.
+
+\section{\hs{}}
+En esta sección vamos a describir toda la información que necesitamos saber sobre \hs{} para entender la Integración.
+
+El \acrshort{crm} \hs{} permite realizar integraciones gracias a su \acrshort{api} \acrshort{rest}.
+Primero debemos tener en cuenta que \hs{} se encuentra organizado en objetos. Y toda la información almacenada en \hs{} pertenece a uno de los siguietnes tipos de objetos:
+
+\begin{itemize}
+	\item \textit{Contacts} o Contacto
+	\item \textit{Companies} o Compañía
+	\item \textit{Deals} u Oportunidad
+\end{itemize}
+
+Cada objeto tiene una serie de propiedades por defecto a las que se pueden añadir propiedades personalizadas.
+Es importante tener en cuenta las relaciones posibles entre los distintos tipos de objetos.
+
+\begin{itemize}
+	\item \textit{Contacts}
+	\begin{itemize}
+		\item Un contacto pude ser asociado con un único objeto compañía.
+		\item Un contacto puede ser asociado con múltiples objetos oportunidad.
+	\end{itemize}
+	\item \textit{Companies}
+	\begin{itemize}
+		\item Una compañía puede estar asociada a múltiples contactos.
+		\item Una compañía puede estar asociada a múltiples oportunidades.
+	\end{itemize}
+	\item \textit{Deals}
+	\begin{itemize}
+		\item Un deal puede estar asociado a múltiples objetos contacto y a múltiples objeto compañía.
+	\end{itemize}
+\end{itemize}
+
+En \hs{} un \textit{deal} puede estar asociado a una o más \textit{companies}. Para el caso de nuestra integración a lo sumo habrá un \textit{company} asociado a cada \textit{deal}.
+
+Los objetos que nos interesan para nuestra integración son \textit{deal} y su \textit{company} asociado. La creación o modificación de un \textit{deal} iniciaran procesos de integración.
 
 
-En HubSpot un deal puede estar asociado a una o más \textit{companies}. Para el caso de nuestra integración a lo sumo habrá un \textit{company} asociado a cada \textit{deal}.
 
-\subsection{Deal}
-	Es un objeto de Hubspot que representa una oportunidad de negocio con cierto cliente. Por defecto en Hubspot tenemos las siguientes propiedades asociadas a un deal:			
-		Deal Id, Amount, Close Date, Closed Lost Reason, Closed Won Reason, Create Date, Deal Description, Deal Name, Deal Stage, Deal Type, HubSpot Owner, Last Activity Date, Last Modified Date, Number of Contacts
-		,Opp number,Owner Assigned Date, Pipeline y las personalizadas de la empresa: Practice, Transaction Amount, Transaction Currency
+\subsection{Descripción del objeto \textit{Deal}}
+	Es un objeto de \hs{} que representa una oportunidad de negocio con cierto cliente. Por defecto en \hs{} tenemos las siguientes propiedades asociadas a un deal:			
+		\textit{Deal Id}, \textit{Amount}, \textit{Close Date}, \textit{Closed Lost Reason}, \textit{Closed Won Reason}, \textit{Create Date}, \textit{Deal Description}, \textit{Deal Name}, \textit{Deal Stage}, \textit{Deal Type}, \textit{Hubspot Owner}, \textit{Last Activity Date}, \textit{Last Modified Date}, \textit{Number of Contacts},
+		\textit{Opp number}, \textit{Owner Assigned Date}, \textit{Pipeline}.
+		
+		Adicionalmente en la empresa se han creado propiedades personalizadas: \textit{Practice}, \textit{Transaction Amount}, \textit{Transaction Currency}.\\
 		
 		Las propiedades más importantes a tener en cuenta en la integración son las siguientes:
 		\begin{itemize}
-			\item \textbf{Deal id}: Identificador unívoco del \textit{deal} de HubSpot.
+			\item \textbf{Deal id}: Identificador unívoco del \textit{deal} de \hs.
 			\item \textbf{Close date}: Se trata de la fecha en la que se ha cerrado el acuerdo.
 			\item \textbf{Deal Description}: Información describiendo el \textit{deal}.
 			\item \textbf{Deal name}: Nombre del \textit{deal}.
@@ -62,112 +101,132 @@ En HubSpot un deal puede estar asociado a una o más \textit{companies}. Para el
 		
 		
 		Es de especial importancia la propiedad \textit{Deal Stage}, ya que dependiendo de su valor se realizará o no la sincronización.
-		La propiedad \textit{Deal Stage} representa el estado en el que se encuentra un \textit{deal}. Un \textit{deal} se clasifica en las siguientes fases:
-		\begin{enumerate}
-			\item \textbf{Fase de descubrimiento}: Fase inicial del \textit{deal}. Cuando un \textit{deal} se encuentra en esta fase, no se sincroniza con Workday. La información del \textit{deal} solo reside en Hubspot.
-			\item \textbf{Fase de progreso}: fase intermedia del proceso en la que todavía esta por decidir si la oportunidad se va a ganar o no. Todos los \textit{deals} en esta fase se mantienen sincronizados con el correspondiente proyecto de Workday.
-			\item \textbf{Fase de cierre}: Fase final del proyecto. Una vez un \textit{deal} ha alcanzado esta fase, se excluye la oportunidad y no se continua sincronizando. Desde este momento se trata de manera independiente el proyecto en Workday, y el \textit{deal} no se modifica más. 
-		\end{enumerate}
+		La propiedad \textit{Deal Stage} representa el estado en el que se encuentra un \textit{deal}.
+		
 		
 		\input{Images/deal_phases.tex}
 		
-		Todo \textit{deal} empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo deal termina en uno de los dos estados de la fase de cierre: \textit{Closed Won} y \textit{Closed Lost}.
+		
+		Un \textit{deal} pasa por tres fases.
+		
+		\begin{enumerate}
+			\item \textbf{Fase de descubrimiento}: Fase inicial del \textit{deal}. Cuando un \textit{deal} se encuentra en esta fase, no se sincroniza con \wday. La información del \textit{deal} solo reside en \hs.
+			\item \textbf{Fase de progreso}: fase intermedia del proceso en la que todavía esta por decidir si la oportunidad se va a ganar o no. Todos los \textit{deals} en esta fase se mantienen sincronizados con el correspondiente proyecto de \wday.
+			\item \textbf{Fase de cierre}: Fase final del proyecto. Una vez un \textit{deal} ha alcanzado esta fase, se excluye la oportunidad y no se continua sincronizando. Desde este momento se trata de manera independiente el proyecto en \wday{}, y el \textit{deal} no se modifica más. 
+		\end{enumerate}
+	
+		La fase a la que pertenece el \textit{deal} depende se su estado. En la Figura \ref{fig:deal_phases} a que fase pertenece cada estado.
+		
+		
+		Todo \textit{deal} empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo deal termina en uno de los dos estados de la fase de cierre: \textit{Closed Won} y \textit{Closed Lost}.\\
 			
 			
+		Además de propiedades, los objetos pueden tener asociaciones. En el caso del deal puede tener una o más \textit{companies} asociadas. La \iface{}, dará por hecho que cada \textit{deal} está asociado a lo sumo a una \textit{company}.
 			
-		Además de propiedades, los objetos pueden tener asociaciones. En el caso del deal puede tener una o más \textit{companies} asociadas. La \textit{Interfaz}, dará por hecho que cada \textit{deal} está asociado a lo sumo a una \textit{company}.
-			
-		Desde el portal de HubSpot es posible tanto crear nuevos \textit{deals} como modificar cualquier propiedad (con excepción del Deal Id) o asociación de los \textit{deals} ya existentes.
+		Desde el portal de \hs{} es posible tanto crear nuevos \textit{deals} como modificar cualquier propiedad a excepción del \textit{Deal Id}.
+		
+		Cuando seleccionamos la opción de creación de un \textit{deal} nos aparece un formulario como el de la figura \ref{fig:create_deal}.
 		
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.5\textwidth]{deal_creation.png}
-			\caption{Creando un deal desde el portal de HubSpot}
+			\caption{Creando un deal desde el portal de \hs{}}
+			\label{fig:create_deal}
 		\end{figure}
 
-\subsection{Company}
+\subsection{Descripción de una \textit{Company}}
 		
-		Es un objeto de HubSpot que representa una empresa. Este objeto cuenta con multitud de propiedades, que describen información de la empres, como puede ser información de contacto, localización \ldots 
+		Es un objeto de \hs{} que representa cualquier tipo de organización o empresa. 
+		Este objeto cuenta con multitud de propiedades, que describen información de la empresa, como puede ser información de contacto, localización\ldots 
 		
-		Desde el portal de HubSpot es posible tanto crear nuevas companies como modificar cualquiera de los ya existentes.
+		Desde el portal de \hs{} es posible tanto crear nuevas companies como modificar cualquiera de las ya existentes. Podemos ver el formulario de creación de una \textit{company} en la Figura \ref{fig:company_creation}.
+		
+		Sin embargo la creación o modificación de \textit{companies} no iniciarán procesos de sincronización. Solo se integrarán aquellas \textit{companies} que esten asociadas a un \textit{deal}.
+		de esta forma evitamos que \textit{companies} con las que no existe un proyecto esten sincronizadas.
 		
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.5\textwidth]{company_creation.png}
-			\caption{Creando una company desde el portal de HubSpot}
+			\caption{Creando una company desde el portal de \hs{}}
+			\label{fig:company_creation}
 		\end{figure}
 
 
-\subsection{Aplicación de Hubspot}
+\subsection{Aplicación de \hs{}}
 \label{subsec:app_hs}
-Para poder realizar la integración y hacer uso de la \acrshort{api} de HubSpot \cite{hsapi}, es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una aplicación y acceder a su panel de control. 
-Desde el panel de control de la aplicación tendremos acceso a información importante para la integración, como son las claves (\verb|Client ID|, \verb|Client secret|).
+Para poder realizar la integración y hacer uso de la \acrshort{api} de \hs{} \cite{hsapi}, es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una aplicación y acceder a su panel de control. 
+Desde el panel de control de la aplicación tendremos acceso a información importante para la integración, como son las claves \texttt{Client ID}, \texttt{Client secret}, \texttt{HAPIKey}.\\
 
 
-También desde el panel de control de la aplicación deberemos especificar debemos indicar la dirección a la que deseamos que nuestros mensajes sean enviados y especificar los eventos de HubSpot ante los que se debe enviar un mensaje
+
 En el caso de nuestra aplicación está suscrita a los siguientes eventos:
 
 \begin{itemize}
-	\item \textbf{deal.creation}: Cuando un nuevo deal es creado en HubSpot se envía un mensaje.
+	\item \textbf{deal.creation}: Cuando un nuevo deal es creado en \hs{} se envía un mensaje.
 	\item \textbf{deal.propertyChanged} 
 		\begin{itemize}
-			\item \verb|dealstage|: Cuando en un deal de HubSpot se modifica el estado.
-			\item \verb|practice|: Cuando en un deal de HubSpot se modifica la práctica.
-			\item \verb|hubspot_owner_id|: Cuando en un deal de HubSpot se modifica su propietario.
-			\item \verb|closedate|: Cuando en un deal de HubSpot se modifica la fecha de cierre.
-			\item \verb|description|: Cuando en un deal de Hubspot se modifica la descripción.
-			\item \verb|dealname|: Cuando en un deal de Hubspot se modifica el nombre.
-			\item \verb|transaction_currency|: Cuando en un deal de HubSpot se modifica la moneda.
-			\item \verb|legal_entity|: Cuando en un deal de HubSpot se modifica la entidad.
+			\item \verb|dealstage|: Cuando en un deal de \hs{} se modifica el estado.
+			\item \verb|practice|: Cuando en un deal de \hs{} se modifica la práctica.
+			\item \verb|hubspot_owner_id|: Cuando en un deal de \hs{} se modifica su propietario.
+			\item \verb|closedate|: Cuando en un deal de \hs{} se modifica la fecha de cierre.
+			\item \verb|description|: Cuando en un deal de \hs{} se modifica la descripción.
+			\item \verb|dealname|: Cuando en un deal de \hs{} se modifica el nombre.
+			\item \verb|transaction_currency|: Cuando en un deal de \hs{} se modifica la moneda.
+			\item \verb|legal_entity|: Cuando en un deal de \hs{} se modifica la entidad.
 		\end{itemize}
 \end{itemize}
 
-Desde el panel de control de la aplicación de HubSpot también tenemos acceso a las claves (\verb|Client ID|, \verb|Client secret|) para poder instalar la aplicación en tantos portales como deseemos. En nuestro caso solo será uno.
+\hs{} permite dos métodos de autenticación: \textit{OAuth} y \textit{API keys}. Las \textit{API keys} son idóneas para realizar pruebas, pero no son recomendables para un uso comercial. Con este método no se puede garantizar la seguridad. A diferencia de los \textit{token} en el método \textit{OAuth} que van cambiando, la \textit{API key} es fija. Todas las integraciones deben usar \textit{OAuth}.
+
+La versión que se debe usar es \textit{OAuth2.0} ya que \textit{Oauth1.0} estará en desuso en un futuro.
+
+También desde el panel de control de la aplicación deberemos especificar debemos indicar la dirección (host y puerto) a la que deseamos que nuestros mensajes sean enviados y especificar los eventos de \hs{} ante los que se debe enviar un mensaje.
+
+Desde el panel de control de la aplicación de \hs{} tenemos acceso a las claves (\texttt{Client ID}, \texttt{Client secret}) para poder instalar la aplicación en tantos portales como deseemos. En nuestro caso solo será uno.
 
 
-Para instalar una aplicación en un portal de HubSpot hay que seguir un proceso de autorización llamado \gls{oauth2} que ha sido automatizado he integrado en la interfaz creada. 
+Para instalar una aplicación en un portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2} que ha sido automatizado he integrado en la \iface{} creada. 
 Los pasos que hay que seguir son los siguientes \cite{hsapi}:
-%TODO diagram oauth2
+%JSON enviado por el webhook
 
 \begin{enumerate}
-	\item Dirigirse a la url \url{https://app.hubspot.com/oauth/authorize?client_id=<client_id>&scope=contacts&redirect_uri=https://www.hubspot.com/}
-		\\ 
-		sustituyendo \textless client\_id\textgreater por el su valor. Y autorizar la instalación de la aplicación. Cabe destacar que solo se puede acceder a dicha url  y por tanto instalar la aplicación si se cuenta con el \verb|Client ID|.
-		Haciendo público el \verb|Client ID| de la aplicación , esta puede ser instalada por cualquier persona. En nuestro caso este valor permanecerá en privado y solo nosotros haremos uso de la aplicación.
+	\item Dirigirse a la url de autorización \footnote{\url{https://app.hubspot.com/oauth/authorize?client_id=<client_id>&scope=contacts&redirect_uri=https://www.hubspot.com/} sustituyendo \texttt{<client\_id>} por el su valor}.
+	Autorizar la instalación de la aplicación. Cabe destacar que solo se puede acceder a dicha url y por tanto instalar la aplicación si se cuenta con el \verb|Client ID|.
+		Haciendo público el \textit{Client ID} de la aplicación, esta puede ser instalada por cualquier persona. En nuestro caso este valor permanecerá en privado y solo nosotros haremos uso de la aplicación.
 		
 	\item Tras dar acceso al portal se te redirige a una página en la que aparece un código concatenado a la url.
-	\item Mediante este código, el \verb|Client ID| y el \verb|Client secret| podemos obtener un token de sesión.
-	Tras hacer la petición a la API de HubSpot, nos devolverá un mensaje con los siguientes valores.
+	\item Mediante este código, el \textit{Client ID} y el \textit{Client secret} podemos obtener un token de sesión.
+	Tras hacer la petición a la API de \hs{}, nos devolverá un mensaje con los siguientes valores.
 		\begin{itemize}
-			\item \verb|access_token| clave usado para realizar las peticiones a la API de HubSpot.
-			\item \verb|refresh_token| usado para conseguir nuevo par (\verb|access_token|, \verb|refresh_token|) cuando el \verb|access_token| ha expirado.
-			\item \verb|expires_in| tiempo en milisegundos de validez del \verb|access_token|.
+			\item \texttt{access\_token} clave usado para realizar las peticiones a la API de \hs.
+			\item \texttt{refresh\_token} usado para conseguir nuevo par (\texttt{access\_token}, \texttt{refresh\_token}) cuando el \texttt{access\_token} ha expirado.
+			\item \texttt{expires\_in} tiempo en milisegundos de validez del \texttt{access\_token}.
 		\end{itemize}
-	\item Cuando el \verb|access_token| haya expirado podremos llamar a otro endpoint especificando el \verb|refresh_token| y recibiremos un mensaje de vuelta con otro nuevo \verb|access_token| y \verb|refresh_token|.
+	\item Cuando el \texttt{access\_token} haya expirado podremos llamar a otro endpoint especificando el \texttt{refresh\_token} y recibiremos un mensaje de vuelta con otro nuevo \texttt{access\_token} y \texttt{refresh\_token}.
 \end{enumerate}
 
 
 
-\section{Workday}
+\section{\wday{}}
 
-En esta sección vamos a describir la información que necesitamos saber sobre Workday.
+En esta sección vamos a describir la información que necesitamos saber sobre \wday.
 
-Workday es un ERP que internamente se encuentra organizado en objetos. Los objetos que van a ser de interés para realizar la integración son:
+\wday{} es un \acrshort{erp} que internamente se encuentra organizado en objetos. Los objetos que van a ser de interés para realizar la integración son:
 Project, Customer y Hierarchy.
 
 Además cada uno de estos objetos cuenta con una serie de campos, que pueden incluso hacer referencia a otros objetos.
 
 
-Para realizar las integraciones, Workday proporciona servicios web que están en constante actualización.
-Mediante estos servicios podemos hacer que la Interfaz interactúe con Workday.
+Para realizar las integraciones, \wday{} proporciona servicios web que están en constante actualización.
+Mediante estos servicios podemos hacer que la \iface{} interactúe con \wday.
 
 
 
-\subsection{Project}
-Es un objeto de Workday y existe una instancia por cada proyecto. Dentro de nuestra integración, 
-el objeto Project de Workday está relacionado con el objeto Deal de HubSpot. 
-De forma que por lo general las acciones sobre el objeto Deal en HubSpot darán lugar a otros eventos
- sobre el objeto Project de Workday.
+\subsection{Descripción de un \textit{Project}}
+Es un objeto de \wday{} y existe una instancia por cada proyecto. Dentro de nuestra integración, 
+el objeto Project de \wday{} está relacionado con el objeto Deal de \hs. 
+De forma que por lo general las acciones sobre el objeto Deal en \hs{} darán lugar a otros eventos
+ sobre el objeto Project de \wday.
  
 Un objeto Project puede ser creado de manera manual, pero en nuestra integración, esto se realizará mediante los servicios web.
 Para crear o modificar un proyecto ya existente hay que enviar un mensaje SOAP por HTTP. 
@@ -178,39 +237,39 @@ El objeto Project cuenta con multitud de campos:
 \begin{itemize}
 \item Project name: Nombre del proyecto, está sincronizado con el nombre del deal correspondiente.
 \item Start Date: Fecha de inicio, está sincronizado con con la propiedad \verb|close_date| del deal.
-\item Status: Estado del proyecto, existe una correspondencia con la propiedad \verb|deal_stage| del deal en HubSpot.
+\item Status: Estado del proyecto, existe una correspondencia con la propiedad \verb|deal_stage| del deal en \hs.
 \item Description: Descripción del proyecto. Este campo se encuentra sincronizado con la propiedad \verb|description| del deal.
 
 %y campos que hacen referencia a otros objetos como son: 
 \item Project Hierarchy: La Jerarquía principal del proyecto. Este campo está en directa relación con la propiedad personalizadas
-\verb|practice| de HubSpot.
-\item OptionalProject Hierarchy: La jerarquía opcional del proyecto. Este campo se encuentra directamente relacionado con la propiedad \verb|hubspot_owner_id| del correspondiente deal.
-\item Customer: El cliente del proyecto. Existe una correspondencia entre el cliente y la asociación \verb|associated_company| del deal en HubSpot.
+\verb|practice| de \hs.
+\item OptionalProject Hierarchy: La jerarquía opcional del proyecto. Este campo se encuentra directamente relacionado con la propiedad \verb|\hs{}_owner_id| del correspondiente deal.
+\item Customer: El cliente del proyecto. Existe una correspondencia entre el cliente y la asociación \verb|associated_company| del deal en \hs.
 
 \end{itemize}
 
 
 
-\subsection{Customer}
-Se trata de un objeto de Workday que representa a los clientes de la empresa. este objeto de Workday se encuentra relacionado con el objeto company de Hubspot. 
-Gracias a la Interfaz, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.
+\subsection{Descripción de un \textit{Customer}}
+Se trata de un objeto de \wday{} que representa a los clientes de la empresa. este objeto de \wday{} se encuentra relacionado con el objeto company de \hs. 
+Gracias a la \iface{}, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.
 
-Existen múltiples métodos para crear o modificar un \textit{Customer} en Workday, de forma manual, hojas de calculo para carga de datos \ldots
+Existen múltiples métodos para crear o modificar un \textit{Customer} en \wday{}, de forma manual, hojas de calculo para carga de datos \ldots
 
-En nuestro caso la creación y modificación de un cliente se hace desde la Interfaz, 
+En nuestro caso la creación y modificación de un cliente se hace desde la \iface{}, 
 mediante la operación \verb|Put_Customer| del servicio web \verb|Revenue_Management|.
 
-\subsection{Hierarchy}
+\subsection{Descripción de una \textit{Hierarchy}}
 
-El objeto \textit{Hierarchy} de Workday se encarga de representar jerarquías.
+El objeto \textit{Hierarchy} de \wday{} se encarga de representar jerarquías.
 Es decir, representa infomación que se encuentra estructurada en forma de árbol.
 En nuestro caso tenemos una jerarquía principal que organiza los proyectos según a que práctica pertenecen. 
 (En el caso de nuestra empresa las distintas prácticas son: \textit{PeopleSoft}, \textit{SAP}, \textit{Cloud} \ldots)
 Y jerarquías opcionales para organizar los proyectos según el Customer Manager y el Project Manager.
 
-\subsection{Workday web services}
+\subsection{Servicios web de \wday{}}
 
-Para hacer uso de los servicios web de Workday, primero debemos de contar con una cuenta del \textit{tenant} (o entorno) con permisos para el uso de los servicios web que se vayan a usar.
+Para hacer uso de los servicios web de \wday{}, primero debemos de contar con una cuenta del \textit{tenant} (o entorno) con permisos para el uso de los servicios web que se vayan a usar.
 
 Una vez tengamos dicho usuario, podremos realizar las operaciones.
 
@@ -222,23 +281,23 @@ Los pasos para realizar una operación concreta son los siguientes:
 	\item Modificar la plantilla de mensaje con los parámetros deseados. 
 	Para comprobar que el mensaje realiza la operación deseada correctamente he usado la aplicación SoapUI \cite{soapui}.
 	\item Enviar el mensaje \acrshort{soap} por\acrshort{http} con el método POST.
-	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por Workday.
+	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por \wday.
 \end{enumerate}
 
 
 
-\section{Interfaz}
+\section{\iface{}}
 
 
-Para el desarrollo de la Interfaz he usado el lenguaje de programación \textbf{python}, con el IDE \textbf{PyCharm}. La librería principal, bajo la que se sustenta el servidor es \textbf{web.py}.
+Para el desarrollo de la \iface{} he usado el lenguaje de programación \textbf{python}, con el IDE \textbf{PyCharm}. La librería principal, bajo la que se sustenta el servidor es \textbf{web.py}.
 Alternativas a esta librería pueden ser Flask o Django. Sin embargo esta última es para proyectos mucho más grandes. La ventaja de web.py es lo ligera qué es y la facilidad de ponerla en marcha.
 
-La interfaz se encuentra ejecutándose de manera continua en un servidor y está escuchando en un puerto los distintos mensajes que puedan llegar de hubspot.
-(En el panel de control de la aplicación de HubSpot ,explicado en la sección ~\ref{subsec:app_hs}, debemos especificar el host y puerto del servidor que está ejecutando la Interfaz)
+La \iface{} se encuentra ejecutándose de manera continua en un servidor y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs.
+(En el panel de control de la aplicación de \hs{} ,explicado en la sección ~\ref{subsec:app_hs}, debemos especificar el host y puerto del servidor que está ejecutando la \iface{})
 
 
-\subsection{Estructura de la Interfaz}
-Vamos a describir como se encuentra estructurada nuestra interfaz. Para ello podemos ver la figura ~\ref{fig:project_structure}. 
+\subsection{Estructura de la \iface{}}
+Vamos a describir como se encuentra estructurada nuestra \iface. Para ello podemos ver la Figura ~\ref{fig:project_structure}. 
 
 El proyecto de \textit{python} se encuentra organizado en diferentes subdirectorios.
 
@@ -247,20 +306,20 @@ El proyecto de \textit{python} se encuentra organizado en diferentes subdirector
 	\item [\textendash] \textbf{service.py}: Se encuentra en el directorio raíz y se encarga de ejecutar la aplicación 
 	y en este modulo está definida la función que se ejecuta al recibir un mensaje POST. Desde este módulo se hacen llamadas a distintas funciones de \textit{handler.py}.
 	\item [\textendash] \textbf{handler.py}: También se encuentra en el directorio raíz y en este módulo se encuentra la lógica de programa para cada evento recibido.
-	\item[$\square$] \textbf{hubspot}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con HubSpot.
+	\item[$\square$] \textbf{\hs{}}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con \hs.
 	
 		\begin{itemize}
-			\item [\textendash] \textbf{deal.py}: En este módulo se encuentra la clase Deal, encargada de representar en la Interfaz el objeto deal de HubSpot.
-			\item [\textendash] \textbf{company.py}: En este módulo se encuentra la clase Company, que se encarga de representar al objeto company de HubSpot en la interfaz.
-			\item [\textendash] \textbf{authorization.py}: En este módulo se encuentra la clase Authorization encargada de facilitar el flujo de aprobación \gls{oauth2} de Hubspot y la renovación de los \textit{token} de sesión.
+			\item [\textendash] \textbf{deal.py}: En este módulo se encuentra la clase Deal, encargada de representar en la \iface{} el objeto deal de \hs.
+			\item [\textendash] \textbf{company.py}: En este módulo se encuentra la clase Company, que se encarga de representar al objeto company de \hs{} en la \iface.
+			\item [\textendash] \textbf{authorization.py}: En este módulo se encuentra la clase Authorization encargada de facilitar el flujo de aprobación \gls{oauth2} de \hs{} y la renovación de los \textit{token} de sesión.
 		\end{itemize}
 		
-	\item[$\square$] \textbf{workday}: En este directorio están los módulos encargados de la interacción con Workday.
+	\item[$\square$] \textbf{\wday{}}: En este directorio están los módulos encargados de la interacción con \wday.
 	
 		\begin{itemize}
-			\item [\textendash] \textbf{project.py}: En este módulo se encuentra la clase \textit{Project} que representa en la interfaz el objeto \textit{Project} de Workday.
-			\item [\textendash] \textbf{custommer.py}: En este módulo se encuentra la clase \textit{Customer} que representa en la Interfaz el objeto \textit{Customer} de Workday.
-			\item [\textendash] \textbf{hierarchy.py}: En este módulo se encuentra la clase \textit{Hierarchy} que representa en la Interfaz el objeto \textit{Hierarchy} de Workday.
+			\item [\textendash] \textbf{project.py}: En este módulo se encuentra la clase \textit{Project} que representa en la \iface{} el objeto \textit{Project} de \wday.
+			\item [\textendash] \textbf{custommer.py}: En este módulo se encuentra la clase \textit{Customer} que representa en la \iface{} el objeto \textit{Customer} de \wday.
+			\item [\textendash] \textbf{hierarchy.py}: En este módulo se encuentra la clase \textit{Hierarchy} que representa en la \iface{} el objeto \textit{Hierarchy} de \wday.
 		\end{itemize}
 	\item[$\square$] \textbf{modules}: En este directorio se encuentran agrupados módulos con funcionalidades diversas. 
 	
@@ -273,8 +332,8 @@ El proyecto de \textit{python} se encuentra organizado en diferentes subdirector
 			
 	\item[$\square$] \textbf{cfg}: En este directorio se encuentran todos los archivos de configuración. 
 	Por lo general permanecen invariantes. A excepción de aquellos que almacenan tokens de sesión que van cambiando.
-	\item[$\square$] \textbf{xslt}: En este directorio se encuentran todas las plantillas de transformación necesarias para enviar los mensajes a Workday.
-	Partiendo de un archivo xml, podemos transformarlo con estas plantillas y generar un mensaje \acrshort{soap} para su posterior envío a Workday.
+	\item[$\square$] \textbf{xslt}: En este directorio se encuentran todas las plantillas de transformación necesarias para enviar los mensajes a \wday.
+	Partiendo de un archivo xml, podemos transformarlo con estas plantillas y generar un mensaje \acrshort{soap} para su posterior envío a \wday.
 	
 
 \end{itemize}
@@ -285,27 +344,28 @@ El proyecto de \textit{python} se encuentra organizado en diferentes subdirector
 \subsection{Almacenamiento persistente}
 
 En nuestra intrfaz existen dos tipos de almacenamiento persistente. 
+%TODO por qué y cuales.
 
 \begin{itemize}[leftmargin=*]
-\item El primero de ellos ese trata de los archivos de configuración que se pueden ver en la figura ~\ref{fig:cfg_structure}.
+\item El primero de ellos ese trata de los archivos de configuración que se pueden ver en la Figura ~\ref{fig:cfg_structure}.
 En estos archivos se guarda información como usuarios, contraseñas, \textit{token} de sesión, direcciones url \ldots
 De esta forma se evita que estos datos estén \textit{Hardcodeados} en el código, nos facilita su modificación e
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
 Para su implementación he usado el módulo \textit{ConfigParser} \cite{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}.
 Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
 Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor es que puedes referenciar un valor definido en la seccion \textit{DEFAULTS}.
-%ejmplo workday.ini
+%ejmplo \wday.ini
 %TODO ejemplo archivo de configuración
 Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 
 \input{Images/cfg_structure.tex}
 
 \begin{itemize}
-	\item [\textendash] \textbf{hubspot.ini}: En este archivo se guarda la información referente a los \textit{token} de sesión, necesarios para comunicarse con el portal de HubSpot. 
+	\item [\textendash] \textbf{hubspot.ini}: En este archivo se guarda la información referente a los \textit{token} de sesión, necesarios para comunicarse con el portal de \hs. 
 	Este archivo está cambiando constantemente cada vez que el \textit{token} se actualiza.
-	\item [\textendash] \textbf{workday.ini}: En este archivo de configuración se 
-	guardan las credenciales de acceso a Workday, así como distintos direcciones url para evitar su repetición en el código.
-	\item [\textendash] \textbf{mapping.ini}: En este archivo de configuración se encuentran todas las correspondencias entre HubSpot y Workday.
+	\item [\textendash] \textbf{\wday.ini}: En este archivo de configuración se 
+	guardan las credenciales de acceso a \wday{}, así como distintos direcciones url para evitar su repetición en el código.
+	\item [\textendash] \textbf{mapping.ini}: En este archivo de configuración se encuentran todas las correspondencias entre \hs{} y \wday.
 	\item [\textendash] \textbf{mail.ini}: En este archivo de configuración se encuentran las credenciales necesarias para el acceso a la cuenta de correo.
 \end{itemize}
 
@@ -313,18 +373,18 @@ Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 
 
 \item Por otro lado esta la base de datos local SQLite3 \cite{sqlite3} para \textit{python}.
- En esta base de datos se almacena la correspondencia entre los deals de HubSpot y los proyectos de Workday.
+ En esta base de datos se almacena la correspondencia entre los deals de \hs{} y los proyectos de \wday.
  
  Existen tres tablas en la base de datos: \verb|deals_excluded|, \verb|deal_project| y \verb|company_customer|.
  
  
  \begin{itemize}
-	\item \verb|deals_excluded|: En esta tabla se almacena los identificadores de los deals de HubSpot 
+	\item \verb|deals_excluded|: En esta tabla se almacena los identificadores de los deals de \hs{} 
 	que se encuentran excluidos para la integración. Todos los deals que se encuentren en la fase de
 	cierre estarán excluidos.
 	\item \verb|deal_project|: En esta tabla se encuntran la correspondencias entre identificadores 
-	de deals de HubSpot y los identificadores de los proyectos en Workday para todos los deals que han sido integrados.
-	\item \verb|company_customer|: En esta tabla se encuntra la correspondencia entre las company de HubSpot y los clientes de Workday
+	de deals de \hs{} y los identificadores de los proyectos en \wday{} para todos los deals que han sido integrados.
+	\item \verb|company_customer|: En esta tabla se encuntra la correspondencia entre las company de \hs{} y los clientes de \wday{}
 	para todos los clientes que hayan sido integrados.
  \end{itemize}
  
@@ -353,11 +413,11 @@ Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 \subsection{Seguridad}
 
 
-La interfaz se encuentra escuchando los mensajes que le son enviados. Pero ¿Cómo podemos garantizar que el mensaje que recibimos proviene realmente de HubSpot?
-Para ello existe un campo en la cabecera del mensaje recibido, que es \verb|HUBSPOT_SIGNATURE|. 
-Este campo es el formado tras aplicar la función hash \textbf{sha256} a la concatenación del \verb|Client Secret| de nuestra aplicación de HubSpot con el cuerpo del mensaje HTTP recibido.
+La \iface{} se encuentra escuchando los mensajes que le son enviados. Pero ¿Cómo podemos garantizar que el mensaje que recibimos proviene realmente de \hs{}?
+Para ello existe un campo en la cabecera del mensaje recibido, que es \verb|\hs{}_SIGNATURE|. 
+Este campo es el formado tras aplicar la función hash \textbf{sha256} a la concatenación del \verb|Client Secret| de nuestra aplicación de \hs{} con el cuerpo del mensaje HTTP recibido.
 
-Basta hacer esta comprobación para garantizar la procedencia del mensaje, ya que el \verb|Client Secret| solo es conocido por nosotros y por HubSpot. 
+Basta hacer esta comprobación para garantizar la procedencia del mensaje, ya que el \verb|Client Secret| solo es conocido por nosotros y por \hs. 
 Además cabe destacar que cualquier persona que interceptase el mensaje, no podría deducir el \verb|Client Secret|, gracias a las propiedades de las funciones hash. 
 
 %TODO cite function hash
@@ -365,35 +425,35 @@ Además cabe destacar que cualquier persona que interceptase el mensaje, no podr
 
 % A hash function is any function that can be used to map data of arbitrary size to data of fixed size. The values returned by a hash function are called hash values, hash codes, digests, or simply hashes. One use is a data structure called a hash table, widely used in computer software for rapid data lookup. Hash functions accelerate table or database lookup by detecting duplicated records in a large file. An example is finding similar stretches in DNA sequences. They are also useful in cryptography. A cryptographic hash function allows one to easily verify that some input data maps to a given hash value, but if the input data is unknown, it is deliberately difficult to reconstruct it (or equivalent alternatives) by knowing the stored hash value. This is used for assuring integrity of transmitted data, and is the building block for HMACs, which provide message authentication.
 
-Como podemos comprobar en la figura ~\ref{fig:validation_message}, aquellos mensajes que no cumplen los requisitos, se ignoran. Esto protege a nuestra Interfaz de aquellos mensajes no autorizados.
+Como podemos comprobar en la Figura ~\ref{fig:validation_message}, aquellos mensajes que no cumplen los requisitos, se ignoran. Esto protege a nuestra \iface{} de aquellos mensajes no autorizados.
 
 \input{Images/validation_message.tex}
 
 
 \subsection{Flujo del programa}
-%Dependiendo de de las acciones realizadas en HubSpot, se puede disparar un evento y que consiguientemente un mensaje se envíe a la interfaz.
+%Dependiendo de de las acciones realizadas en \hs{}, se puede disparar un evento y que consiguientemente un mensaje se envíe a la \iface.
 
-Como se ha mencionado anteriormente, nuestra aplicación de HubSpot está suscrita a diferentes eventos de los deals de Hubspot.
+Como se ha mencionado anteriormente, nuestra aplicación de \hs{} está suscrita a diferentes eventos de los deals de \hs.
 Para explicar el flujo del programa, vamos a distinguir los eventos en dos tipos, creación de un deal y modificación de una propiedad de un deal.
 
 \begin{itemize}
 	\item \textbf{Creación de un deal}: Primero se recibe la petición \acrshort{http} por el método POST, que indica que un deal ha sido creado. En el cuerpo del mensaje se especifica el id del deal creado y otros datos de relevancia como el id del portal, id de la aplicación, momento en el que ocurrió el evento... \\
 	
-		Se comprueba si dicho deal se encuentra en la tabla \verb|deals_excluded| de base de datos local (Esta comprobación sirve como precaución para no crear proyectos no deseados en Workday).
+		Se comprueba si dicho deal se encuentra en la tabla \verb|deals_excluded| de base de datos local (Esta comprobación sirve como precaución para no crear proyectos no deseados en \wday{}).
 		En caso de que este excluido, entonces la petición no se procesa.
 		
 		Si el deal no está excluido, se comprueba si existe una fila en la tabla de correspondencias \verb|deals_project| de la base de datos local.
 		con la columna deal igual a la que se está procesando %(En la tabla \verb|deals_project| se guarda la correspondecia entre los identificadores
-		%de los deals de HubSpot y los identificadores de los projectos de Workday que ya han sido integrados).
+		%de los deals de \hs{} y los identificadores de los projectos de \wday{} que ya han sido integrados).
 		En caso de que este en la tabla de correspondencias, entonces la petición se ignora.
 
-		Si por el contrario no se encuentra en la tabla de correspondencias entonces se realiza una petición a HubSpot para obtener el resto de información del deal.
+		Si por el contrario no se encuentra en la tabla de correspondencias entonces se realiza una petición a \hs{} para obtener el resto de información del deal.
 		Con todos los datos del deal que se ha creado se comprueba si se encuentra en la fase de progreso, en caso contrario dicho deal no se integra.
 		
 		
 		
-		Cada deal en HubSpot tiene asociado una \verb|copany| que se corresponde con un \verb|customer|
-		Si el deal se encuentra en la fase de progreso, entonces se comprueba si la \verb|copany| asociada a este deal existe ya en workday, para ello se consulta la tabla de correspondencias \verb|company_customer|. Si no existe el correspondiente \verb|customer| en Workday, se crea.
+		Cada deal en \hs{} tiene asociado una \verb|copany| que se corresponde con un \verb|customer|
+		Si el deal se encuentra en la fase de progreso, entonces se comprueba si la \verb|copany| asociada a este deal existe ya en \wday{}, para ello se consulta la tabla de correspondencias \verb|company_customer|. Si no existe el correspondiente \verb|customer| en \wday{}, se crea.
 		Después se crea el \verb|project| asociándolo con el previamente creado o existente \verb|customer|.
 		
 		
@@ -401,12 +461,12 @@ Para explicar el flujo del programa, vamos a distinguir los eventos en dos tipos
 		
 		
 	\item \textbf{Modificación de un deal}:
-		Se comprueba si dicho deal se encuentra en la tabla \verb|deals_excluded| de base de datos local. En tal caso, no se sincronizan las modificaciones en Workday.
+		Se comprueba si dicho deal se encuentra en la tabla \verb|deals_excluded| de base de datos local. En tal caso, no se sincronizan las modificaciones en \wday.
 		En caso de que no sea excluido, se comprueba si existe en la tabla de correspondencias \verb|deal_project|. De no ser así se procede a la creación del deal detallada anteriormente.
 		
 		
 		
-		Se obtiene el objeto \verb|project| de Workday. Se actualizan los correspondientes campos localmente, dependiendo de la propiedad del deal que haya cambiado. Por último se actualiza el objeto \verb|project| correspondiente de Workday con los cambios realizados.
+		Se obtiene el objeto \verb|project| de \wday. Se actualizan los correspondientes campos localmente, dependiendo de la propiedad del deal que haya cambiado. Por último se actualiza el objeto \verb|project| correspondiente de \wday{} con los cambios realizados.
 		
 		
 		\input{Images/deal_modification.tex}

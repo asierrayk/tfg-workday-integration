@@ -1,120 +1,81 @@
 \chapter{Introducción}
 
 
-\section[ERP's]{Enterprise Resource Planning}
+\section{Motivaciones}
+Este trabajo de fin de grado se ha realizado en colaboración con la empresa \acrfull{bnb}.
+\acrshort{bnb} es una empresa de consultoría que proporciona a los clientes soluciones para distintas aplicaciones de negocio: \textit{SAP}, \textit{Workday}, \textit{PeopleSoft}, \textit{JD Edwards}.\\
 
-Un \gls{erp} o Sistema de planificación de recursos empresariales es una aplicación usada para recoger, almacenar,
-interpretar y tratar grandes cantidades de información sobre actividades empresariales.
-Podríamos decir que un ERP reúne en una aplicación las funcionalidades necesarias para desarrollar las distintas actividades empresariales de una organización o empresa.
+Este trabajo de fin de grado es parte de un proyecto, concretamente es una de las integraciones de el proyecto.
+El proyecto parte de la idea de mejorar el \textit{software} que se usa internamente para la parte de recursos humanos y finanzas. Se requiere facilitar las labores internas.
+Comenzar a usar un \acrshort{erp} es una forma de conseguir reunir las funcionalidades de recursos humanos y finanzas en una aplicación.
+Dado que \wday{} es un \acrshort{erp} moderno y opera en la nube, se trata de la opción que más encaja para la empresa y la que se decidió.
+\\
 
-El crecimiento de la información y las tecnologías de comunicaciones a llevado a la creación de sistemas más robustos para 
-distintas organizaciones. A finales de los años 80 y principios de los 90 comenzó a aparecer en el mercado un nuevo sistema 
-software conocido como \acrshort{erp}, destinado principalmente a grandes y complejas organizaciones de negocios. Estos sistemas 
-se caracterizaban por ser propietarios, caros, complejos y poderosos.
-Los ERPs son sistemas que requieren de consultoría para implementar soluciones medida, que se basen en las necesidades de la empresa u organización. \cite{erp1}
+Una vez fijado el proyecto surgen infinidad de tareas. Configurar \wday{} con todas las opciones y funcionalidades que desea tener la empresa, migrar los datos de aplicaciones previas como \textit{QlikView}, \textit{CM Plan}, 
+integrar \wday{} con otras aplicaciones con las que tiene que coexistir cuando se salga a producción \ldots\\
+
+Las aplicaciones que se deben integrar con \wday{} son \textit{Mantis Bug Tracker} y \hs{}.
+
+Este trabajo de fin de grado consiste en la integración de \wday{} con \hs{}.
+
+\hs{} es el \acrshort{crm} que usa actualmente la empresa y quiere mantenerlo tras la salida a producción.\\
 
 
-\subsection{SAP}
-
-
-SAP o  Systems, Applications and Products in Data Processing es un ERP desarrollado por una compañía alemana, fue fundada en 1972
-En torno al año 2000 SAP se convirtió en la tercera compañia más grande dedicada al sector de los ERPs.\\
-
-SAP abarca las funcionalidades de negocio claves de una organización. Algunas de sus características son:
-\begin{itemize}
-	\item Se trata de un \acrshort{erp} \gls{on-premise}.
-	\item Es fácil de implementar en empresas que trabajan a ámbito global.
-	\item proporciona información en tiempo real.
-	\item La interfaz de usuario es totalmente personalizable.
-	\item Proporciona un ambiente de trabajo más eficiente.
-	
-	\item Su implantación supone un riesgo, por la inversión económica y la transición a la nueva aplicación. La amoritización del producto puede llevar mucho tiempo.
-\end{itemize}
-
-\subsection{PeopleSoft}
-PeopleSoft fue fundado por David Duffield en 1987 y adquirido por Oracle en 2005. Es uno de los ERP más modernos especializado en los módulos de recursos humanos y servicios financieros.\\
-
-PeopleSoft es un \acrshort{erp} \gls{on-premise}.
-Originalmente PeopleSoft ofrecía soluciones para recursos humanos y finanzas.\\
-
-Peoplesoft permite tener las funcionalidades separadas en módulos independientes, pero también facilita que estos módulos trabajen conjuntamente.
-A diferencia de SAP, PeopleSoft puede ser usado para la implementación de un único módulo, como por ejemplo Administración de estudiantes o gestión de capital humano).
-Es fácilmente adaptable, a diferencia de SAP que es más concreto.\\
-
-En sus últimas versiones cuenta con FLUID. Que aporta la posibilidad de tener una interfaz de usuario responsive dedicada especialmente a dispositivos móviles y tablets.
+El proceso de salida a producción debe ser rápido, ya que la empresa debe continuar con sus actividades empresariales. 
+Es decir los procesos de migración y puesta en marcha de las integraciones tienen que hacerse en los dias previos a la slaida a producción.
+Por ello , uno de los grandes retos que supone el proyecto es la salida a producción con el menor impacto posible a las actividades de la empresa.\\
 
 
 
-\subsection{Workday}
-Workday fue fundado en 2005 por David Duffield, fundador y actual \acrshort{ceo} del ERP PeopleSoft.\\
+Adicionalmente, por parte de la empresa se me solicitó hacer un prototipo de aplicación capaz de predecir la rotación de plantilla de la empresa.
+Y así ser capaz de preveer cuando un empleado va a abandonar la empresa. \\
 
-
-
-Se trata de un ERP totalmente Cloud. Permite a las empresas y organizaciones despreocuparse de los equipos informáticos que ejcutan el software, a diferencia de los \acrshort{erp} \gls{on-premise}.
-Workday está destinado al mismo tipo de clientes que SAP, y por tanto se trata de una de las alternativas.\\
-
-algunas caracteristicas son:
-\begin{itemize}
-	\item Abarca los campos de Finanzas y Recursos Humanos.
-	\item Es un \acrshort{erp} simple e intuitivo. No se necesita ser experto para llevar a cabo tareas.
-	\item Con workday siempre estas haciendo uso de su última versión.
-	\item Las cuotas del producto dependen de cada cliente y sus necesidades.
-\end{itemize}
-
-
-\section{\acrfull{crm}}
-
-Un \acrshort{crm} es una aplicación o sistema usado para satisfacer las necesidades de los clientes durante cualquier interacción con los mismos.
-
-Los \acrshort{crm} ayudan a las empresas a aumentar su rentabilidad e ingresos, logrando atraer y retener clientes de manera óptima. 
-Permiten un seguimiento de las relaciones de la empresa con los clientes, así como reuniones, acuerdos\ldots
-
-
-\subsection{Salesforce}
-La empresa Salesforce fue fundada en marzo de 1999 por un antiguo ejecutivo de Oracle Marc Benioff. La empresa es conocida por su famoso \acrshort{crm}
-Salesforce es un \acrshort{crm} que opera en la nube. Por tanto lo se puede acceder a Salesforce desde un navegador. Gracias a Salesforce se consiguen automatizar numerosos procesos que ayudan a administrar las relaciones con contactos y empresas.
-
-\begin{itemize}
-	\item Es personalizable, permitiendo que añadir o elimiar funcionalidades especificas, dependiendo del uso que le vayas a dar.
-	\item Se trata de un \acrshort{crm} muy completo.
-	\item Su configuración inicial puede ser difícil y requerir de gran cantidad de tiempo.
-	\item Se trata de uno de los \acrshort{crm} más populares, y por tanto hay más personas que lo conocen bien.
-	\item Su interfaz puede ser algo confusa.
-
-\end{itemize}
-
-\subsection{HubSpot}
-
-Este \acrshort{crm} fundado por Brian Halligan y Dharmesh Shah en 2006. Su objetivo está orientado a proporcionar herramientas para las redes sociales en el ámbito empresarial, así como gestor de contenido y como plataforma para poder analizar los datos.
-
-Inicialmente pensado para pequeñas empresas, pero poco a poco se ha ido adaptando a empresas más grandes.
-Estas son algunas características de HubSpot
-\begin{itemize}
-	\item Fácil e intuitivo de usar.
-	\item HubSpot cuenta con blogs para mejorar en conocimientos de marketing.
-	\item Los costes pueden crecer de manera abrupta.
-\end{itemize}
+Con el desarrollo de este prototipo se quiere tomar las acciones necesarias para realizar una mejor predicción.
 
 
 
 \section{Objetivos}
 
-Los objetivos de este trabajo de fin de grado es el desarrollo de una interfaz, capaz de integrar las aplicaciones HubSpot y Workday.
-La Interfaz debe ser segura y fiable. Es importate que la interfaz no se interrumpa de manera inesperada. No debe permitir que terceras personas interfieran en el proceso. Internamente debe ser capaz de llevar la cuenta de que deals de HubSpot se encuentran integrados con los proyectos de Workday.\\
+En esta sección vamos a establecer los objetivos a cumplir.
 
-Otro objetivo del trabajo es realizar un estudio de la información de una plantilla de trabajadores de una empresa. Y aplicar tecnicas de análisis de datos y \textit{Machine Learning} para construir un modelo que pueda predecir futuros casos de abandono en la trabajo.
-Con esta parte complementaria tengo como objetivo aumentar mis conocimientos sobre \textit{machine Learning} y analisis de datos en python.
+\begin{itemize}
+	\item Desarrollar un microservicio que realice la integración entre \hs{} y \wday{}.
+	\item Conseguir que al introducir datos en \hs{}, automaticamente se sincronicen con \wday{}.
+	\item Al modificar datos en \hs{}, se modifiquen en \wday{} de forma automática.
+	\item Que la integración sea rápida, y el tiempo transcurrido entre la introducción o cambio de datos en \hs{} y los cambios en \wday{} sea el mínimo posible.
+	\item La integración ha de ser segura. Estar provista de mecanismos para evitar posible ataques de terceras personas.
+	\item La integración debe ser totalmente transparente para el usuario. 
+	\item El programa no debe abortar su ejecución de manera inexperada.
+	\item En la medida de lo posible evitar errores en la introducción de datos. Evitar que se cree información duplicada.
+	\item El servicio que realiza la integración tiene que estar en ejcución ininterrumpida.
+	\item Evitar la perdida de datos.
+	\item Localmente se debe llevar la cuenta de los datos que se encuentran integrados.
+	\item El servicio debe soportar ser reiniciado.
+	\item El prototipo predictor debe ser capaz de decidir si es muy probable que un empleado abandone la empresa.
+	\item Concluir que datos son más importantes para predecir el abandono en el trabajo.
+	\item Poder tomar mediadas de acuerdo a las conclusiones a las que se llegue par elaborar mejores predicciones.
+\end{itemize}
 
 
 \section{Plan de trabajo}
 
-Al principio del proyecto, por parte de la empresa se dio una especificación general de las funcionalidades con las que debía contar la Interfaz e inicialmente esta especificación  estaba abierta a posibles cambios. Paralelamente al desarrollo de la Interfaz se mantuvieron reuniones periodicas con un grupo reducido de personas.\\
+Para la realización del proyecto de transición a \wday{} se ha seguido un sistema de metodología ágil. 
+Cinco personas formabamos parte del equipo de proyecto y nos reuniamos al menos una vez por semana.
+El proceso a durado unos tres meses y todos los integrantes realizabamos paralelamente tareas en otros proyectos.\\
 
-En estas reuniones se hacía una evaluación del progreso del desarrollo de la Interfaz. Se intentaba enfocar los problemas para su posible resolución.\\
+En estas reuniones, se informaba de donde nos encontrabamos y cuales eran los siguientes pasos.
+Por turnos se intervenía para explicar los avances que habíamos hecho hasta el momento y los problemas a los que nos estabamos enfrentando.
+Las reuniones también servían para tomar decisiones sobre el proyecto.\\
 
-Según iba pasando el tiempo se fueron concretando los últimos detalles, hasta el punto de llegar a la especificacion final.\\
+En cuanto al desarrollo de la Interfaz de integración entre \hs{} y \wday{} se fue realizando de forma iterativa e incremental. 
+Además, al tratarse de un grupo reducido, cualquier consulta o duda sobre los requisitos de la Interfaz podía ser solventada rápidamente.
 
+Durante las últimas semanas se planificó mucho más detalladamente las tareas de cada uno, así como el momento en el que estas tareas debían ejecutarse.
+Fue en estas últimas semanas cuando se necesitó la colaboración de otros compañeros de trabajo en el proyecto.\\
 
-Para el desarrollo de la interfaz se ha usado una metodología ágil. La interfaz se ha ido desarrollando de manera iterativa e incremental. 
-En cada reunión se comprobaban los avances, y comprobaban las nuevas funcionalidades.
-También se proponían los ojetivos a cumplir para la próximo encuentro.
+El desarrollo de la Interfaz de integración entre \hs{} y \wday{} se ha realizado de forma incremental.\\
+
+En cada reunión se comunicaban los avances realizados y se proponían los ojetivos a cumplir para la próximo encuentro. Tras la reunion se comprobaban las nuevas funcionalidades implementadas.\\
+
+En las semanas posteriores a la salida a producción, gracias a las observaciones e incidencias anunciadas por los usuarios,
+se ha continuado modificando la Interfaz. 
