@@ -134,7 +134,7 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 			\label{fig:create_deal}
 		\end{figure}
 
-\subsection{Descripción de una \textit{Company}}
+\subsection{Descripción del objeto \textit{Company}}
 		
 		Es un objeto de \hs{} que representa cualquier tipo de organización o empresa. 
 		Este objeto cuenta con multitud de propiedades, que describen información de la empresa, como puede ser información de contacto, localización\ldots 
@@ -152,59 +152,78 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 		\end{figure}
 
 
-\subsection{Aplicación de \hs{}}
+\subsection{Métodos de integración de \hs{}}
+Hubspot cuenta con varios métodos para realizar las integraciones. Cada uno de ellos pensado para distintas situaciones.
+
+\subsubsection{Integración con \textit{API keys}}
+
+Para utilizar este método simplemente hay que consultar la clave de la \acrshort{api} de \hs{} (\textit{HAPIKey}), 
+accesible desde el portal de \hs{} y añadirla como parametro en las peticiones que enviemos al servicio \acrshort{rest} de \hs{}\\
+
+Este método es idóneo para realizar pruebas. Sin embargo su falta de seguridad impide que su uso comercial. %Con este método no se puede garantizar la seguridad.
+
+Además con este método solo es posible la comunicación en un sentido, desde la \iface{} hacia \hs{}.
+
+\subsubsection{Integración con \textit{OAuth}}
 \label{subsec:app_hs}
-Para poder realizar la integración y hacer uso de la \acrshort{api} de \hs{} \cite{hsapi}, es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una aplicación y acceder a su panel de control. 
-Desde el panel de control de la aplicación tendremos acceso a información importante para la integración, como son las claves \texttt{Client ID}, \texttt{Client secret}, \texttt{HAPIKey}.\\
 
+Para poder usar este método de integración es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una aplicación y acceder a su panel de control. 
 
+Desde el panel de control podemos ver toda la información de la aplicación. La información que necesitaremos es el identificador de la aplicación, la clave \texttt{Client Id} y la clave \texttt{Client Secret}.
 
-En el caso de nuestra aplicación está suscrita a los siguientes eventos:
+Otra funcionalidad del panel de control es la posibilidad de configurar las suscripciones \textit{Webhook} de \hs{}, que permiten envíar de mensajes desde \hs{} a destinos externos cuando ciertos eventos ocurren.
 
-\begin{itemize}
-	\item \textbf{deal.creation}: Cuando un nuevo deal es creado en \hs{} se envía un mensaje.
-	\item \textbf{deal.propertyChanged} 
-		\begin{itemize}
-			\item \verb|dealstage|: Cuando en un deal de \hs{} se modifica el estado.
-			\item \verb|practice|: Cuando en un deal de \hs{} se modifica la práctica.
-			\item \verb|hubspot_owner_id|: Cuando en un deal de \hs{} se modifica su propietario.
-			\item \verb|closedate|: Cuando en un deal de \hs{} se modifica la fecha de cierre.
-			\item \verb|description|: Cuando en un deal de \hs{} se modifica la descripción.
-			\item \verb|dealname|: Cuando en un deal de \hs{} se modifica el nombre.
-			\item \verb|transaction_currency|: Cuando en un deal de \hs{} se modifica la moneda.
-			\item \verb|legal_entity|: Cuando en un deal de \hs{} se modifica la entidad.
-		\end{itemize}
-\end{itemize}
+También podemos hacer un seguimiento del funcionamiento de la aplicación desde el panel de control. \\
 
-\hs{} permite dos métodos de autenticación: \textit{OAuth} y \textit{API keys}. Las \textit{API keys} son idóneas para realizar pruebas, pero no son recomendables para un uso comercial. Con este método no se puede garantizar la seguridad. A diferencia de los \textit{token} en el método \textit{OAuth} que van cambiando, la \textit{API key} es fija. Todas las integraciones deben usar \textit{OAuth}.
+Lo primero que es necesario es instalar la aplicación en el portal de \hs{}.
 
-La versión que se debe usar es \textit{OAuth2.0} ya que \textit{Oauth1.0} estará en desuso en un futuro.
-
-También desde el panel de control de la aplicación deberemos especificar debemos indicar la dirección (host y puerto) a la que deseamos que nuestros mensajes sean enviados y especificar los eventos de \hs{} ante los que se debe enviar un mensaje.
-
-Desde el panel de control de la aplicación de \hs{} tenemos acceso a las claves (\texttt{Client ID}, \texttt{Client secret}) para poder instalar la aplicación en tantos portales como deseemos. En nuestro caso solo será uno.
-
-
-Para instalar una aplicación en un portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2} que ha sido automatizado he integrado en la \iface{} creada. 
+Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado he integrado en la \iface{} creada. 
 Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 %JSON enviado por el webhook
 
 \begin{enumerate}
 	\item Dirigirse a la url de autorización \footnote{\url{https://app.hubspot.com/oauth/authorize?client_id=<client_id>&scope=contacts&redirect_uri=https://www.hubspot.com/} sustituyendo \texttt{<client\_id>} por el su valor}.
-	Autorizar la instalación de la aplicación. Cabe destacar que solo se puede acceder a dicha url y por tanto instalar la aplicación si se cuenta con el \verb|Client ID|.
-		Haciendo público el \textit{Client ID} de la aplicación, esta puede ser instalada por cualquier persona. En nuestro caso este valor permanecerá en privado y solo nosotros haremos uso de la aplicación.
+	Iniciar sesión en el portal de \hs{} y así autorizar la instalación de la aplicación. Cabe destacar que solo se puede acceder a dicha url y por tanto instalar la aplicación si se cuenta con el \texttt{Client ID}. también se necesita un usuario del portal con permisos para poder instalar aplicaciones.
+	Haciendo público el \texttt{Client ID} de la aplicación, esta puede ser instalada por cualquier persona en portales a los que tengan acceso. En nuestro caso este valor permanecerá en privado y solo nosotros haremos uso de la aplicación.
 		
-	\item Tras dar acceso al portal se te redirige a una página en la que aparece un código concatenado a la url.
-	\item Mediante este código, el \textit{Client ID} y el \textit{Client secret} podemos obtener un token de sesión.
-	Tras hacer la petición a la API de \hs{}, nos devolverá un mensaje con los siguientes valores.
+	\item Tras dar acceso al portal se te redirige a una página en la que aparece como parametro de la url un código.
+	\item Mediante este código, el \texttt{Client ID} y el \texttt{Client secret} podemos obtener un token de sesión con una llamada a la \acrshort{api}.
+	Tras hacer la petición a la \acrshort{api} de \hs{}, nos devolverá un mensaje \acrshort{json} con los siguientes valores.
 		\begin{itemize}
-			\item \texttt{access\_token} clave usado para realizar las peticiones a la API de \hs.
-			\item \texttt{refresh\_token} usado para conseguir nuevo par (\texttt{access\_token}, \texttt{refresh\_token}) cuando el \texttt{access\_token} ha expirado.
-			\item \texttt{expires\_in} tiempo en milisegundos de validez del \texttt{access\_token}.
+			\item \texttt{access\_token} clave para realizar las peticiones a la API de \hs.
+			\item \texttt{refresh\_token} clave para conseguir nuevo par (\texttt{access\_token}, \texttt{refresh\_token}) cuando el \texttt{access\_token} ha expirado.
+			\item \texttt{expires\_in} tiempo en milisegundos de validez del \texttt{access\_token}, por defecto son seis horas.
 		\end{itemize}
-	\item Cuando el \texttt{access\_token} haya expirado podremos llamar a otro endpoint especificando el \texttt{refresh\_token} y recibiremos un mensaje de vuelta con otro nuevo \texttt{access\_token} y \texttt{refresh\_token}.
+	\item Cuando el \texttt{access\_token} haya expirado podremos llamar a otro \textit{endpoint} especificando el \texttt{refresh\_token} y recibiremos un mensaje de vuelta con otro nuevo \texttt{access\_token} y \texttt{refresh\_token}.
 \end{enumerate}
 
+Usando un \textit{token} válido podremos realizar peticiones a los distintos \textit{endpoint} \acrshort{rest} de \hs{}, es decir, la comunicación de la \iface{} a \hs{}.
+
+Con este método se garantiza que los \textit{token} van variando como mínimo cada seis horas a diferencia del método de integración con \textit{API keys} en el que la  clave es fija y solo varía si lo hcemos manualmente. 
+
+La aplicación instalada sirve como paso intermedio para las comunicaciones entre \hs{} y la \iface{}.
+
+La comunicación en el otro sentido, de \hs{} hacia la \iface{} se hace gracias a la configuración de los \textit{webhook} de \hs{}.
+
+Desde el portal podemos configurar la suscripción a los \textit{webhook}. Es necesario especificar la dirección (host y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
+
+En el caso de nuestra aplicación está suscrita a los siguientes eventos:
+\begin{itemize}
+	\item \textbf{deal.creation}: Cuando un nuevo \textit{deal} es creado en \hs{} se envía un mensaje.
+	\item \textbf{deal.propertyChanged} 
+		\begin{itemize}
+			\item \texttt{dealstage}: Cuando en un \textit{deal} de \hs{} se modifica el estado.
+			\item \texttt{practice}: Cuando en un \textit{deal} de \hs{} se modifica la práctica.
+			\item \texttt{hubspot\_owner\_id}: Cuando en un \textit{deal} de \hs{} se modifica su propietario.
+			\item \texttt{closedate}: Cuando en un \textit{deal} de \hs{} se modifica la fecha de cierre.
+			\item \texttt{description}: Cuando en un \textit{deal} de \hs{} se modifica la descripción.
+			\item \texttt{dealname}: Cuando en un \textit{deal} de \hs{} se modifica el nombre.
+			\item \texttt{transaction\_currency}: Cuando en un \textit{deal} de \hs{} se modifica la moneda.
+			\item \texttt{legal\_entity}: Cuando en un \textit{deal} de \hs{} se modifica la entidad.
+		\end{itemize}
+\end{itemize}
+
+La versión que se debe usar de \textit{OAuth} es \textit{OAuth2.0} ya que \hs{} en un futuro no dara soporte a las integraciones con \textit{OAuth1.0}.
 
 
 \section{\wday{}}
