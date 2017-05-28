@@ -36,7 +36,7 @@ Por otro lado está \wday{} cuya comunicación es unidireccional. Únicamente ex
 \section{\hs{}}
 En esta sección vamos a describir toda la información que necesitamos saber sobre \hs{} para entender la Integración.
 
-El \acrshort{crm} \hs{} permite realizar integraciones gracias a su \acrshort{api} \acrshort{rest}.
+%El \acrshort{crm} \hs{} permite realizar integraciones gracias a su \acrshort{api} \acrshort{rest}.
 Primero debemos tener en cuenta que \hs{} se encuentra organizado en objetos. Y toda la información almacenada en \hs{} pertenece a uno de los siguietnes tipos de objetos:
 
 \begin{itemize}
@@ -230,38 +230,57 @@ La versión que se debe usar de \textit{OAuth} es \textit{OAuth2.0} ya que \hs{}
 
 En esta sección vamos a describir la información que necesitamos saber sobre \wday.
 
-\wday{} es un \acrshort{erp} que internamente se encuentra organizado en objetos. Los objetos que van a ser de interés para realizar la integración son:
-Project, Customer y Hierarchy.
+\wday{} es un \acrshort{erp} que internamente se encuentra organizado en objetos.
+ 
+Los objetos que van a ser de interés para realizar la integración son:
+\textit{Project}, \textit{Customer} y \textit{Hierarchy}.\\
 
 Además cada uno de estos objetos cuenta con una serie de campos, que pueden incluso hacer referencia a otros objetos.
+Un \textit{project} tiene un \textit{customer} puede tener asociado y también puede tener dos \textit{hierarchies} asociadas, una opcional y una principal.\\
 
 
-Para realizar las integraciones, \wday{} proporciona servicios web que están en constante actualización.
+Para realizar las integraciones, \wday{} proporciona un catálogo de servicios web basados en \acrshort{soap} (\textit{Workday Web Services}). 
 Mediante estos servicios podemos hacer que la \iface{} interactúe con \wday.
 
+Cada servicio cuenta con un conjunto de operaciones que pueden ser llamadas mediante su \textit{endpoint}.
 
 
-\subsection{Descripción de un \textit{Project}}
+Lo siguiente que necesitamos saber es el formato de los mensajes que se deben enviar a estos \textit{endpoint}. Para ello contamos con el fichero \acrshort{wsdl} de cada sevicio que especifica el formato de los mensajes \acrshort{soap} que se deben enviar para realizar cada operación.
+
+
+El envio de los mensajes se realiza por \acrshort{http}.\\
+
+Una herramienta que se ha utilizado para probar los servicio es \textit{SOAP UI}.
+
+Además es necesario proporcionar credenciales en el mensaje para que \wday{} realice las operaciones deseadas.
+
+Ante estas solicitudes \wday{} simpre responde indicando si la operación se ha realizado correctamente o el error que ha sucedido.
+
+
+
+\subsection{Descripción del objeto \textit{Project} en \wday{}}
 Es un objeto de \wday{} y existe una instancia por cada proyecto. Dentro de nuestra integración, 
 el objeto Project de \wday{} está relacionado con el objeto Deal de \hs. 
 De forma que por lo general las acciones sobre el objeto Deal en \hs{} darán lugar a otros eventos
- sobre el objeto Project de \wday.
+ sobre el objeto Project de \wday{}.\\
  
 Un objeto Project puede ser creado de manera manual, pero en nuestra integración, esto se realizará mediante los servicios web.
 Para crear o modificar un proyecto ya existente hay que enviar un mensaje SOAP por HTTP. 
-Para ello hay que usar la operación \verb|Submit_Project|  incluida en el servicio \verb|Resource_Management|.
+Para ello hay que usar la operación \texttt{Submit\_Project}  incluida en el servicio \texttt{Resource\_Management}.\\
 
-El objeto Project cuenta con multitud de campos: 
+El objeto Project cuenta con multitud de campos, son de especial importancia los siguientes: 
 
 \begin{itemize}
 \item Project name: Nombre del proyecto, está sincronizado con el nombre del deal correspondiente.
-\item Start Date: Fecha de inicio, está sincronizado con con la propiedad \verb|close_date| del deal.
-\item Status: Estado del proyecto, existe una correspondencia con la propiedad \verb|deal_stage| del deal en \hs.
+\item Start Date: Fecha de inicio, está sincronizado con con la propiedad \texttt{close\_date} del deal.
+\item Status: Estado del proyecto, existe una correspondencia con la propiedad \texttt{deal\_stage} del deal en \hs{}.
 \item Description: Descripción del proyecto. Este campo se encuentra sincronizado con la propiedad \verb|description| del deal.
+\end{itemize}
 
-%y campos que hacen referencia a otros objetos como son: 
+Otros campos que hacen referencia a objetos son estos: 
+\begin{itemize}
 \item Project Hierarchy: La Jerarquía principal del proyecto. Este campo está en directa relación con la propiedad personalizadas
-\verb|practice| de \hs.
+\texttt{practice} de \hs.
 \item OptionalProject Hierarchy: La jerarquía opcional del proyecto. Este campo se encuentra directamente relacionado con la propiedad \verb|\hs{}_owner_id| del correspondiente deal.
 \item Customer: El cliente del proyecto. Existe una correspondencia entre el cliente y la asociación \verb|associated_company| del deal en \hs.
 
@@ -269,7 +288,7 @@ El objeto Project cuenta con multitud de campos:
 
 
 
-\subsection{Descripción de un \textit{Customer}}
+\subsection{Descripción del objeto \textit{Customer} en \wday{}}
 Se trata de un objeto de \wday{} que representa a los clientes de la empresa. este objeto de \wday{} se encuentra relacionado con el objeto company de \hs. 
 Gracias a la \iface{}, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.
 
@@ -278,19 +297,21 @@ Existen múltiples métodos para crear o modificar un \textit{Customer} en \wday
 En nuestro caso la creación y modificación de un cliente se hace desde la \iface{}, 
 mediante la operación \verb|Put_Customer| del servicio web \verb|Revenue_Management|.
 
-\subsection{Descripción de una \textit{Hierarchy}}
+\subsection{Descripción del objeto \textit{Hierarchy} en \wday{}}
 
 El objeto \textit{Hierarchy} de \wday{} se encarga de representar jerarquías.
-Es decir, representa infomación que se encuentra estructurada en forma de árbol.
+Es decir, representa infomación que se encuentra estructurada en forma de árbol.\\
+
 En nuestro caso tenemos una jerarquía principal que organiza los proyectos según a que práctica pertenecen. 
-(En el caso de nuestra empresa las distintas prácticas son: \textit{PeopleSoft}, \textit{SAP}, \textit{Cloud} \ldots)
-Y jerarquías opcionales para organizar los proyectos según el Customer Manager y el Project Manager.
+(En el caso de nuestra empresa las distintas prácticas son: \textit{PeopleSoft}, \textit{SAP}, \textit{Cloud} \ldots).\\
+
+También existen jerarquías opcionales para organizar los proyectos según su Customer Manager y su Project Manager.
 
 \subsection{Servicios web de \wday{}}
 
 Para hacer uso de los servicios web de \wday{}, primero debemos de contar con una cuenta del \textit{tenant} (o entorno) con permisos para el uso de los servicios web que se vayan a usar.
 
-Una vez tengamos dicho usuario, podremos realizar las operaciones.
+Una vez tengamos dicho usuario, podremos realizar las operaciones.\\
 
 Los pasos para realizar una operación concreta son los siguientes:
 
@@ -298,8 +319,9 @@ Los pasos para realizar una operación concreta son los siguientes:
 	\item Determinar en que servicio se encuentra la operación deseada.
 	\item Conseguir el archivo \acrshort{wsdl}. En este archivo podremos encontrar el formato de mensaje correcto para cada una de las operaciones disponibles en dicho servicio.
 	\item Modificar la plantilla de mensaje con los parámetros deseados. 
-	Para comprobar que el mensaje realiza la operación deseada correctamente he usado la aplicación SoapUI \cite{soapui}.
-	\item Enviar el mensaje \acrshort{soap} por\acrshort{http} con el método POST.
+	Para comprobar que el mensaje realiza la operación deseada correctamente podemos usar la aplicación SoapUI \cite{soapui}.
+	\textit{SOAP UI} permite abrir esquemas \acrshort{wsdl}, modificar directamente la plantilla del mensaje para cualquier operación del servicio y enviar el mensaje.
+	\item Enviar el mensaje \acrshort{soap} por \acrshort{http} con el método POST.
 	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por \wday.
 \end{enumerate}
 
@@ -308,12 +330,19 @@ Los pasos para realizar una operación concreta son los siguientes:
 \section{\iface{}}
 
 
-Para el desarrollo de la \iface{} he usado el lenguaje de programación \textbf{python}, con el IDE \textbf{PyCharm}. La librería principal, bajo la que se sustenta el servidor es \textbf{web.py}.
-Alternativas a esta librería pueden ser Flask o Django. Sin embargo esta última es para proyectos mucho más grandes. La ventaja de web.py es lo ligera qué es y la facilidad de ponerla en marcha.
+Para el desarrollo de la \iface{} he usado el lenguaje de programación \textbf{python}, con el IDE \textbf{PyCharm}. La librería principal, bajo la que se sustenta el servidor es \textbf{\textit{web.py}}.
+Alternativas a esta librería pueden ser los \textit{frameworks} \textit{Flask} o \textit{Django}.
+\textit{Flask} es un \textit{microframework}, sería una buena alternativa si hubiese que elegir algo distinto a  \textbf{\textit{web.py}}.
+
+\textit{Django} es idonea para proyectos mucho más grandes. Requiera de un proceo más avanzado antes de poder empezar a desarrollar la aplicación.
+
+La ventaja de web.py es lo ligera qué es y la facilidad de ponerla en marcha.\\
 
 La \iface{} se encuentra ejecutándose de manera continua en un servidor y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs.
-(En el panel de control de la aplicación de \hs{} ,explicado en la sección ~\ref{subsec:app_hs}, debemos especificar el host y puerto del servidor que está ejecutando la \iface{})
+En el panel de control de la aplicación de \hs{}, explicado en la sección ~\ref{subsec:app_hs}, debemos especificar el host y puerto del servidor que está ejecutando la \iface{}\\
 
+
+En esta sección vamos a explicar detalladamente el funcionamiento de ls \iface{}.
 
 \subsection{Estructura de la \iface{}}
 Vamos a describir como se encuentra estructurada nuestra \iface. Para ello podemos ver la Figura ~\ref{fig:project_structure}. 
@@ -322,36 +351,36 @@ El proyecto de \textit{python} se encuentra organizado en diferentes subdirector
 
 \begin{itemize}
 
-	\item [\textendash] \textbf{service.py}: Se encuentra en el directorio raíz y se encarga de ejecutar la aplicación 
+	\item [\textendash] \texttt{service.py}: Se encuentra en el directorio raíz y se encarga de ejecutar la aplicación 
 	y en este modulo está definida la función que se ejecuta al recibir un mensaje POST. Desde este módulo se hacen llamadas a distintas funciones de \textit{handler.py}.
-	\item [\textendash] \textbf{handler.py}: También se encuentra en el directorio raíz y en este módulo se encuentra la lógica de programa para cada evento recibido.
-	\item[$\square$] \textbf{\hs{}}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con \hs.
+	\item [\textendash] \texttt{handler.py}: También se encuentra en el directorio raíz y en este módulo se encuentra la lógica de programa para cada evento recibido.
+	\item[\textendash] \textbf{hubspot}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con \hs.
 	
 		\begin{itemize}
-			\item [\textendash] \textbf{deal.py}: En este módulo se encuentra la clase Deal, encargada de representar en la \iface{} el objeto deal de \hs.
-			\item [\textendash] \textbf{company.py}: En este módulo se encuentra la clase Company, que se encarga de representar al objeto company de \hs{} en la \iface.
-			\item [\textendash] \textbf{authorization.py}: En este módulo se encuentra la clase Authorization encargada de facilitar el flujo de aprobación \gls{oauth2} de \hs{} y la renovación de los \textit{token} de sesión.
+			\item [\textendash] \texttt{deal.py}: En este módulo se encuentra la clase Deal, encargada de representar en la \iface{} el objeto \textit{deal} de \hs.
+			\item [\textendash] \texttt{company.py}: En este módulo se encuentra la clase Company, que se encarga de representar al objeto \textit{company} de \hs{}.
+			\item [\textendash] \texttt{authorization.py}: En este módulo se encuentra la clase Authorization encargada de facilitar el flujo de aprobación \gls{oauth2} de \hs{} y la renovación de los \textit{token} de sesión.
 		\end{itemize}
 		
-	\item[$\square$] \textbf{\wday{}}: En este directorio están los módulos encargados de la interacción con \wday.
+	\item[\textendash] \textbf{workday}: En este directorio están los módulos encargados de la interacción con \wday.
 	
 		\begin{itemize}
-			\item [\textendash] \textbf{project.py}: En este módulo se encuentra la clase \textit{Project} que representa en la \iface{} el objeto \textit{Project} de \wday.
-			\item [\textendash] \textbf{custommer.py}: En este módulo se encuentra la clase \textit{Customer} que representa en la \iface{} el objeto \textit{Customer} de \wday.
-			\item [\textendash] \textbf{hierarchy.py}: En este módulo se encuentra la clase \textit{Hierarchy} que representa en la \iface{} el objeto \textit{Hierarchy} de \wday.
+			\item [\textendash] \texttt{project.py}: En este módulo se encuentra la clase \textit{Project} que representa en la \iface{} el objeto \textit{Project} de \wday.
+			\item [\textendash] \texttt{custommer.py}: En este módulo se encuentra la clase \textit{Customer} que representa en la \iface{} el objeto \textit{Customer} de \wday.
+			\item [\textendash] \texttt{hierarchy.py}: En este módulo se encuentra la clase \textit{Hierarchy} que representa en la \iface{} el objeto \textit{Hierarchy} de \wday.
 		\end{itemize}
-	\item[$\square$] \textbf{modules}: En este directorio se encuentran agrupados módulos con funcionalidades diversas. 
+	\item[\textendash] \textbf{modules}: En este directorio se encuentran agrupados módulos con funcionalidades diversas. 
 	
 			\begin{itemize}
-				\item [\textendash] \textbf{configuration.py}: En este módulo es donde inicializamos los \textit{Parser} de cada uno de los archivos de configuración.
-				\item [\textendash] \textbf{database.py}: Módulo para inicializar de las tablas de la base de datos y para la realización de operaciones en estas tablas.
-				\item [\textendash] \textbf{log.py}: Módulo encargado de implementar la salida a ficheros registro.
-				\item [\textendash] \textbf{mail.py}: Este módulo se encarga de la funcionalidad necesaria para enviar \textit{emails}.
+				\item [\textendash] \texttt{configuration.py}: En este módulo es donde inicializamos los \textit{Parser} de cada uno de los archivos de configuración.
+				\item [\textendash] \texttt{database.py}: Módulo para inicializar de las tablas de la base de datos y para la realización de operaciones en estas tablas.
+				\item [\textendash] \texttt{log.py}: Módulo encargado de implementar la salida a ficheros registro.
+				\item [\textendash] \texttt{mail.py}: Este módulo se encarga de la funcionalidad necesaria para enviar \textit{emails}.
 			\end{itemize}
 			
-	\item[$\square$] \textbf{cfg}: En este directorio se encuentran todos los archivos de configuración. 
+	\item[\textendash] \textbf{cfg}: En este directorio se encuentran todos los archivos de configuración. 
 	Por lo general permanecen invariantes. A excepción de aquellos que almacenan tokens de sesión que van cambiando.
-	\item[$\square$] \textbf{xslt}: En este directorio se encuentran todas las plantillas de transformación necesarias para enviar los mensajes a \wday.
+	\item[\textendash] \textbf{xslt}: En este directorio se encuentran todas las plantillas de transformación necesarias para enviar los mensajes a \wday.
 	Partiendo de un archivo xml, podemos transformarlo con estas plantillas y generar un mensaje \acrshort{soap} para su posterior envío a \wday.
 	
 
@@ -362,17 +391,18 @@ El proyecto de \textit{python} se encuentra organizado en diferentes subdirector
 
 \subsection{Almacenamiento persistente}
 
-En nuestra intrfaz existen dos tipos de almacenamiento persistente. 
-%TODO por qué y cuales.
+En la \iface{} existen dos tipos de almacenamiento persistente: Estático y dinámico.
 
 \begin{itemize}[leftmargin=*]
-\item El primero de ellos ese trata de los archivos de configuración que se pueden ver en la Figura ~\ref{fig:cfg_structure}.
+\item \textbf{Estático}: Se trata de los archivos de configuración ubicados en el directorio \textit{cfg} que se pueden ver en la Figura \ref{fig:cfg_structure}.
 En estos archivos se guarda información como usuarios, contraseñas, \textit{token} de sesión, direcciones url \ldots
-De esta forma se evita que estos datos estén \textit{Hardcodeados} en el código, nos facilita su modificación e
+De esta forma se evita que estos datos se encuentren \textit{Hardcodeados} en el código, nos facilita su modificación e
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
+Está información es fija (a excepción de los token de sesión). Solo se cambiará cuando sea necesaria otra configuración.\\
+
 Para su implementación he usado el módulo \textit{ConfigParser} \cite{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}.
 Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
-Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor es que puedes referenciar un valor definido en la seccion \textit{DEFAULTS}.
+Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor se puede referenciar un valor definido en la seccion \textit{DEFAULTS}.
 %ejmplo \wday.ini
 %TODO ejemplo archivo de configuración
 Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
@@ -391,7 +421,7 @@ Otras alternativas para los archivos de configuración son yaml, xml, json\ldots
 
 
 
-\item Por otro lado esta la base de datos local SQLite3 \cite{sqlite3} para \textit{python}.
+\item \textbf{Dinámico}: Se trata de la base de datos local \textit{SQLite3} \cite{sqlite3} para \textit{python}.
  En esta base de datos se almacena la correspondencia entre los deals de \hs{} y los proyectos de \wday.
  
  Existen tres tablas en la base de datos: \verb|deals_excluded|, \verb|deal_project| y \verb|company_customer|.
