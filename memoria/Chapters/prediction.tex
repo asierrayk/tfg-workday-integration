@@ -43,7 +43,9 @@ Los problemas de aprendizaje se clasifican en dos grandes grupos dependiendo de 
 	\item \textbf{Aprendizaje no supervisado}. En este tipo de aprendizaje los datos de entrenamiento no cuentan con una caracteriítica que indique la información que se quiere predecir. Puede usarse con varios objetivos, aunque el más común es clasificar los datos en grupos con similitudes.
 \end{itemize}
 
-
+\cite{scikit-learn}
+\cite{shalev-shwartz_ben-david_2016}
+\cite{alpaydin_2010}
 \section{Datos y problema a resolver}
 
 Se ha realizado un estudio usando los datos con los que cuenta el proyecto de \textit{IBM}, \textit{Watson Analytics} \footnote{Fuente de datos \href{https://www.ibm.com/communities/analytics/watson-analytics-blog/hr-employee-attrition/}{proyecto de \textit{IBM} de \textit{Watson Analytics}}}.
@@ -101,7 +103,7 @@ En este estudio vamos a realizar un aprendizaje supervisado, ya que contamos con
 Es decir, nos podemos basar en esa columna para decidir como de bueno es el modelo que estamos construyendo, y garantizar un buen comportamiento ante muestras fuera de nuestra población inicial.\\
 
 
-Todos los pasos que he ido realizando están accesibles en un \textit{Jupyter Notebook}: %TODO footnote jupyter
+Todos los pasos que he ido realizando están accesibles en un \textit{Jupyter Notebook} \footnote{\url{http://jupyter.org/}}:
 Vamos a ir explicando en detalle cada uno de los pasos realizados.
 
 
@@ -135,7 +137,7 @@ Así que tenemos que pasar las características de formato texto a numérico.
 \end{itemize}
 
 \section{Análisis de los datos}
-En esta sección vamos a analizar los datos y ver si podemos crear más variables que nos puedan servir de utilidad.
+En esta sección vamos a analizar los datos y ver si podemos crear más variables que nos puedan servir de utilidad  \cite{bowles_2015}.
 Es importante saber que todas las columnas a excepción de \textbf{Attrition} podrán ser usadas para la construcción del modelo. 
 La columna \textbf{Attrition} se usará para el entrenamiento y comprobar la precisión del modelo.\\
 
@@ -238,7 +240,6 @@ Sin embargo, por si sola parece que esta variable no nos aporta mucha informaci�
 
 
 \section{Construcción del modelo}
-
 
 
 Una parte importante a la hora de construir un modelo es elegir un buen estimador. Para ello nos vamos a ayudar de la Figura \ref{fig:scheme_estimators}.

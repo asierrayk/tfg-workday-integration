@@ -162,7 +162,7 @@ También podemos hacer un seguimiento del funcionamiento de la aplicación desde
 Lo primero que es necesario es instalar la aplicación en el portal de \hs{}.
 
 Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado e integrado en la \iface{} creada. 
-Los pasos que hay que seguir son los siguientes: %\cite{hsapi}:
+Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 %JSON enviado por el webhook
 
 \begin{enumerate}
@@ -303,7 +303,7 @@ Los pasos para realizar una operación concreta son los siguientes:
 	\item Determinar en que servicio se encuentra la operación deseada.
 	\item Conseguir el archivo \acrshort{wsdl}. En este archivo podremos encontrar el formato de mensaje correcto para cada una de las operaciones disponibles en dicho servicio.
 	\item Modificar la plantilla de mensaje con los parámetros deseados. 
-	Para comprobar que el mensaje realiza la operación deseada correctamente podemos usar la aplicación \textit{SoapUI}. %\cite{soapui}.
+	Para comprobar que el mensaje realiza la operación deseada correctamente podemos usar la aplicación \textit{SoapUI} \footnote{\url{https://www.soapui.org/}}. %\cite{soapui}.
 	\textit{SoapUI} permite abrir esquemas \acrshort{wsdl}, modificar directamente la plantilla del mensaje para cualquier operación del servicio y enviar el mensaje.
 	\item Enviar el mensaje \acrshort{soap} por \acrshort{http} con el método POST.
 	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por \wday.
@@ -392,7 +392,7 @@ De esta forma se evita que estos datos se encuentren \textit{Hardcodeados}. Nos 
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
 Está información es fija (a excepción de los \textit{token} de sesión). Solo se cambiará cuando sea necesaria otra configuración.\\
 
-Para su implementación he usado el módulo \textit{ConfigParser} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}. %TODO footnote cofigparser
+Para su implementación he usado el módulo \textit{ConfigParser} \footnote{\url{https://docs.python.org/2/library/configparser.html}} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}. %TODO footnote cofigparser
 Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
 Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor se puede referenciar un valor definido en la sección \textit{DEFAULT}. 
 En el código \ref{lst:workday_ini} podemos ver un ejemplo de la sustitución de valores para formar las url.
@@ -430,7 +430,7 @@ Otras alternativas para los archivos de configuración son \textit{yaml}, \texti
 
 
 
-\item \textbf{Dinámico}: Se trata de la base de datos local \textit{SQLite3} para \textit{python}. %TODO footnote sqlite3
+\item \textbf{Dinámico}: Se trata de la base de datos local \textit{SQLite3} \footnote{\url{https://docs.python.org/2/library/sqlite3.html}} para \textit{python}. %TODO footnote sqlite3
  En esta base de datos se almacenan las distintas correspondencias entre \hs{} y \wday.
  
  Existen tres tablas en la base de datos: \texttt{deals\_excluded}, \texttt{deal\_project} y \texttt{company\_customer}.
