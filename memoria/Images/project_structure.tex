@@ -3,7 +3,7 @@
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
 \tikzstyle{python}=[draw=blue,very thick, fill=blue!10, rounded corners]
 \tikzstyle{folder}=[draw=orange,very thick,fill=orange!10]
-%\tikzstyle{cfg}=[draw=red,fill=gray!50]
+\tikzstyle{cfg}=[draw=red,fill=red!5]
 %\tikzstyle{xslt}=[draw=red,fill=gray!50]
 \begin{tikzpicture}[
 	scale=0.9,
@@ -39,8 +39,17 @@
 	child [missing] {}				
     child [missing] {}				
     child [missing] {}
+	child [missing] {}
+	child { node [folder] {cfg}
+      child { node [cfg]{hubspot.ini}}
+      child { node [cfg]{workday.ini}}
+      child { node [cfg]{mapping.ini}}
+	  child { node [cfg]{mail.ini}}
+	}
 	child [missing] {}				
-	child { node [folder] {cfg}}
+    child [missing] {}				
+    child [missing] {}
+	child [missing] {}
 	child { node [folder] {xslt}};
 	
 	

@@ -1,12 +1,24 @@
 \chapter{Trabajo futuro}
 
 
-Es probable que en un fúturo se mejore la Interfaz o se incluya directamente en el sitema de Workday.
-Para ello habría que usar las herramienta Workday Studio.
-Aún así siempre sería necesario tener alun servicio que continúe reenviando los mensajees provenientes Hubspot a Workday. \\
+Es probable que en un futuro se mejore la Interfaz o se incluya directamente en el sistema de \wday{}.
+Para ello habría que usar la herramienta de \textit{Workday Studio}.
+Aún así siempre sería necesario tener algún servicio que continúe reenviando los mensajes provenientes \hs{} hacia \wday{}. \\
 
+A continuación se citan algunas ideas sobre el trabajo que se podría realizar en un futuro.
 \begin{itemize}
-	\item En la medida de lo posible evitar errores en la introducción de datos. Evitar que se cree información duplicada.
+	\item Cuando un usuario introduce por error información duplicada en \hs{}, ésta se sincroniza en \wday{}. 
+	Un posible trabajo futuro sería diseñar algun mecanismo que evite la integración de información duplicada. 
+	Por ejemplo en la creación de un nuevo \textit{deal}, buscar si existe algún \textit{deal} con el nombre igual o muy parecido y avisar al usuario para que en última instancia decida como resolver el problema.
+	
+	\item Implementar un proceso recurrente que compruebe la integridad de los datos entre \hs{} y \wday{}.
+	
+	\item Diseñar alguna interfaz de usuario para poder realizar ciertas acciones mientras la \iface{} está en ejecución. Por ejemplo una interzaz de usuario web para poder lanzar procesos para visualizar información sobre la base de datos local, o comprobar que todos los datos están correctamente sincronizados.
+	
+	\item Integrar el prototipo de predicción en \wday{}.
+	
+	\item Tomar medidas que ayuden a recabar información necesaria para una mejor predicción del modelo. 
+	Por ejemplo si la característica \textit{WorkLifeBalance} (conciliación del trabajo y la vida familiar) es importante para la predicción y en la empresa no se cuenta con dicha información, entonces se puede hacer una encuesta a los empleados para poder conseguirla.
 
 \end{itemize}
 

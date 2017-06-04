@@ -2,30 +2,30 @@
 
 El desarrollo de la \iface{} se ha realizado satisfactoriamente. Sirviendo como un proyecto de integración interno para \acrshort{bnb}.
 
-La salida a producción de Workday se realizó el 4 de abril de 2017. Con ello los sistemas de integración, incluyendo la \iface{} se pusieron en funcionamiento.\\
+La salida a producción de \wday{} se realizó el 4 de abril de 2017. Con ello los sistemas de integración, incluyendo la \iface{} se pusieron en funcionamiento.\\
 
 
 %Integración
 
-Con este trabajo de fin de grado he podido comprobar la versatilidad del lenguaje \textit{python} a la hora de construir microservicios que comuniquen varias aplicaciones.
-También he podido entender que no es posible tener todo unificado en una misma aplicación. Por ello es necesario la integración de multiples aplicaciones, consiguiendo que los datos estén sincronizados.
+Con este trabajo de fin de grado he podido comprobar la versatilidad del lenguaje \textit{python} a la hora de construir micro-servicios que se comunican con varias aplicaciones.
+También he podido entender que no es posible tener todo unificado en una misma aplicación. Por ello es necesario la integración de múltiples aplicaciones, para conseguir que los datos estén sincronizados.
 He visto la variedad de metodologías utilizadas por distintas aplicaciones para facilitar las integraciones: servicios web, APIs\ldots
 También he comprobado las diferentes formas de permitir el acceso a las funcionalidades de integración: OAuth2.0 y acceso por usuario y contraseña.\\
 
 
 %Analisis de datos
 
-En la parte del estudio de los datos de los trabajadores de una empresa, he podido comprobar las ventajas que presenta el lenguaje python tanto para el analisis de datos como para realizar \textit{Machine Learning}.
-A pesar de que no haber usado lenguajes como \textit{R} o \textit{Scala} puedo asegurar que python es una buena opción cuando se tienen proyectos relacionados con \textit{Machine Learning}.\\
+En la parte del estudio de los datos de los trabajadores de una empresa, he podido comprobar las ventajas que presenta el lenguaje \textit{python} tanto para el análisis de datos como para realizar \textit{Machine Learning}.
+A pesar de que no haber usado lenguajes como \textit{R} o \textit{Scala} puedo asegurar que python es una buena opción cuando se trata con proyectos de \textit{Machine Learning}.\\
 
 
-Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el cápitulo de introducción, para ver si se han cumplido.
+Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el capítulo de introducción, para ver si se han cumplido.
 
 \begin{itemize}
 	\item Desarrollar un microservicio que realice la integración entre \hs{} y \wday{}.\\
 	
 		Este objetivo se ha conseguido.
-	\item Conseguir que al introducir datos en \hs{}, automaticamente se sincronicen con \wday{}.\\
+	\item Conseguir que al introducir datos en \hs{}, automáticamente se sincronicen con \wday{}.\\
 	
 	Una vez que se crea un \textit{deal} en \hs{},si corresponde se crea automáticamente un proyecto en \wday{}.
 	
@@ -34,8 +34,8 @@ Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el cápitul
 	Cuando un \textit{deal} es modificado en \hs{}, que tiene un \textit{project} asociado en \wday{}, el \textit{project} asociado también se ve modificado. Esta sincronización ocurre con la modificación de cualquiera de las propiedades de un \textit{deal}, incluso si modificamos el objeto \textit{company} asociado.
 	
 	\item Que la integración sea rápida, y el tiempo transcurrido entre la introducción o cambio de datos en \hs{} y los cambios en \wday{} sea el mínimo posible.\\
-	Se ha conseguido que la integración sea instantanea gracias a las suscripciones a los \textit{webhook} de \hs{}. 
-	Se ha evitado así la creación de un proceso recurrente que compruebe periodicamente si ha habido algún cambio en \hs{}. 
+	Se ha conseguido que la integración sea instantánea gracias a las suscripciones a los \textit{webhook} de \hs{}. 
+	Se ha evitado así la creación de un proceso recurrente que compruebe periódicamente si ha habido algún cambio en \hs{}. 
 	
 	\item La integración ha de ser segura. Estar provista de mecanismos para evitar posible ataques de terceras personas.\\
 	
@@ -46,9 +46,9 @@ Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el cápitul
 	El usuario no necesita saber como funciona la integración. Simplemente creando o modificando objetos en \hs{} consigue que la información se sincronice en \wday{}.
 	Sin embargo los usuarios deben tener presente en que fases un \textit{deal} es sincronizado y en que fases se excluye de la sincronización.
 	
-	\item El programa no debe abortar su ejecución de manera inexperada.\\
+	\item El programa no debe abortar su ejecución de manera inesperada.\\
 	
-	Gracias al framework utilizado \textit{web.py}, no es posible que el programa finalice su ejecución de forma inesperada. 
+	Gracias al \textit{framework} utilizado \textit{web.py}, no es posible que el programa finalice su ejecución de forma inesperada. 
 	Ya que internamente \textit{web.py} captura todas las excepciones y las muestra por consola. En cualquier caso, se ha intentado en la medida de lo posible controlar todos los tipos de errores y excepciones que pudiesen ocurrir.
 	
 	\item En la medida de lo posible evitar errores en la introducción de datos. Evitar que se cree información duplicada.\\
@@ -56,13 +56,13 @@ Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el cápitul
 	Este objetivo no se ha podido llevar a cabo, ya que la duplicación de la información en \hs{} es un error del usuario. Si el usuario no se da cuanta de la existencia de un \textit{deal} o \textit{company} puede crear uno duplicado y que consecuentemente se sincronice, cuando eso no es el resultado esperado.
 	
 	
-	\item El servicio que realiza la integración tiene que estar en ejcución ininterrumpida.\\
+	\item El servicio que realiza la integración tiene que estar en ejecución ininterrumpida.\\
 	
 	La \iface{} se encuentra en ejecución en un servidor externo, activo todo el tiempo.
 	
 	\item Evitar la perdida de datos.\\
 	
-	Para evitar la perdida de datos se ha creado un proceso que revisa todos los deals e integraría aquellos deals que no están integrados. 
+	Para evitar la perdida de datos se ha creado un proceso que revisa todos los \textit{deals} e integraría aquellos \textit{deals} que no están integrados. 
 	Ya sea debido a una interrupción del servicio o la perdida de algún mensaje.
 	
 	Sin embargo no se ha podido comprobar el correcto funcionamiento de este proceso.
@@ -72,7 +72,7 @@ Ahora vamos a ir comprobando uno a uno los objetivos establecidos en el cápitul
 	Sin embargo no está totalmente protegida de errores  de los usuarios, pues por ejemplo si un \textit{deal} se pase a la fase de cierre por equivocación, se para la sincronización del mismo.
 	De manera que es necesario un cambio manual en la tabla de \textit{deals} excluidos.
 	
-	\item El servicio debe soportar reinicios.\\
+	\item El servicio debe soportar ser reiniciado.\\
 	
 	Gracias al almacenamiento persistente de los \textit{token}, es posible reiniciar el sistema sin problemas de funcionamiento. No obstante es posible que problemas de perdidas de datos tengan lugar y sea necesario tomar medidas(Como por ejemplo ejecutar el proceso que revisa todos los \textit{deals}).
 	\item El prototipo predictor debe ser capaz de decidir si es muy probable que un empleado abandone la empresa.\\

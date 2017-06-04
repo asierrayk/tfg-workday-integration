@@ -15,7 +15,7 @@
 	
 	\node [io] (message) {Mensaje externo};
 	\node [decision,below of =message] (valid) {¿Válido?};
-	\node [startstop, below right of=valid, xshift=2cm, yshift=1cm] (no_valid) {No válido};
+	\node [startstop, below right of=valid, xshift=2cm, yshift=1cm] (no_valid) {Se ignora};
 	\node [decision,below of =valid] (tipo) {¿Tipo?};
 	
 	\node [process, below left of=tipo, xshift=-2cm] (deal_creation) {Crear deal};

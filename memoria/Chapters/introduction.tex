@@ -11,8 +11,8 @@ Comenzar a usar un \acrshort{erp} es una forma de conseguir reunir las funcional
 Dado que \wday{} es un \acrshort{erp} moderno y opera en la nube, se trata de la opción que más encaja para la empresa y la que se decidió.
 \\
 
-Una vez fijado el proyecto surgen infinidad de tareas. Configurar \wday{} con todas las opciones y funcionalidades que desea tener la empresa, migrar los datos de aplicaciones previas como \textit{QlikView}, \textit{CM Plan}, 
-integrar \wday{} con otras aplicaciones con las que tiene que coexistir cuando se salga a producción \ldots\\
+Una vez fijado el proyecto surgen infinidad de tareas. Configurar \wday{} con todas las opciones y funcionalidades que desea tener la empresa, migrar los datos de aplicaciones previas como \textit{QlikView} o \textit{CM Plan}, 
+integrar \wday{} con otras aplicaciones con las que tiene que coexistir cuando se salga a producción\ldots\\
 
 Las aplicaciones que se deben integrar con \wday{} son \textit{Mantis Bug Tracker} y \hs{}.
 
@@ -22,13 +22,13 @@ Este trabajo de fin de grado consiste en la integración de \wday{} con \hs{}.
 
 
 El proceso de salida a producción debe ser rápido, ya que la empresa debe continuar con sus actividades empresariales. 
-Es decir los procesos de migración y puesta en marcha de las integraciones tienen que hacerse en los dias previos a la slaida a producción.
+Es decir los procesos de migración y puesta en marcha de las integraciones tienen que hacerse en los días previos a la salida a producción.
 Por ello , uno de los grandes retos que supone el proyecto es la salida a producción con el menor impacto posible a las actividades de la empresa.\\
 
 
 
 Adicionalmente, por parte de la empresa se me solicitó hacer un prototipo de aplicación capaz de predecir la rotación de plantilla de la empresa.
-Y así ser capaz de preveer cuando un empleado va a abandonar la empresa. \\
+Y así ser capaz de prever cuando un empleado va a abandonar la empresa. \\
 
 Con el desarrollo de este prototipo se quiere tomar las acciones necesarias para realizar una mejor predicción.
 
@@ -40,14 +40,14 @@ En esta sección vamos a establecer los objetivos a cumplir.
 
 \begin{itemize}
 	\item Desarrollar un microservicio que realice la integración entre \hs{} y \wday{}.
-	\item Conseguir que al introducir datos en \hs{}, automaticamente se sincronicen con \wday{}.
+	\item Conseguir que al introducir datos en \hs{}, automáticamente se sincronicen con \wday{}.
 	\item Que al modificar datos en \hs{}, se modifiquen en \wday{} de forma automática.
 	\item Que la integración sea rápida, y el tiempo transcurrido entre la introducción o cambio de datos en \hs{} y los cambios en \wday{} sea el mínimo posible.
 	\item La integración ha de ser segura. Estar provista de mecanismos para evitar posible ataques de terceras personas.
 	\item La integración debe ser totalmente transparente para el usuario. 
-	\item El programa no debe abortar su ejecución de manera inexperada.
+	\item El programa no debe abortar su ejecución de manera inesperada.
 	\item En la medida de lo posible evitar errores en la introducción de datos. Evitar que se cree información duplicada.
-	\item El servicio que realiza la integración tiene que estar en ejcución ininterrumpida.
+	\item El servicio que realiza la integración tiene que estar en ejecución ininterrumpida.
 	\item Evitar la perdida de datos.
 	\item Localmente se debe llevar la cuenta de los datos que se encuentran integrados.
 	\item El servicio debe soportar ser reiniciado.
@@ -60,11 +60,11 @@ En esta sección vamos a establecer los objetivos a cumplir.
 \section{Plan de trabajo}
 
 Para la realización del proyecto de transición a \wday{} se ha seguido un sistema de metodología ágil. 
-Cinco personas formabamos parte del equipo de proyecto y nos reuniamos al menos una vez por semana.
-El proceso a durado unos tres meses y todos los integrantes realizabamos paralelamente tareas en otros proyectos.\\
+Cinco personas formábamos parte del equipo de proyecto y nos reuníamos al menos una vez por semana.
+El proceso a durado unos tres meses y todos los integrantes realizábamos paralelamente tareas en otros proyectos.\\
 
-En estas reuniones, se informaba de donde nos encontrabamos y cuales eran los siguientes pasos.
-Por turnos se intervenía para explicar los avances que habíamos hecho hasta el momento y los problemas a los que nos estabamos enfrentando.
+En estas reuniones, se informaba de donde nos encontrábamos y cuales eran los siguientes pasos.
+Por turnos se intervenía para explicar los avances que habíamos hecho hasta el momento y los problemas a los que nos estábamos enfrentando.
 Las reuniones también servían para tomar decisiones sobre el proyecto.\\
 
 En cuanto al desarrollo de la Interfaz de integración entre \hs{} y \wday{} se fue realizando de forma iterativa e incremental. 
@@ -75,7 +75,7 @@ Fue en estas últimas semanas cuando se necesitó la colaboración de otros comp
 
 El desarrollo de la Interfaz de integración entre \hs{} y \wday{} se ha realizado de forma incremental.\\
 
-En cada reunión se comunicaban los avances realizados y se proponían los ojetivos a cumplir para la próximo encuentro. Tras la reunion se comprobaban las nuevas funcionalidades implementadas.\\
+En cada reunión se comunicaban los avances realizados y se proponían los objetivos a cumplir para la próximo encuentro. Tras la reunión se comprobaban las nuevas funcionalidades implementadas.\\
 
 En las semanas posteriores a la salida a producción, gracias a las observaciones e incidencias anunciadas por los usuarios,
-se ha continuado modificando la Interfaz. 
+se ha continuado modificando la \iface{}. 

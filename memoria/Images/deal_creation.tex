@@ -1,4 +1,4 @@
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 \shorthandoff{'}
@@ -13,13 +13,13 @@
     
 \begin{tikzpicture}[node distance = 3cm, auto]
 	
-	\node [startstop] (deal_creation) {Crear Deal};
+	\node [startstop] (deal_creation) {Crear \textit{Deal}};
 	\node [decision,below of =deal_creation] (db) {¿Está en BD?};
 	\node [startstop, below right of=db, xshift=2cm, yshift=1cm] (in_db) {Se ignora el mensaje};
-	\node [process,below of =db] (get_deal) {Obtener deal de HubSpot};
-	\node [decision,below of =get_deal] (valid) {\begin{tabular}{c}¿Dealstage \\ válido? \end{tabular}};
-	\node [process, below of=valid] (submit_customer) {Subir customer a Workday};
-	\node [process, below of=submit_customer] (submit_project) {Subir project a Workday};
+	\node [process,below of =db] (get_deal) {Obtener \textit{deal} de HubSpot};
+	\node [decision,below of =get_deal] (valid) {\begin{tabular}{c}¿\textit{Dealstage} \\ válido? \end{tabular}};
+	\node [process, below of=valid] (submit_customer) {Subir \textit{customer} a Workday};
+	\node [process, below of=submit_customer] (submit_project) {Subir \textit{project} a Workday};
 	
 	
 	\path [line] (deal_creation) -- (db);
@@ -35,5 +35,5 @@
 
 
 
-\caption{Proceso Crear Deal} \label{fig:validation_message}
+\caption{Proceso Crear Deal} \label{fig:deal_creation}
 \end{figure}
