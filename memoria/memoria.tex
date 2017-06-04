@@ -16,7 +16,11 @@
 \usepackage{listings}
 
 %url
+\usepackage{url}
 \usepackage{hyperref}
+
+%bibliography
+\usepackage[nottoc]{tocbibind}
 
 %footnote numbers restart at each page
 \usepackage[perpage]{footmisc}
@@ -164,7 +168,11 @@
 
 	
 	
-	\input{Others/bibliography.tex}
+	%\input{Others/bibliography.tex}
+	
+	\bibliographystyle{unsrt}
+	\bibliography{bibliography}
+	
 	
 	%\printglossary[type=\acronymtype]
 	\printglossary[type=\acronymtype, title=Acrónimos,toctitle=Acrónimos]
