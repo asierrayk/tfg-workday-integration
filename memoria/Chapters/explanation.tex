@@ -12,7 +12,7 @@ Por último, explicaremos en detalle el diseño de la \iface{} así como sus car
 
 La \iface{} esta conectada tanto a \hs{} como a \wday. 
 
-A \hs{} se conecta a través de una aplicación que hay que crear en \hs{} y la comunicación  puede ser bidireccional. De la \iface{} hacia \hs{} se hace mediante peticiones \acrshort{http} a la \acrshort{api} de \hs{}. 
+A \hs{} se conecta a través de una aplicación que necesitamos crear en \hs{} y la comunicación  puede ser bidireccional. De la \iface{} hacia \hs{} se hace mediante peticiones \acrshort{http} a la \acrshort{api} de \hs{}. 
 La comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de \hs{}\\
 
 Por otro lado está \wday{} cuya comunicación es unidireccional. Únicamente existe comunicación propiamente dicha de la \iface{} hacia \wday. \wday{} sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la \iface.
@@ -99,7 +99,7 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 			\item \textbf{Fase de cierre}: Fase final del proyecto. Una vez un \textit{deal} ha alcanzado esta fase, se excluye la oportunidad y no se continua sincronizando. Desde este momento se trata de manera independiente el proyecto en \wday{}, y el \textit{deal} no se modifica más. 
 		\end{enumerate}
 	
-		La fase a la que pertenece el \textit{deal} depende se su estado. En la Figura \ref{fig:deal_phases} a que fase pertenece cada estado.
+		La fase a la que pertenece el \textit{deal} depende se su estado. En la Figura \ref{fig:deal_phases} se puede ver a que fase pertenece cada estado.
 		
 		
 		Todo \textit{deal} empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo \textit{deal} termina en uno de los dos estados de la fase de cierre: \textit{Closed Won} y \textit{Closed Lost}.\\
@@ -155,13 +155,13 @@ Para poder usar este método de integración es necesario crearse una cuenta de 
 
 Desde el panel de control podemos ver toda la información de la aplicación. La información que necesitaremos es el identificador de la aplicación, la clave \texttt{Client Id} y la clave \texttt{Client Secret}.
 
-Otra funcionalidad del panel de control es la posibilidad de configurar las suscripciones \textit{Webhook} de \hs{}, que permiten envíar de mensajes desde \hs{} a destinos externos cuando ciertos eventos ocurren.
+Otra funcionalidad del panel de control es la posibilidad de configurar las suscripciones \textit{Webhook} de \hs{}, que permiten enviar de mensajes desde \hs{} a destinos externos cuando ciertos eventos ocurren.
 
 También podemos hacer un seguimiento del funcionamiento de la aplicación desde el panel de control. \\
 
 Lo primero que es necesario es instalar la aplicación en el portal de \hs{}.
 
-Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado he integrado en la \iface{} creada. 
+Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado e integrado en la \iface{} creada. 
 Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 %JSON enviado por el webhook
 
@@ -183,7 +183,7 @@ Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 
 Usando un \textit{token} válido podremos realizar peticiones a los distintos \textit{endpoint} \acrshort{rest} de \hs{}, es decir, la comunicación de la \iface{} a \hs{}.
 
-Con este método se garantiza que los \textit{token} van variando como mínimo cada seis horas a diferencia del método de integración con \textit{API keys} en el que la  clave es fija y solo varía si lo hcemos manualmente. 
+Con este método se garantiza que los \textit{token} van variando como mínimo cada seis horas a diferencia del método de integración con \textit{API keys} en el que la  clave es fija y solo varía si lo hacemos manualmente. 
 
 La aplicación instalada sirve como paso intermedio para las comunicaciones entre \hs{} y la \iface{}.
 
@@ -309,7 +309,15 @@ Los pasos para realizar una operación concreta son los siguientes:
 	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por \wday.
 \end{enumerate}
 
+Para el tratamiento de los mensajes \acrshort{soap} se ha realizado del siguiente modo.
+Se ha usado la libreria de \textit{python} \textit{lxml} \footnote{\url{http://lxml.de/}}. 
+\begin{enumerate}
+	\item Se genera el archivo \textit{xml} con ayuda de la librería \textit{lxml}. Este \textit{xml} cuanta con los parametros necesarios para la llamada al servicio web de \wday{}.
+	
+	\item Con el archivo \acrshort{xslt} correspondiente se transforma el \acrshort{xml} en el mensaje \acrshort{soap}.
+\end{enumerate}
 
+Cuando \wday{} responde con un mensaje \acrshort{soap}, la \iface{} recupera los valores del \acrshort{xml} con ayuda de la librería \textit{lxml}.
 
 \section{\iface{}}
 
@@ -320,7 +328,7 @@ Alternativas a esta librería pueden ser los \textit{frameworks} \textit{Flask} 
 
 \textit{Django} es idónea para proyectos mucho más grandes. Requiera de un proceso más avanzado antes de poder empezar a desarrollar la aplicación.
 
-La ventaja de \textit{web.py} es lo ligera qué es y la facilidad de ponerla en marcha.\\
+La ventaja de \textit{web.py} es lo ligera que es y la facilidad de ponerla en marcha.\\
 
 La \iface{} se encuentra ejecutándose de manera continua en un servidor y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs{}.
 En el panel de control de la aplicación de \hs{}, explicado en la sección \ref{subsec:app_hs}, debemos especificar el \textit{host} y puerto del servidor que está ejecutando la \iface{}\\
@@ -363,7 +371,7 @@ El proyecto de \textit{python} se encuentra organizado en diferentes archivos su
 			\end{itemize}
 			
 	\item[\textendash] \textbf{cfg}: En este directorio se encuentran todos los archivos de configuración. 
-	Por lo general permanecen invariantes. A excepción de aquellos que almacenan tokens de sesión que van cambiando.
+	Por lo general permanecen invariantes. A excepción de aquellos que almacenan \textit{tokens} de sesión que van cambiando.
 	\item[\textendash] \textbf{xslt}: En este directorio se encuentran todas las plantillas de transformación necesarias para enviar los mensajes a \wday.
 	Partiendo de un archivo \acrshort{xml}, podemos transformarlo con estas plantillas y generar un mensaje \acrshort{soap} para su posterior envío a \wday.
 	
@@ -414,7 +422,7 @@ Otras alternativas para los archivos de configuración son \textit{yaml}, \texti
 	\item [\textendash] \textbf{\textit{hubspot.ini}}: En este archivo se guarda la información referente a los \textit{tokens} de sesión, necesarios para comunicarse con el portal de \hs. 
 	Este archivo cambia cada vez que se actualiza un \textit{token}.
 	\item [\textendash] \textbf{\textit{workday.ini}}: En este archivo de configuración se 
-	guardan las credenciales de acceso a \wday{}, así como distintos direcciones url para evitar su repetición en el código.
+	guardan las credenciales de acceso a \wday{}, así como distintas direcciones url para evitar su repetición en el código.
 	\item [\textendash] \textbf{\textit{mapping.ini}}: En este archivo de configuración se encuentran todas las correspondencias entre \hs{} y \wday.
 	\item [\textendash] \textbf{\textit{mail.ini}}: En este archivo de configuración se encuentran las credenciales necesarias para el acceso a la cuenta de correo.
 \end{itemize}
@@ -486,9 +494,12 @@ Como podemos comprobar en la Figura \ref{fig:validation_message}, aquellos mensa
 %Dependiendo de de las acciones realizadas en \hs{}, se puede disparar un evento y que consiguientemente un mensaje se envíe a la \iface.
 
 Como se ha mencionado anteriormente, nuestra aplicación de \hs{} está suscrita a diferentes eventos de los \textit{deals} de \hs{}.
-Cuando uno se estos eventos se produce, la aplicación de \hs{} envía un mensaje \acrshort{http} (\textit{POST}) a la \iface{}. Este mensaje es un \acrshort{json} con información sobre el evento ocurrido. Podemos ver un mensaje de ejemplo en el Código \ref{lst:json_message}.
+Cuando uno de estos eventos se produce, la aplicación de \hs{} envía un mensaje \acrshort{http} (\textit{POST}) a la \iface{}. Este mensaje es un \acrshort{json} con información sobre el evento ocurrido. Podemos ver un mensaje de ejemplo en el Código \ref{lst:json_message}.\\
 
+Para probar el correcto funcionamiento de la interfaz sin realizar cambio en \hs{}, se ha usado la herramienta \textit{cURL} \footnote{\url{https://curl.haxx.se/}}. 
+Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde \hs{}.
 
+\begin{figure}
 \begin{lstlisting}[caption={Ejemplo de mensaje recibido por la \iface{}},label={lst:json_message}, language=json]
 	[{"objectId":92604011,
 	  "changeFlag":"NEW",
@@ -501,6 +512,7 @@ Cuando uno se estos eventos se produce, la aplicación de \hs{} envía un mensaj
 	  "subscriptionType":"deal.creation",
 	  "attemptNumber":0}]
 \end{lstlisting}
+\end{figure}
  
 Una vez recibido el mensaje se comprueba su validez verificando su procedencia como hemos visto en la Sección \ref{subsec:security}. Aquellos mensajes inválidos se ignoran como podemos ver en el diagrama de la \ref{fig:validation_message}.\\
 
@@ -526,7 +538,7 @@ Después dependiendo del valor del campo \textit{subscriptionType} comienza la e
 		Si por el contrario no se encuentra en la tabla de correspondencias entonces se continua con el siguiente paso.
 		
 			\item Se realiza una petición a la \acrshort{api} de \hs{} para obtener el resto de información del \textit{deal} creado.
-			\item Con todos los datos del \textit{deal} que se ha creado se comprueba si este se encuentra en la fase de progreso, en caso contrario dicho \textit{deal} no se integra y para el proceso.
+			\item Con todos los datos del \textit{deal} que se ha creado se comprueba si este se encuentra en la fase de progreso, en caso contrario dicho \textit{deal} no se integra y se para el proceso.
 			\item Si el \textit{deal} se encuentra en la fase de progreso, entonces se comprueba si el \textit{company} asociado al \textit{deal} existe en la tabla de correspondencias entre los \textit{companies} y los \textit{customers} (\texttt{company\_customer}).
 			En caso de que no exista se crea el correspondiente \textit{customer} en \wday{}, y se actualiza la tabla \texttt{company\_customer} con la nueva entrada .
 			
