@@ -99,7 +99,7 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 			\item \textbf{Fase de cierre}: Fase final del proyecto. Una vez un \textit{deal} ha alcanzado esta fase, se excluye la oportunidad y no se continua sincronizando. Desde este momento se trata de manera independiente el proyecto en \wday{}, y el \textit{deal} no se modifica más. 
 		\end{enumerate}
 	
-		La fase a la que pertenece el \textit{deal} depende se su estado. En la Figura \ref{fig:deal_phases} se puede ver a que fase pertenece cada estado.
+		La fase a la que pertenece el \textit{deal} depende de su estado. En la Figura \ref{fig:deal_phases} se puede ver a que fase pertenece cada estado.
 		
 		
 		Todo \textit{deal} empieza con un estado perteneciente a la fase de descubrimiento, con el paso del tiempo puede ir pasando a la fase de progreso y finalmente todo \textit{deal} termina en uno de los dos estados de la fase de cierre: \textit{Closed Won} y \textit{Closed Lost}.\\
@@ -109,7 +109,7 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 			
 		Desde el portal de \hs{} es posible tanto crear nuevos \textit{deals} como modificar cualquier propiedad a excepción del \textit{Deal Id}.
 		
-		Cuando seleccionamos la opción de creación de un \textit{deal} nos aparece un formulario como el de la figura \ref{fig:create_deal}.
+		Cuando seleccionamos la opción de creación de un \textit{deal} nos aparece un formulario como el de la Figura \ref{fig:create_deal}.
 		
 		\begin{figure}
 			\centering
@@ -142,9 +142,9 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 \subsubsection{Integración con \textit{API keys}}
 
 Para utilizar este método simplemente hay que consultar la clave de la \acrshort{api} de \hs{} (\textit{HAPIKey}), 
-accesible desde el portal de \hs{} y añadirla como parámetro en las peticiones que enviemos al servicio \acrshort{rest} de \hs{}\\
+accesible desde el portal de \hs{} y añadirla como parámetro en las peticiones que enviemos al servicio \acrshort{rest} de \hs{}.\\
 
-Este método es idóneo para realizar pruebas. Sin embargo su falta de seguridad impide que su uso comercial. %Con este método no se puede garantizar la seguridad.
+Este método es idóneo para realizar pruebas. Sin embargo su falta de seguridad impide su uso comercial. %Con este método no se puede garantizar la seguridad.
 
 Además con este método solo es posible la comunicación en un sentido, desde la \iface{} hacia \hs{}.
 
@@ -159,7 +159,7 @@ Otra funcionalidad del panel de control es la posibilidad de configurar las susc
 
 También podemos hacer un seguimiento del funcionamiento de la aplicación desde el panel de control. \\
 
-Lo primero que es necesario es instalar la aplicación en el portal de \hs{}.
+Lo primero que necesitamos es instalar la aplicación en el portal de \hs{}.
 
 Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado e integrado en la \iface{} creada. 
 Los pasos que hay que seguir son los siguientes \cite{hsapi}:
@@ -189,7 +189,7 @@ La aplicación instalada sirve como paso intermedio para las comunicaciones entr
 
 La comunicación en el otro sentido, de \hs{} hacia la \iface{} se hace gracias a la configuración de los \textit{webhook} de \hs{}.
 
-Desde el portal podemos configurar la suscripción a los \textit{webhook}. Es necesario especificar la dirección (\textit{host} y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
+Desde el portal podemos configurar las suscripciónes a los \textit{webhook}. Es necesario especificar la dirección (\textit{host} y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
 
 En el caso de nuestra aplicación está suscrita a los siguientes eventos:
 \begin{itemize}
@@ -395,24 +395,6 @@ Está información es fija (a excepción de los \textit{token} de sesión). Solo
 Para su implementación he usado el módulo \textit{ConfigParser} \footnote{\url{https://docs.python.org/2/library/configparser.html}} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}. %TODO footnote cofigparser
 Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
 Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor se puede referenciar un valor definido en la sección \textit{DEFAULT}. 
-En el código \ref{lst:workday_ini} podemos ver un ejemplo de la sustitución de valores para formar las url.
-%ejmplo \wday.ini
-
-\begin{figure}
-\begin{lstlisting}[caption={Archivo de configuración workday.ini},label={lst:workday_ini}, language={INI}, breaklines]
-	[DEFAULT]
-	tenant = <tenant>
-	user = <user>
-	password = <password>
-	base_url = https://wd3-services1.myworkday.com/ccx/service
-
-	[wws]
-	url_resource_management = %(base_url)s/%(tenant)s/Resource_Management/v28.0
-	url_revenue_management = %(base_url)s/%(tenant)s/Revenue_Management/v28.0
-	url_financial_management = %(base_url)s/%(tenant)s/Financial_Management/v28.0
-	url_staffing = %(base_url)s/%(tenant)s/Staffing/v28.0
-\end{lstlisting}
-\end{figure}
 
 
 Otras alternativas para los archivos de configuración son \textit{yaml}, \textit{xml}, \textit{json}\ldots
