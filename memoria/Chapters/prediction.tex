@@ -230,7 +230,7 @@ Por ejemplo un 18,35 \% de los trabajadores con una distancia mayor de 7 de sus 
 En la variable \textbf{Age}, podemos comprobar que la tasa de abandono es  mayor en aquellos empleados más jóvenes frente a los de mayor edad.
 Por ejemplo existe un abandono del 21,94 \% en los empleados menores a 36 años, mientras que en los mayores de 36 es de 10,39 \%.
 
-Otro buen indicador de que un empleado tiene más posibilidades de marcharse de una empres es su trayectoria previa. La variable \textbf{NumCompaniesWorked} nos da una idea de la trayectoria empresarial del trabajador.
+Otro buen indicador de que un empleado tiene más posibilidades de marcharse de una empresa es su trayectoria previa. La variable \textbf{NumCompaniesWorked} nos da una idea de la trayectoria empresarial del trabajador.
 Sin embargo, por si sola parece que esta variable no nos aporta mucha información. Por ello podemos combinarla con la variable \textbf{TotalWorkingYears} para conseguir una nueva variable \textbf{YearsPerCompany} que muestre la media de años trabajados por empresa.\\
 
 
@@ -262,7 +262,7 @@ Una vez elegido el modelo existen distintas formas de evaluar dicho modelo. Esto
 
 Con el modelo elegido es necesario entrenarlo con un conjunto de datos, si lo entrenamos con todos los datos con los que contamos, solo podremos realizar predicciones con muestras que pertenecen al conjunto de entrenamiento. lo cual no es muy revelador, pues es normal que el modelo se comporte bien ante muestras con las cuales se le ha entrenado.
 
-Para evitar caer en este error existe el método de separación de los datos en un conjunto de entrenamiento y otro de pruebas (\textbf{Split Training}). Podemos ver está separación en la Figura \ref{fig:splittraining}.\\
+Para evitar caer en este error existe el método de separación de los datos en un conjunto de entrenamiento y otro de pruebas (\textbf{Split Training}). Podemos ver esta separación en la Figura \ref{fig:splittraining}.\\
 
 Este método consiste en separar los datos en dos conjuntos: uno de entrenamiento (\textit{train}), y otro de pruebas (\textit{test}).	
 Se entrena al modelo con el conjunto de entrenamiento y se realiza la predicción con los datos de prueba. Una vez realizada la predicción se compara con el resultado correcto utilizando alguna sistema de puntuación (accuracy, f1, roc\_auc \ldots).
