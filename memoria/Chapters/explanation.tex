@@ -226,7 +226,7 @@ Un \textit{project} tiene un \textit{customer} puede tener asociado y también p
 Para realizar las integraciones, \wday{} proporciona un catálogo de servicios web basados en \acrshort{soap} (\textit{Workday Web Services} \cite{wws}). 
 Mediante estos servicios podemos hacer que la \iface{} interactúe con \wday{}.
 
-Cada servicio cuenta con un conjunto de operaciones que pueden ser llamadas mediante su \textit{end point}.
+Cada servicio cuenta con un conjunto de operaciones que pueden ser llamadas mediante su \textit{end point}.\\
 
 
 Lo siguiente que necesitamos saber es el formato de los mensajes que se deben enviar a estos \textit{end point}. Para ello contamos con el fichero \acrshort{wsdl} de cada servicio que especifica el formato de los mensajes \acrshort{soap} que se deben enviar para realizar cada operación.
@@ -274,7 +274,7 @@ Otros campos que hacen referencia a objetos son estos:
 
 \subsection{Descripción del objeto \textit{Customer} en \wday{}}
 Se trata de un objeto de \wday{} que representa a los clientes de la empresa. este objeto de \wday{} se encuentra relacionado con el objeto \textit{company} de \hs. 
-Gracias a la \iface{}, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.
+Gracias a la \iface{}, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.\\
 
 Existen múltiples métodos para crear o modificar un \textit{Customer} en \wday{}, de forma manual, hojas de calculo para carga de datos \ldots
 
@@ -330,7 +330,7 @@ Alternativas a esta librería pueden ser los \textit{frameworks} \textit{Flask} 
 
 La ventaja de \textit{web.py} es lo ligera que es y la facilidad de ponerla en marcha.\\
 
-La \iface{} se encuentra ejecutándose de manera continua en un servidor y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs{}.
+La \iface{} se encuentra ejecutándose de manera continua en un servidor de \textit{amazon} y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs{}.
 En el panel de control de la aplicación de \hs{}, explicado en la sección \ref{subsec:app_hs}, debemos especificar el \textit{host} y puerto del servidor que está ejecutando la \iface{}\\
 
 
@@ -388,7 +388,7 @@ En la \iface{} existen dos tipos de almacenamiento persistente: Estático y din�
 \begin{itemize}[leftmargin=*]
 \item \textbf{Estático}: Se trata de los archivos de configuración ubicados en el directorio \textit{cfg} que se pueden ver en la Figura \ref{fig:project_structure}.
 En estos archivos se guarda información como usuarios, contraseñas, \textit{token} de sesión, direcciones \textit{url}\ldots
-De esta forma se evita que estos datos se encuentren \textit{Hardcodeados}. Nos facilita su modificación e
+De esta forma se evita que estos datos se encuentren escritos directamente en el código como constantes. Nos facilita su modificación e
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
 Está información es fija (a excepción de los \textit{token} de sesión). Solo se cambiará cuando sea necesaria otra configuración.\\
 
