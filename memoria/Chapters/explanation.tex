@@ -10,7 +10,7 @@ Si nos fijamos en la Figura \ref{fig:general_diagram} podemos ver como la \iface
 Explicaremos como funcionan \hs{} y \wday{}. Como están organizados y cual es su estructura. También explicaremos los métodos de integración con los que cuenta cada una de las aplicaciones.
 Por último, explicaremos en detalle el diseño de la \iface{} así como sus características.\\
 
-La \iface{} esta conectada tanto a \hs{} como a \wday. 
+La \iface{} esta conectada tanto a \hs{} como a \wday.\\ 
 
 A \hs{} se conecta a través de una aplicación que necesitamos crear en \hs{} y la comunicación  puede ser bidireccional. De la \iface{} hacia \hs{} se hace mediante peticiones \acrshort{http} a la \acrshort{api} de \hs{}. 
 La comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de \hs{}\\
@@ -18,7 +18,7 @@ La comunicación en la otra dirección se realiza mediante los webhooks declarad
 Por otro lado está \wday{} cuya comunicación es unidireccional. Únicamente existe comunicación propiamente dicha de la \iface{} hacia \wday. \wday{} sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la \iface.
 
 \section{\hs{}}
-En esta sección vamos a describir toda la información que necesitamos saber sobre \hs{} para entender la Integración.
+En esta sección vamos a describir toda la información que necesitamos saber sobre \hs{} para entender la Integración.\\
 
 %El \acrshort{crm} \hs{} permite realizar integraciones gracias a su \acrshort{api} \acrshort{rest}.
 Primero debemos tener en cuenta que \hs{} se encuentra organizado en objetos. Y toda la información almacenada en \hs{} pertenece a uno de los siguientes tipos de objetos:
@@ -49,7 +49,7 @@ Es importante tener en cuenta las relaciones posibles entre los distintos tipos 
 	\end{itemize}
 \end{itemize}
 
-En \hs{} un \textit{deal} puede estar asociado a una o más \textit{companies}. Para el caso de nuestra integración a lo sumo habrá un \textit{company} asociado a cada \textit{deal}.
+En \hs{} un \textit{deal} puede estar asociado a una o más \textit{companies}. Para el caso de nuestra integración a lo sumo habrá un \textit{company} asociado a cada \textit{deal}.\\
 
 Los objetos que nos interesan para nuestra integración son \textit{deal} y su \textit{company} asociado. La creación o modificación de un \textit{deal} iniciaran procesos de integración.
 
@@ -126,7 +126,7 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 		Desde el portal de \hs{} es posible tanto crear nuevas \textit{companies} como modificar cualquiera de las ya existentes. Podemos ver el formulario de creación de una \textit{company} en la Figura \ref{fig:company_creation}.
 		
 		Sin embargo la creación o modificación de \textit{companies} no iniciarán procesos de sincronización. Solo se integrarán aquellas \textit{companies} que estén asociadas a un \textit{deal}.
-		de esta forma evitamos que \textit{companies} con las que no existe un proyecto estén sincronizadas.
+		De esta forma evitamos que \textit{companies} con las que no existe un proyecto estén sincronizadas.
 		
 		\begin{figure}
 			\centering
@@ -137,29 +137,29 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 
 
 \subsection{Métodos de integración de \hs{}}
-\hs{} cuenta con varios métodos para realizar las integraciones. Cada uno de ellos pensado para distintas situaciones.
+\hs{} cuenta con varios métodos para realizar las integraciones, cada uno de ellos pensado para distintas situaciones.
 
 \subsubsection{Integración con \textit{API keys}}
 
 Para utilizar este método simplemente hay que consultar la clave de la \acrshort{api} de \hs{} (\textit{HAPIKey}), 
 accesible desde el portal de \hs{} y añadirla como parámetro en las peticiones que enviemos al servicio \acrshort{rest} de \hs{}.\\
 
-Este método es idóneo para realizar pruebas. Sin embargo su falta de seguridad impide su uso comercial. %Con este método no se puede garantizar la seguridad.
+Este método es idóneo para realizar pruebas. Sin embargo, su falta de seguridad impide su uso comercial.\\
 
 Además con este método solo es posible la comunicación en un sentido, desde la \iface{} hacia \hs{}.
 
 \subsubsection{Integración con \textit{OAuth}}
 \label{subsec:app_hs}
 
-Para poder usar este método de integración es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una \textbf{aplicación de \hs{}} y acceder a su panel de control. 
+Para poder usar este método de integración es necesario crearse una cuenta de desarrollador. Con la cuenta de desarrollador podemos crear una \textbf{aplicación de \hs{}} y acceder a su panel de control.\\ 
 
-Desde el panel de control podemos ver toda la información de la aplicación. La información que necesitaremos es el identificador de la aplicación, la clave \texttt{Client Id} y la clave \texttt{Client Secret}.
+Desde el panel de control podemos ver toda la información de la aplicación. La información que necesitaremos es el identificador de la aplicación, la clave \texttt{Client Id} y la clave \texttt{Client Secret}.\\
 
-Otra funcionalidad del panel de control es la posibilidad de configurar las suscripciones \textit{Webhook} de \hs{}, que permiten enviar de mensajes desde \hs{} a destinos externos cuando ciertos eventos ocurren.
+Otra funcionalidad del panel de control es la posibilidad de configurar las suscripciones \textit{Webhook} de \hs{}, que permiten enviar de mensajes desde \hs{} a destinos externos cuando ciertos eventos ocurren.\\
 
-También podemos hacer un seguimiento del funcionamiento de la aplicación desde el panel de control. \\
+También podemos hacer un seguimiento del funcionamiento de la aplicación desde el panel de control.\\
 
-Lo primero que necesitamos es instalar la aplicación en el portal de \hs{}.
+Lo primero que necesitamos es instalar la aplicación en el portal de \hs{}.\\
 
 Para instalar la aplicación en el portal de \hs{} hay que seguir un proceso de autorización llamado \gls{oauth2}. Este proceso se ha automatizado e integrado en la \iface{} creada. 
 Los pasos que hay que seguir son los siguientes \cite{hsapi}:
@@ -181,13 +181,13 @@ Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 	\item Cuando el \texttt{access\_token} haya expirado podremos llamar a otro \textit{end point} especificando el \texttt{refresh\_token} y recibiremos un mensaje de vuelta con otro nuevo \texttt{access\_token} y \texttt{refresh\_token}.
 \end{enumerate}
 
-Usando un \textit{token} válido podremos realizar peticiones a los distintos \textit{endpoint} \acrshort{rest} de \hs{}, es decir, la comunicación de la \iface{} a \hs{}.
+Usando un \textit{token} válido podremos realizar peticiones a los distintos \textit{endpoint} \acrshort{rest} de \hs{}, es decir, la comunicación de la \iface{} a \hs{}.\\
 
-Con este método se garantiza que los \textit{token} van variando como mínimo cada seis horas a diferencia del método de integración con \textit{API keys} en el que la  clave es fija y solo varía si lo hacemos manualmente. 
+Con este método se garantiza que los \textit{token} van variando como mínimo cada seis horas a diferencia del método de integración con \textit{API keys} en el que la  clave es fija y solo varía si lo hacemos manualmente.\\ 
 
-La aplicación instalada sirve como paso intermedio para las comunicaciones entre \hs{} y la \iface{}.
+La aplicación instalada sirve como paso intermedio para las comunicaciones entre \hs{} y la \iface{}.\\
 
-La comunicación en el otro sentido, de \hs{} hacia la \iface{} se hace gracias a la configuración de los \textit{webhook} de \hs{}.
+La comunicación en el otro sentido, de \hs{} hacia la \iface{} se hace gracias a la configuración de los \textit{webhook} de \hs{}.\\
 
 Desde el portal podemos configurar las suscripciónes a los \textit{webhook}. Es necesario especificar la dirección (\textit{host} y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
 
@@ -212,9 +212,9 @@ La versión que se debe usar de \textit{OAuth} es \textit{OAuth2.0} ya que \hs{}
 
 \section{\wday{}}
 
-En esta sección vamos a describir la información que necesitamos saber sobre \wday.
+En esta sección vamos a describir la información que necesitamos saber sobre \wday.\\
 
-\wday{} es un \acrshort{erp} que internamente se encuentra organizado en objetos.
+\wday{} es un \acrshort{erp} que internamente se encuentra organizado en objetos.\\
  
 Los objetos que van a ser de interés para realizar la integración son:
 \textit{Project}, \textit{Customer} y \textit{Hierarchy}.\\
@@ -224,19 +224,19 @@ Un \textit{project} tiene un \textit{customer} puede tener asociado y también p
 
 
 Para realizar las integraciones, \wday{} proporciona un catálogo de servicios web basados en \acrshort{soap} (\textit{Workday Web Services} \cite{wws}). 
-Mediante estos servicios podemos hacer que la \iface{} interactúe con \wday{}.
+Mediante estos servicios podemos hacer que la \iface{} interactúe con \wday{}.\\
 
 Cada servicio cuenta con un conjunto de operaciones que pueden ser llamadas mediante su \textit{end point}.\\
 
 
-Lo siguiente que necesitamos saber es el formato de los mensajes que se deben enviar a estos \textit{end point}. Para ello contamos con el fichero \acrshort{wsdl} de cada servicio que especifica el formato de los mensajes \acrshort{soap} que se deben enviar para realizar cada operación.
+Lo siguiente que necesitamos saber es el formato de los mensajes que se deben enviar a estos \textit{end point}. Para ello contamos con el fichero \acrshort{wsdl} de cada servicio que especifica el formato de los mensajes \acrshort{soap} que se deben enviar para realizar cada operación.\\
 
 
 El envío de los mensajes se realiza por \acrshort{http}.\\
 
-Una herramienta que se ha utilizado para probar los servicio es \textit{SOAP UI}.
+Una herramienta que se ha utilizado para probar los servicio es \textit{SOAP UI}.\\
 
-Además es necesario proporcionar credenciales en el mensaje para que \wday{} realice las operaciones deseadas.
+Además es necesario proporcionar credenciales en el mensaje para que \wday{} realice las operaciones deseadas.\\
 
 Ante estas solicitudes \wday{} siempre responde indicando si la operación se ha realizado correctamente o el error que ha sucedido.
 
@@ -276,7 +276,7 @@ Otros campos que hacen referencia a objetos son estos:
 Se trata de un objeto de \wday{} que representa a los clientes de la empresa. este objeto de \wday{} se encuentra relacionado con el objeto \textit{company} de \hs. 
 Gracias a la \iface{}, cuando se realice la integración de un \textit{deal}, también se integrará la \textit{company} asociada.\\
 
-Existen múltiples métodos para crear o modificar un \textit{Customer} en \wday{}, de forma manual, hojas de calculo para carga de datos \ldots
+Existen múltiples métodos para crear o modificar un \textit{Customer} en \wday{}, de forma manual, hojas de calculo para carga de datos \ldots\\
 
 En nuestro caso la creación y modificación de un cliente se hace desde la \iface{}, 
 mediante la operación \texttt{Put\_Customer} del servicio web \texttt{Revenue\_Management}.
@@ -293,7 +293,7 @@ También existen jerarquías opcionales para organizar los proyectos según su \
 
 \subsection{Servicios web de \wday{}}
 
-Para hacer uso de los servicios web de \wday{}, primero debemos de contar con una cuenta del \textit{tenant} (o entorno) con permisos para el uso de los servicios web que se vayan a usar.
+Para hacer uso de los servicios web de \wday{}, primero debemos de contar con una cuenta del \textit{tenant} (o entorno) con permisos para el uso de los servicios web que se vayan a usar.\\
 
 Una vez tengamos dicho usuario, podremos realizar las operaciones.\\
 
@@ -324,14 +324,14 @@ Cuando \wday{} responde con un mensaje \acrshort{soap}, la \iface{} recupera los
 
 Para el desarrollo de la \iface{} he usado el lenguaje de programación \textbf{python}, con el \textit{IDE} \textbf{PyCharm}. La librería principal, bajo la que se sustenta el servidor es \textbf{\textit{web.py}}.
 Alternativas a esta librería pueden ser los \textit{frameworks} \textit{Flask} o \textit{Django}.
-\textit{Flask} es un \textit{microframework}, sería una buena alternativa si hubiese que elegir algo distinto a  \textbf{\textit{web.py}}.
+\textit{Flask} es un \textit{microframework}, sería una buena alternativa si hubiese que elegir algo distinto a  \textbf{\textit{web.py}}.\\
 
-\textit{Django} es idónea para proyectos mucho más grandes. Requiera de un proceso más avanzado antes de poder empezar a desarrollar la aplicación.
+\textit{Django} es idónea para proyectos mucho más grandes. Requiere de un proceso más avanzado antes de poder empezar a desarrollar la aplicación.\\
 
 La ventaja de \textit{web.py} es lo ligera que es y la facilidad de ponerla en marcha.\\
 
 La \iface{} se encuentra ejecutándose de manera continua en un servidor de \textit{amazon} y está escuchando en un puerto los distintos mensajes que puedan llegar de \hs{}.
-En el panel de control de la aplicación de \hs{}, explicado en la sección \ref{subsec:app_hs}, debemos especificar el \textit{host} y puerto del servidor que está ejecutando la \iface{}\\
+En el panel de control de la aplicación de \hs{}, explicado en la sección \ref{subsec:app_hs}, debemos especificar el \textit{host} y puerto del servidor que está ejecutando la \iface{}.\\
 
 
 En esta sección vamos a explicar detalladamente el funcionamiento de la \iface{}.
@@ -460,7 +460,7 @@ Este campo es el formado tras aplicar la función \textit{hash \textbf{sha256}} 
 
 Basta hacer esta comprobación para garantizar la procedencia del mensaje, ya que el \texttt{Client Secret} solo es conocido por nosotros y por \hs{}. \\
 
-Además cabe destacar que cualquier persona que interceptase el mensaje, no podría deducir el \texttt{Client Secret}, gracias a las propiedades de las funciones \textit{hash}. 
+Además cabe destacar que cualquier persona que interceptase el mensaje, no podría deducir el \texttt{Client Secret}, gracias a las propiedades de las funciones \textit{hash}.\\ 
 
 %TODO cite function hash
 
@@ -479,7 +479,7 @@ Como se ha mencionado anteriormente, nuestra aplicación de \hs{} está suscrita
 Cuando uno de estos eventos se produce, la aplicación de \hs{} envía un mensaje \acrshort{http} (\textit{POST}) a la \iface{}. Este mensaje es un \acrshort{json} con información sobre el evento ocurrido. Podemos ver un mensaje de ejemplo en el Código \ref{lst:json_message}.\\
 
 Para probar el correcto funcionamiento de la interfaz sin realizar cambio en \hs{}, se ha usado la herramienta \textit{cURL} \footnote{\url{https://curl.haxx.se/}}. 
-Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde \hs{}.
+Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde \hs{}.\\
 
 \begin{figure}
 \begin{lstlisting}[caption={Ejemplo de mensaje recibido por la \iface{}},label={lst:json_message}, language=json]
@@ -499,7 +499,7 @@ Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde 
 Una vez recibido el mensaje se comprueba su validez verificando su procedencia como hemos visto en la Sección \ref{subsec:security}. Aquellos mensajes inválidos se ignoran como podemos ver en el diagrama de la \ref{fig:validation_message}.\\
 
 Tras verificar que un mensaje es válido, se comprueba si dicho \textit{deal} se encuentra en la tabla de excluidos de base de datos local (\texttt{deals\_excluded}). 
-Esta comprobación sirve como precaución para evitar la sincronización de proyectos no deseados en \wday{}.
+Esta comprobación sirve como precaución para evitar la sincronización de proyectos no deseados en \wday{}.\\
 
 Después dependiendo del valor del campo \textit{subscriptionType} comienza la ejecución de un proceso de creación de un deal o de modificación.
 

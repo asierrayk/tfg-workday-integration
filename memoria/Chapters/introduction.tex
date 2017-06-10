@@ -8,7 +8,7 @@ Este trabajo de fin de grado se ha realizado en colaboración con la empresa \ac
 Este trabajo de fin de grado es parte de un proyecto, concretamente es una de las integraciones del proyecto.
 El proyecto parte de la idea de mejorar el \textit{software} que se usa internamente para la parte de recursos humanos y finanzas. Se requiere facilitar las labores internas.
 Comenzar a usar un \acrshort{erp} es una forma de conseguir reunir las funcionalidades de recursos humanos y finanzas en una aplicación.
-Dado que \wday{} es un \acrshort{erp} moderno y opera en la nube, se trata de la opción que más encaja para la empresa y la que se decidió.
+Dado que \wday{} es un \acrshort{erp} moderno y opera en la nube, se trata de la opción que más encaja para la empresa y la que se eligió.
 \\
 
 Una vez fijado el proyecto surgen infinidad de tareas. Configurar \wday{} con todas las opciones y funcionalidades que desea tener la empresa, migrar los datos de aplicaciones previas como \textit{QlikView} o \textit{CM Plan}, 
@@ -22,13 +22,12 @@ Este trabajo de fin de grado consiste en la integración de \wday{} con \hs{}.
 
 
 El proceso de salida a producción debe ser rápido, ya que la empresa debe continuar con sus actividades empresariales. 
-Es decir los procesos de migración y puesta en marcha de las integraciones tienen que hacerse en los días previos a la salida a producción.
+Los procesos de migración y puesta en marcha de las integraciones tienen que hacerse en los días previos a la salida a producción.
 Por ello, uno de los grandes retos que supone el proyecto es la salida a producción con el menor impacto posible en las actividades de la empresa.\\
 
 
 
-Adicionalmente, por parte de la empresa se me solicitó hacer un prototipo de aplicación capaz de predecir la rotación de plantilla de la empresa.
-Y así ser capaz de prever cuando un empleado va a abandonar la empresa. \\
+Adicionalmente, por parte de la empresa se me solicitó hacer un prototipo de aplicación capaz de predecir la rotación de plantilla de la empresa, y así ser capaz de prever cuando un empleado va a abandonar la empresa. \\
 
 Con el desarrollo de este prototipo se quiere tomar las acciones necesarias para realizar una mejor predicción.
 
@@ -48,22 +47,22 @@ En esta sección vamos a establecer los objetivos a cumplir.
 	\item El programa no debe abortar su ejecución de manera inesperada.
 	\item En la medida de lo posible evitar errores en la introducción de datos. Evitar que se cree información duplicada.
 	\item El servicio que realiza la integración tiene que estar en ejecución ininterrumpida.
-	\item Evitar la pérdida de datos.
+	\item Garantizar la sincronización de aquellos datos que cumplen los requisitos para ser integrados.
 	\item Localmente se debe llevar la cuenta de los datos que se encuentran integrados.
 	\item El servicio debe soportar ser reiniciado.
-	\item El prototipo predictor debe ser capaz de decidir si es muy probable que un empleado abandone la empresa.
-	\item Concluir que datos son más importantes para predecir el abandono en el trabajo.
-	\item Poder tomar medidas de acuerdo a las conclusiones obtenidas y así elaborar mejores predicciones.
+	\item El prototipo predictor debe ser capaz de calcular la probabilidad de que un empleado abandone la empresa.
+	\item Tras el estudio se debe concluir que características son más importantes para predecir si un empleado va a abandonar el trabajo.
+	\item Poder tomar medidas de acuerdo a las conclusiones obtenidas del estudio que den lugar a mejores predicciones.
 \end{itemize}
 
 
 \section{Plan de trabajo}
 
-Para la realización del proyecto de transición a \wday{} se ha seguido un sistema de metodología ágil. 
+Para la realización del proyecto de transición a \wday{} se ha usado una metodología ágil. 
 Cinco personas formábamos parte del equipo de proyecto y nos reuníamos al menos una vez por semana.
 El proceso ha durado unos tres meses y todos los integrantes realizábamos paralelamente tareas en otros proyectos.\\
 
-En estas reuniones, se informaba de donde nos encontrábamos y cuales eran los siguientes pasos.
+En estas reuniones, se informaba de dónde nos encontrábamos y cuáles eran los siguientes pasos.
 Por turnos se intervenía para explicar los avances que habíamos hecho hasta el momento y los problemas a los que nos estábamos enfrentando.
 Las reuniones también servían para tomar decisiones sobre el proyecto.\\
 
@@ -80,4 +79,9 @@ En cada reunión se comunicaban los avances realizados y se proponían los objet
 En las semanas posteriores a la salida a producción, gracias a las observaciones e incidencias anunciadas por los usuarios,
 se ha continuado modificando la \iface{}. \\
 
-Para mantener un historial de los cambios y controlar las versiones de la \iface{} he usado le herramienta \textit{Git}.
+Para mantener un historial de los cambios y controlar las versiones de la \iface{} he usado le herramienta de control de versiones \textit{Git}.\\
+
+Para la realización del estudio de los datos y la elaboración del modelo predictor he trabajado de forma individual. 
+He ido realizando las pruebas y código con el editor interactivo \textit{Jupyter Notebook}.
+A la hora de decidir el modelo a usar, he seguido una mecánica de ensayo y error, comparando los resultados arrojados por los distintos modelos.
+
