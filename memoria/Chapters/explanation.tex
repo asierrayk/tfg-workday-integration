@@ -1,7 +1,7 @@
 
 \chapter{Integración}
 
-En este capítulo vamos a ver como funciona el sitema de integración. Para ello explicaremos en detalle cada uno de los componentes del sistema.\\
+En este capítulo vamos a ver como funciona el sistema de integración. Para ello explicaremos en detalle cada uno de los componentes del sistema.\\
 
 Si nos fijamos en la Figura \ref{fig:general_diagram} podemos ver como la \iface{} actúa como puente entre \hs{} y \wday{}. 
 
@@ -10,10 +10,10 @@ Si nos fijamos en la Figura \ref{fig:general_diagram} podemos ver como la \iface
 Explicaremos como funcionan \hs{} y \wday{}. Como están organizados y cual es su estructura. También explicaremos los métodos de integración con los que cuenta cada una de las aplicaciones.
 Por último, explicaremos en detalle el diseño de la \iface{} así como sus características.\\
 
-La \iface{} esta conectada tanto a \hs{} como a \wday.\\ 
+La \iface{} esta conectada tanto a \hs{} como a \wday{}.\\ 
 
 A \hs{} se conecta a través de una aplicación que necesitamos crear en \hs{} y la comunicación  puede ser bidireccional. De la \iface{} hacia \hs{} se hace mediante peticiones \acrshort{http} a la \acrshort{api} de \hs{}. 
-La comunicación en la otra dirección se realiza mediante los webhooks declarados en la aplicación de \hs{}\\
+La comunicación en la otra dirección se realiza mediante los \textit{webhooks} declarados en la aplicación de \hs{}\\
 
 Por otro lado está \wday{} cuya comunicación es unidireccional. Únicamente existe comunicación propiamente dicha de la \iface{} hacia \wday. \wday{} sí que responde a algunas peticiones \acrshort{http} con información, pero nunca inicia un mensaje hacia la \iface.
 
@@ -56,31 +56,49 @@ Los objetos que nos interesan para nuestra integración son \textit{deal} y su \
 
 
 \subsection{Descripción del objeto \textit{Deal}}
-	Es un objeto de \hs{} que representa una oportunidad de negocio con cierto cliente. Por defecto en \hs{} tenemos las siguientes propiedades asociadas a un deal:			
-		\textit{Deal Id}, \textit{Amount}, \textit{Close Date}, \textit{Closed Lost Reason}, \textit{Closed Won Reason}, \textit{Create Date}, \textit{Deal Description}, \textit{Deal Name}, \textit{Deal Stage}, \textit{Deal Type}, \textit{Hubspot Owner}, \textit{Last Activity Date}, \textit{Last Modified Date}, \textit{Number of Contacts},
-		\textit{Opp number}, \textit{Owner Assigned Date}, \textit{Pipeline}.
-		
-		Adicionalmente en la empresa se han creado propiedades personalizadas: \textit{Practice}, \textit{Transaction Amount}, \textit{Transaction Currency}.\\
-		
-		Las propiedades más importantes a tener en cuenta en la integración son las siguientes:
+	Es un objeto de \hs{} que representa una oportunidad de negocio con cierto cliente. Por defecto en \hs{} tenemos las siguientes propiedades asociadas a un \textit{deal}:	
+
 		\begin{itemize}
-			\item \textbf{Deal id}: Identificador unívoco del \textit{deal} de \hs.
-			\item \textbf{Close date}: Se trata de la fecha en la que se ha cerrado el acuerdo.
+			\item \textbf{Deal Id}: Identificador unívoco del \textit{deal} de \hs. Esta propiedad se genera automáticamente cuando un \textit{deal} es creado.
+			\item \textbf{Amount}: Cantidad de dinero para la oportunidad de negocio.
+			\item \textbf{Close Date}: Se trata de la fecha en la que se ha cerrado el acuerdo.
+			\item \textbf{Closed Lost Reason}: Comentario explicando la razón de la pérdida de la oportunidad.
+			\item \textbf{Closed Won Reason}: Comentario explicando la razón por la que se ha ganado la oportunidad.
+			\item \textbf{Create Date}: Fecha de creación del \textit{deal}.
 			\item \textbf{Deal Description}: Información describiendo el \textit{deal}.
-			\item \textbf{Deal name}: Nombre del \textit{deal}.
-			\item \textbf{Deal Stage}: estado en el que se encuentra el \textit{deal}. Esta se trata de una de las propiedades más importantes. 
-				Esta propiedad puede tomar los siguientes valores.
+			\item \textbf{Deal Name}: Nombre del \textit{deal}.
+			\item \textbf{Deal Stage}: Estado en el que se encuentra el \textit{deal}.\\ %Se trata de la propiedad más importante para la integración.\\
+			
+			Esta propiedad puede tomar los siguientes valores.
 				\begin{itemize}
-					\item[$\circ$] Appointment Scheduled: Cuando se ha fijado una cita con el cliente.
-					\item[$\circ$] Initial Contact: Si ya se ha tenido un primer contacto con el cliente.
-					\item[$\circ$] Opportunity Identfied: En caso de que se haya identificado una oportunidad de negocio con el cliente.
-					\item[$\circ$] Preparing Proporsal: Si se está preparando una proposición de oferta al cliente.
-					\item[$\circ$] Proporsal Sent: Una vez se haya enviado la proposición de oferta al cliente.
-					\item[$\circ$] Decision Maker Bought In: Una vez la oferta ya esta hecha y el cliente tiene la posibilidad de decidir si la acepta o no.
-					\item[$\circ$] Contract Sent: Cuando el contrato se ha enviado al cliente.
-					\item[$\circ$] Closed Won: Si la oportunidad de negocio se ha cerrado favorablemente.
-					\item[$\circ$] Closed Lost: En caso de que se haya perdido la oportunidad con el cliente.
+					\item[$\circ$] \textit{Appointment Scheduled}: Cuando se ha fijado una cita con el cliente.
+					\item[$\circ$] \textit{Initial Contact}: Si ya se ha tenido un primer contacto con el cliente.
+					\item[$\circ$] \textit{Opportunity Identfied}: En caso de que se haya identificado una oportunidad de negocio con el cliente.
+					\item[$\circ$] \textit{Preparing Proporsal}: Si se está preparando una proposición de oferta al cliente.
+					\item[$\circ$] \textit{Proporsal Sent}: Una vez se haya enviado la proposición de oferta al cliente.
+					\item[$\circ$] \textit{Decision Maker Bought In}: Una vez la oferta ya esta hecha y el cliente tiene la posibilidad de decidir si la acepta o no.
+					\item[$\circ$] \textit{Contract Sent}: Cuando el contrato se ha enviado al cliente.
+					\item[$\circ$] \textit{Closed Won}: Si la oportunidad de negocio se ha cerrado favorablemente.
+					\item[$\circ$] \textit{Closed Lost}: En caso de que se haya perdido la oportunidad con el cliente.
 				\end{itemize}
+			
+			\item \textbf{Deal Type}: Tipo de \textit{deal}.
+			\item \textbf{Hubspot Owner}: \textit{Customer Manager} al que le pertenece la oportunidad de negocio.
+			\item \textbf{Last Activity Date}: Fecha de la última actividad realizada.
+			\item \textbf{Last Modified Date}: Fecha de la última modificación.
+			\item \textbf{Number of Contacts}: Número de contactos asociados al \textit{deal}.
+			\item \textbf{Opp number}: Identificador manual de la oportunidad. Puede ser usado con distintos fines.
+			\item \textbf{Owner Assigned Date}: Fecha en la que el \textit{deal} se asigno a un \textit{Customer Manager}.
+			\item \textbf{Pipeline}: Serie de estados por los que pasa un \textit{deal} con la probabilidad de éxito en cada estado. En la empresa solo hay un \textit{pipeline} definido.
+		\end{itemize}
+
+
+		Adicionalmente en la empresa se han creado propiedades personalizadas:
+		
+		\begin{itemize}
+			\item \textbf{Practice}: Practica a la que pertenece el \textit{deal}. Esta propiedad puede tomar los siguientes valores: \textit{PeopleSoft}, \textit{SAP}, \textit{Workday}\ldots
+			\item \textbf{Transaction Amount}: Cantidad de dinero en la transacción del \textit{deal}. 
+			\item \textbf{Transaction Currency}: Moneda utilizada para la oportunidad de negocio.
 		\end{itemize}
 		
 		
@@ -189,7 +207,7 @@ La aplicación instalada sirve como paso intermedio para las comunicaciones entr
 
 La comunicación en el otro sentido, de \hs{} hacia la \iface{} se hace gracias a la configuración de los \textit{webhook} de \hs{}.\\
 
-Desde el portal podemos configurar las suscripciónes a los \textit{webhook}. Es necesario especificar la dirección (\textit{host} y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
+Desde el portal podemos configurar las suscripciones a los \textit{webhook}. Es necesario especificar la dirección (\textit{host} y puerto) donde deseamos que los mensajes sean enviados ante los diferentes eventos.\\
 
 En el caso de nuestra aplicación está suscrita a los siguientes eventos:
 \begin{itemize}
@@ -255,8 +273,8 @@ Para ello hay que usar la operación \texttt{Submit\_Project}  incluida en el se
 El objeto \textit{Project} cuenta con multitud de campos, son de especial importancia los siguientes: 
 
 \begin{itemize}
-\item \textbf{\textit{Project name}}: Nombre del proyecto, está sincronizado con el nombre del \textit{deal} correspondiente.
-\item \textbf{\textit{Start Date}}: Fecha de inicio, está sincronizado con con la propiedad \texttt{close\_date} del deal.
+\item \textbf{\textit{Project Name}}: Nombre del proyecto, está sincronizado con el nombre del \textit{deal} correspondiente.
+\item \textbf{\textit{Start Date}}: Fecha de inicio, está sincronizado con con la propiedad \texttt{close\_date} del \textit{deal}.
 \item \textbf{\textit{Status}}: Estado del proyecto, existe una correspondencia con la propiedad \texttt{deal\_stage} del deal en \hs{}.
 \item \textbf{\textit{Description}}: Descripción del proyecto. Este campo se encuentra sincronizado con la propiedad \texttt{description} del \textit{deal}.
 \end{itemize}
@@ -303,14 +321,14 @@ Los pasos para realizar una operación concreta son los siguientes:
 	\item Determinar en que servicio se encuentra la operación deseada.
 	\item Conseguir el archivo \acrshort{wsdl}. En este archivo podremos encontrar el formato de mensaje correcto para cada una de las operaciones disponibles en dicho servicio.
 	\item Modificar la plantilla de mensaje con los parámetros deseados. 
-	Para comprobar que el mensaje realiza la operación deseada correctamente podemos usar la aplicación \textit{SoapUI} \footnote{\url{https://www.soapui.org/}}. %\cite{soapui}.
+	Para comprobar que el mensaje realiza la operación deseada correctamente podemos usar la aplicación \textit{SoapUI}\footnote{\url{https://www.soapui.org/}}.
 	\textit{SoapUI} permite abrir esquemas \acrshort{wsdl}, modificar directamente la plantilla del mensaje para cualquier operación del servicio y enviar el mensaje.
-	\item Enviar el mensaje \acrshort{soap} por \acrshort{http} con el método POST.
+	\item Enviar el mensaje \acrshort{soap} por \acrshort{http} con el método \textit{POST}.
 	\item comprobar que no ha habido errores con el mensaje de respuesta proporcionado por \wday.
 \end{enumerate}
 
 Para el tratamiento de los mensajes \acrshort{soap} se ha realizado del siguiente modo.
-Se ha usado la libreria de \textit{python} \textit{lxml} \footnote{\url{http://lxml.de/}}. 
+Se ha usado la libreria de \textit{python} \textit{lxml}\footnote{\url{http://lxml.de/}}. 
 \begin{enumerate}
 	\item Se genera el archivo \textit{xml} con ayuda de la librería \textit{lxml}. Este \textit{xml} cuanta con los parametros necesarios para la llamada al servicio web de \wday{}.
 	
@@ -346,15 +364,15 @@ El proyecto de \textit{python} se encuentra organizado en diferentes archivos su
 	\item [\textendash] \textbf{\textit{service.py}}: Se encuentra en el directorio raíz y se encarga de ejecutar la aplicación 
 	y en este modulo está definida la función que se ejecuta al recibir un mensaje \textit{POST}. Desde este módulo se hacen llamadas a distintas funciones de \textit{handler.py}.
 	\item [\textendash] \textbf{\textit{handler.py}}: También se encuentra en el directorio raíz y en este módulo se encuentra la lógica de programa para cada evento recibido.
-	\item[\textendash] \textbf{\textit{hubspot}}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con \hs.
+	\item[\textendash] \textbf{\textit{hubspot}}: En este directorio se encuentran todos los módulos de \textit{python} que implementan funcionalidades para interactuar con \hs{}.
 	
 		\begin{itemize}
 			\item [\textendash] \textbf{\textit{deal.py}}: En este módulo se encuentra la clase \textit{Deal}, encargada de representar en la \iface{} el objeto \textit{deal} de \hs.
 			\item [\textendash] \textbf{\textit{company.py}}: En este módulo se encuentra la clase \textit{Company}, que se encarga de representar al objeto \textit{company} de \hs{}.
-			\item [\textendash] \textbf{\textit{authorization.py}}: En este módulo se encuentra la clase Authorization encargada de facilitar el flujo de aprobación \gls{oauth2} de \hs{} y la renovación de los \textit{token} de sesión.
+			\item [\textendash] \textbf{\textit{authorization.py}}: En este módulo se encuentra la clase \textit{Authorization} encargada de facilitar el flujo de aprobación \gls{oauth2} de \hs{} y la renovación de los \textit{token} de sesión.
 		\end{itemize}
 		
-	\item[\textendash] \textbf{workday}: En este directorio están los módulos encargados de la interacción con \wday.
+	\item[\textendash] \textbf{workday}: En este directorio están los módulos encargados de la interacción con \wday{}.
 	
 		\begin{itemize}
 			\item [\textendash] \textbf{\textit{project.py}}: En este módulo se encuentra la clase \textit{Project} que representa en la \iface{} el objeto \textit{Project} de \wday.
@@ -392,7 +410,7 @@ De esta forma se evita que estos datos se encuentren escritos directamente en el
 incluso la posibilidad de excluirlos fácilmente cuando se añada el proyecto a repositorios públicos.
 Está información es fija (a excepción de los \textit{token} de sesión). Solo se cambiará cuando sea necesaria otra configuración.\\
 
-Para su implementación he usado el módulo \textit{ConfigParser} \footnote{\url{https://docs.python.org/2/library/configparser.html}} parte de una librería estandar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}. %TODO footnote cofigparser
+Para su implementación he usado el módulo \textit{ConfigParser}\footnote{\url{https://docs.python.org/2/library/configparser.html}} parte de una librería estándar. \textit{ConfigParser} facilita la lectura de archivos de configuración. A estos archivos se les suele poner la extensión \textit{ini}. %TODO footnote cofigparser
 Estos archivos de configuración se organizan en secciones formadas por listas de parejas clave-valor.
 Una ventaja al usar \textit{ConfigParser} es que a la hora de definir una pareja clave-valor se puede referenciar un valor definido en la sección \textit{DEFAULT}. 
 
@@ -401,7 +419,7 @@ Otras alternativas para los archivos de configuración son \textit{yaml}, \texti
 
 
 \begin{itemize}
-	\item [\textendash] \textbf{\textit{hubspot.ini}}: En este archivo se guarda la información referente a los \textit{tokens} de sesión, necesarios para comunicarse con el portal de \hs. 
+	\item [\textendash] \textbf{\textit{hubspot.ini}}: En este archivo se guarda la información referente a los \textit{tokens} de sesión, necesarios para comunicarse con el portal de \hs{}. 
 	Este archivo cambia cada vez que se actualiza un \textit{token}.
 	\item [\textendash] \textbf{\textit{workday.ini}}: En este archivo de configuración se 
 	guardan las credenciales de acceso a \wday{}, así como distintas direcciones url para evitar su repetición en el código.
@@ -412,7 +430,7 @@ Otras alternativas para los archivos de configuración son \textit{yaml}, \texti
 
 
 
-\item \textbf{Dinámico}: Se trata de la base de datos local \textit{SQLite3} \footnote{\url{https://docs.python.org/2/library/sqlite3.html}} para \textit{python}. %TODO footnote sqlite3
+\item \textbf{Dinámico}: Se trata de la base de datos local \textit{SQLite3}\footnote{\url{https://docs.python.org/2/library/sqlite3.html}} para \textit{python}. %TODO footnote sqlite3
  En esta base de datos se almacenan las distintas correspondencias entre \hs{} y \wday.
  
  Existen tres tablas en la base de datos: \texttt{deals\_excluded}, \texttt{deal\_project} y \texttt{company\_customer}.
@@ -472,13 +490,74 @@ Como podemos comprobar en la Figura \ref{fig:validation_message}, aquellos mensa
 \input{Images/validation_message.tex}
 
 
+\subsection{Transformación del \textit{deal} de \hs{} en el \textit{project} de \wday{}}
+
+Como se ha comentado anteriormente si un \textit{deal} u oportunidad de negocio en \hs{} alcanza la fase de progreso, entonces se crea el correspondiente \textit{project} en \wday{}.\\
+
+Para poder hacer esto es necesario saber como cierto \textit{deal} se transforma en \textit{project}. 
+En la Tabla \ref{tab:mapping} podemos ver la traducción de las propiedades del \textit{deal} de \hs{} en los campos del \textit{project} de \wday{}.\\
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+  \hline
+  \textbf{\hs{}} & \textbf{\wday{}} \\
+  \hline
+  \textit{Deal Name} & \textit{Project Name} \\
+  \textit{Close Date} & \textit{Start Date} \\
+  \textit{Deal Stage} & \textit{Status} \\
+  \textit{Deal Description} & \textit{Description} \\
+  \textit{Practice} & \textit{Project Hierarchy} \\
+  \textit{Hubspot Owner} & \textit{Optional Project Hierarchy} \\
+  \textit{company} & \textit{Customer} \\
+  \hline
+\end{tabular}
+	\caption{Transformación de las propiedades del \textit{deal} en los campos del \textit{project}.}
+	\label{tab:mapping}
+\end{table}
+
+\begin{itemize}
+
+\item El nombre del \textit{deal} en \hs{} se corresponde con el nombre del \textit{project} en \wday{}, como es lógico.
+\item La fecha en la que se ha cerrado el acuerdo de la oportunidad de negocio (\textit{Close Date}) se corresponde con la fecha en la que comienza a gestionarse el \textit{project} en \wday{}.
+\item El \textit{Deal Stage} de hubspot se traduce en el \textit{Status} del \textit{project} en \wday{}. La correspondencia se puede ver en la Tabla \ref{tab:mapping_stage}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+  \hline
+  \textbf{\textit{Deal Stage}} & \textbf{\textit{Project Status}} \\
+  \hline
+  \textit{Opportunity Identified} & \textit{Opportunity Identified} \\
+  \textit{Preparing Proporsal} & \textit{Preparing Proporsal} \\
+  \textit{Proporsal Sent} & \textit{Proporsal Sent} \\
+  \textit{Decision Maker Bought In} & \textit{Contract Sent} \\
+  \textit{Contract Sent} & \textit{Contract Sent} \\
+  \textit{Closed Won} & \textit{Active} \\
+  \textit{Closed Lost} & \textit{Closed Lost} \\
+  \hline
+\end{tabular}
+	\caption{Transformación del \textit{Deal Stage} en el \textit{Project Status}.}
+	\label{tab:mapping_stage}
+\end{table}
+
+
+\item La descripción del \textit{deal} se corresponde con la descripción del \textit{project}.
+\item Según la práctica a la que pertenezca el \textit{deal}, el \textit{project} es asignado a la correspondiente jerarquía principal.
+\item Dependiendo del propietario del \textit{deal}, el \textit{project} es asignado a la correspondiente jerarquía opcional.
+\item Por último la \textit{company} asociada a cierto \textit{deal} en \hs{} se corresponde con el campo \textit{customer} del objeto \textit{project} en \wday{}.
+
+\end{itemize}
+
+
 \subsection{Flujo del programa}
 %Dependiendo de de las acciones realizadas en \hs{}, se puede disparar un evento y que consiguientemente un mensaje se envíe a la \iface.
 
 Como se ha mencionado anteriormente, nuestra aplicación de \hs{} está suscrita a diferentes eventos de los \textit{deals} de \hs{}.
 Cuando uno de estos eventos se produce, la aplicación de \hs{} envía un mensaje \acrshort{http} (\textit{POST}) a la \iface{}. Este mensaje es un \acrshort{json} con información sobre el evento ocurrido. Podemos ver un mensaje de ejemplo en el Código \ref{lst:json_message}.\\
 
-Para probar el correcto funcionamiento de la interfaz sin realizar cambio en \hs{}, se ha usado la herramienta \textit{cURL} \footnote{\url{https://curl.haxx.se/}}. 
+Para probar el correcto funcionamiento de la interfaz sin realizar cambios en \hs{}, se ha usado la herramienta \textit{cURL}\footnote{\url{https://curl.haxx.se/}}. 
 Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde \hs{}.\\
 
 \begin{figure}
@@ -496,16 +575,16 @@ Con \textit{cURL} podemos simular las peticiones \acrshort{http} enviadas desde 
 \end{lstlisting}
 \end{figure}
  
-Una vez recibido el mensaje se comprueba su validez verificando su procedencia como hemos visto en la Sección \ref{subsec:security}. Aquellos mensajes inválidos se ignoran como podemos ver en el diagrama de la \ref{fig:validation_message}.\\
+Una vez recibido el mensaje se comprueba su validez verificando su procedencia como hemos visto en la Sección \ref{subsec:security}. Aquellos mensajes inválidos se ignoran como se muestra en la Figura  \ref{fig:validation_message}.\\
 
 Tras verificar que un mensaje es válido, se comprueba si dicho \textit{deal} se encuentra en la tabla de excluidos de base de datos local (\texttt{deals\_excluded}). 
 Esta comprobación sirve como precaución para evitar la sincronización de proyectos no deseados en \wday{}.\\
 
-Después dependiendo del valor del campo \textit{subscriptionType} comienza la ejecución de un proceso de creación de un deal o de modificación.
+Después dependiendo del valor del campo \textit{subscriptionType} comienza la ejecución del proceso de creación de un \textit{deal} o de modificación.
 
 \begin{itemize}
 	\item \textbf{Creación de un \textit{deal}}: Si el valor del atributo \textit{subscriptionType} es \textit{deal.creation}, éste nos indica que un \textit{deal} ha sido creado.
-		En el mensaje \acrshort{json} también se especifica el id del \textit{deal} creado (\textit{objectId}) y otros datos de relevancia como el id del portal, id de la aplicación, momento en el que ocurrió el evento\ldots \\
+		En el mensaje \acrshort{json} también se especifica el identificador del \textit{deal} creado (\textit{objectId}) y otros datos de relevancia como el identificador del portal, identificador de la aplicación, momento en el que ocurrió el evento\ldots \\
 	
 		
 		Los pasos que se siguen para el procesamiento del mensaje son los siguientes:
@@ -515,17 +594,19 @@ Después dependiendo del valor del campo \textit{subscriptionType} comienza la e
 		
 			\item Se comprueba si el \textit{deal} tiene una entrada en la tabla de correspondencias entre los \textit{deals} y \textit{projects} (\texttt{deals\_project}).
 		En la tabla \texttt{deals\_project} se guarda la correspondencia entre los identificadores de los \textit{deals} de \hs{} y los identificadores de los \textit{projects} de \wday{} que están integrados.
-		En caso de que el \textit{deal} esté en la tabla de correspondencias, quiere decir que el \textit{deal} se ha creado previamente y por tanto la petición se ignora y para el proceso.\\
+		En caso de que el \textit{deal} esté en la tabla de correspondencias, quiere decir que ese \textit{deal} se ha creado previamente y por tanto la petición se ignora y para el proceso.\\
 		
 		Si por el contrario no se encuentra en la tabla de correspondencias entonces se continua con el siguiente paso.
 		
 			\item Se realiza una petición a la \acrshort{api} de \hs{} para obtener el resto de información del \textit{deal} creado.
 			\item Con todos los datos del \textit{deal} que se ha creado se comprueba si este se encuentra en la fase de progreso, en caso contrario dicho \textit{deal} no se integra y se para el proceso.
 			\item Si el \textit{deal} se encuentra en la fase de progreso, entonces se comprueba si el \textit{company} asociado al \textit{deal} existe en la tabla de correspondencias entre los \textit{companies} y los \textit{customers} (\texttt{company\_customer}).
-			En caso de que no exista se crea el correspondiente \textit{customer} en \wday{}, y se actualiza la tabla \texttt{company\_customer} con la nueva entrada .
+			En caso de que no exista, se crea el correspondiente \textit{customer} en \wday{}, y se actualiza la tabla \texttt{company\_customer} con la nueva entrada.
 			
 			\item Se crea el \textit{project} asociándolo con el \textit{customer} previamente creado o existente y se actualiza la tabla \texttt{deals\_project} con la nueva correspondencia.
 		\end{enumerate}
+		
+		Podemos ver un diagrama del proceso en la Figura \ref{fig:deal_creation}
 		
 		
 		
@@ -534,24 +615,30 @@ Después dependiendo del valor del campo \textit{subscriptionType} comienza la e
 		
 	\item \textbf{Modificación de un \textit{deal}}:
 	
-		Si atributo \textit{subscriptionType} en el mensaje \acrshort{json} recibido tiene el valor \textit{deal.propertyChange}, quiere decir que se ha producido el cambio de alguna propiedad en un \textit{deal} de \hs{}.
+		Si atributo \textit{subscriptionType} en el mensaje \acrshort{json} recibido tiene el valor \textit{deal.propertyChange}, quiere decir que se ha producido el cambio de alguna propiedad en un \textit{deal} de \hs{}. En estos casos el mensaje \acrshort{json} contiene otro atributo  \textit{propertyName} que indica qué propiedad ha cambiado.
 		
 		Los pasos que se siguen ante este tipo de mensajes son los siguientes:
 		
 		\begin{enumerate}
 			\item Se comprueba si dicho \textit{deal} se encuentra en la tabla \texttt{deals\_excluded} de base de datos local. En tal caso, se para el proceso y no se sincronizan las modificaciones en \wday{}.
 			\item Se comprueba si el \textit{deal} existe en la tabla de correspondencias \texttt{deal\_project}. De no ser así se procede a la creación del \textit{deal} con el proceso detallado anteriormente.
-			\item Se obtiene el objeto \textit{project} de \wday{}. Se actualizan los correspondientes campos localmente, dependiendo de la propiedad del \textit{deal} que haya cambiado. Por último se actualiza el objeto \textit{project} correspondiente de \wday{} con los cambios realizados.
+			\item Se obtiene el \textit{deal} de \hs{} con todas su propiedades mediante una llamada a la \acrshort{api} de \hs{}. También se obtiene el objeto \textit{project} de \wday{}. Dependiendo de la propiedad del \textit{deal} que haya cambiado se actualizan  localmente los correspondientes campos del \textit{project}. Por último se actualiza el objeto \textit{project} correspondiente de \wday{} enviando un mensaje \acrshort{soap}.
 		\end{enumerate}
 		
+		Podemos ver un diagrma del proceso en la Figura \ref{fig:deal_modification}
 		
 		
-		Cuando un \textit{deal} pasa a un estado perteneciente a la fase de cierre, el \textit{deal} se añade a la tabla de excluidos \texttt{deals\_excluded}.
+		
+		Cuando un \textit{deal} es modificado y pasa a un estado perteneciente a la fase de cierre, el \textit{deal} se añade a la tabla de excluidos (\texttt{deals\_excluded}).\\
 		
 		
 		\input{Images/deal_modification.tex}
-
+		
+			
 \end{itemize}
 
+
+De esta forma conseguimos gracias a la \iface{} que los \textit{deals} de \hs{} se encuentren sincronizados con los \textit{projects} de \wday{}. 
+Este proceso ocurre de forma totalmente transparente al usuario de \hs{}
 
 

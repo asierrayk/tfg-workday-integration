@@ -41,7 +41,7 @@ Sus principales objetivos es dar soluciones a empresas pertenecientes a los sect
 
 Los puntos fuertes de \textit{SAP} com \acrshort{erp} es proporcionar un software a las fábricas y a la parte administrativa de las empresas.
 
-El \acrshort{erp} \textit{SAP} se trata de un \textit{software} \gls{on-premise} \footnote{Software On-premise es instalado y ejecutado en el edificio (\textit{on the premises}) de la persona u organización que hace uso del software.}.
+El \acrshort{erp} \textit{SAP} se trata de un \textit{software} \gls{on-premise}\footnote{Software On-premise es instalado y ejecutado en el edificio (\textit{on the premises}) de la persona u organización que hace uso del software.}.
 Sin embargo uno de sus enfoques está siendo dar importancia a las soluciones \textit{cloud}, y prueba de ello es el proyecto \textit{SAP HANA}.\\
 
 
@@ -94,3 +94,31 @@ La configuración inicial del \acrshort{crm} \textit{Salesforce} puede ser compl
 \hs{} es un \acrshort{crm} fundado por Brian Halligan y Dharmesh Shah en 2006. Su objetivo está orientado a proporcionar herramientas para aumentar la rentabilidad de las oportunidades con los clientes. Proporciona mecanismos para la integración con otras herramientas como el correo electrónico o las redes sociales en el ámbito empresarial. \hs{} también actúa como gestor de contenido y como plataforma para poder analizar los datos.
 
 Inicialmente estaba pensado para pequeñas empresas, pero poco a poco se ha ido adaptando a empresas más grandes.
+
+
+\section{Introducción a \textit{Machine Learning}}
+
+Para muchos problemas existen algoritmos con los cuales podemos resolverlos. Sin embargo existen otros tipos de problemas para los cuales no contamos con un algoritmo. 
+\textit{Machine Learning} o Aprendizaje automático es una rama de la inteligencia artificial que explora la construcción de algoritmos que pueden aprender y realizar predicciones sobre los datos.
+
+
+
+Tiene como objetivo predecir información de datos desconocidos habiendo sido entrenado con un conjunto de datos.\cite{scikit-learn,shalev-shwartz_ben-david_2016,alpaydin_2010}\\
+
+
+
+Los problemas de aprendizaje se clasifican en dos grandes grupos dependiendo de si contamos en los datos con la información que se pretende predecir.
+
+\begin{itemize}
+	\item \textbf{Aprendizaje supervisado}: En este tipo de aprendizaje existe una característica con la información que se quiere predecir.
+	Dentro de este tipo de aprendizaje se encuentran dos tipos de problemas:
+	
+	\begin{itemize}
+		\item \textbf{Clasificación}: Este problema consiste en clasificar cada muestra en una clase. Si solo existen dos clases, el problema se dice de clasificación binaria. En otro caso se denomina problema multiclase.\\
+		
+		Un ejemplo de problema de clasificación es el siguiente: Dada una foto de una persona, determinar si la persona está sonriendo. Se trataría de un problema supervisado pues suponemos que contaríamos con datos iniciales donde se indicase si la persona está o no sonriendo.
+		\item \textbf{Regresión}: Problemas en los que la característica que se quiere predecir es continua, no toma valores discretos. Un ejemplo de problema de regresión sería el siguiente: dada una foto de una persona averiguar la edad de ésta.
+	\end{itemize}
+	
+	\item \textbf{Aprendizaje no supervisado}. En este tipo de aprendizaje los datos de entrenamiento no cuentan con una característica que indique la información que se quiere predecir. Puede usarse con varios objetivos, aunque el más común es clasificar los datos en grupos con similitudes.
+\end{itemize}

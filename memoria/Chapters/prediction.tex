@@ -3,45 +3,18 @@
 La empresa me solicitó realizar un prototipo que, partiendo de los datos de una plantilla de trabajadores, fuese capaz de predecir futuros casos de abandono en el trabajo.
 Tras su dessarrollo se verían las posibilidades de integrarlo con \wday{}.\\
 
-En este capítulo veremos una pequeña introducción al \textit{Machine Learning}.
-Explicaremos en detalle los datos que vamos a utilizar. Estudiaremos los datos y construiremos un modelo capaz de predecir cuando un trabajador va a abandonar el trabajo.\\
-
-
-
-El estudio de los datos se ha hecho en \textit{python}. La librería que nos permitirá usar distintos modelos de clasificación es \textit{scikit-learn}\footnote{\url{http://scikit-learn.org/stable/}}.\\
-
-También se ha usado las librerías \textit{pandas}\footnote{\url{http://pandas.pydata.org/}} para la transformación y análisis de datos. Por último la librería \textit{matplotlib}\footnote{\url{https://matplotlib.org/}} para la visualización de los datos.\\
+En este capítulo explicaremos en detalle los datos que vamos a utilizar. Estudiaremos estos datos y construiremos un modelo capaz de predecir cuando un trabajador va a abandonar el trabajo.\\
 
 
 
 
-
-\section{Introducción a \textit{Machine Learning}}
-
-Para muchos problemas existen algoritmos con los cuales podemos resolverlos. Sin embargo existen otros tipos de problemas para los cuales no contamos con un algoritmo. 
-\textit{Machine Learning} o Aprendizaje automático es una rama de la inteligencia artificial que explora la construcción de algoritmos que pueden aprender y realizar predicciones sobre los datos.
+También se ha usado las librerías \textit{pandas}\footnote{\url{http://pandas.pydata.org/}} para la transformación y análisis de datos y la librería \textit{matplotlib}\footnote{\url{https://matplotlib.org/}} para la visualización de los datos.\\
 
 
 
-Tiene como objetivo predecir información de datos desconocidos habiendo sido entrenado con un conjunto de datos.\cite{scikit-learn,shalev-shwartz_ben-david_2016,alpaydin_2010}\\
 
 
 
-Los problemas de aprendizaje se clasifican en dos grandes grupos dependiendo de si contamos en los datos con la información que se pretende predecir.
-
-\begin{itemize}
-	\item \textbf{Aprendizaje supervisado}: En este tipo de aprendizaje existe una característica con la información que se quiere predecir.
-	Dentro de este tipo de aprendizaje se encuentran dos tipos de problemas:
-	
-	\begin{itemize}
-		\item \textbf{Clasificación}: Este problema consiste en clasificar cada muestra en una clase. Si solo existen dos clases, el problema se dice de clasificación binaria. En otro caso se denomina problema multiclase.\\
-		
-		Un ejemplo de problema de clasificación es el siguiente: Dada una foto de una persona, determinar si la persona está sonriendo. Se trataría de un problema supervisado pues suponemos que contaríamos con datos iniciales donde se indicase si la persona está o no sonriendo.
-		\item \textbf{Regresión}: Problemas en los que la característica que se quiere predecir es continua, no toma valores discretos. Un ejemplo de problema de regresión sería el siguiente: dada una foto de una persona averiguar la edad de ésta.
-	\end{itemize}
-	
-	\item \textbf{Aprendizaje no supervisado}. En este tipo de aprendizaje los datos de entrenamiento no cuentan con una caracteriítica que indique la información que se quiere predecir. Puede usarse con varios objetivos, aunque el más común es clasificar los datos en grupos con similitudes.
-\end{itemize}
 
 \section{Datos y problema a resolver}
 
@@ -49,7 +22,7 @@ Se ha realizado un estudio usando los datos con los que cuenta el proyecto de \t
 Se trata de una tabla con información sobre los empleados de una empresa.
 Estos datos pertenecen a \textit{IBM} y son los que usan para las predicciones analíticas del robot de \textit{Inteligencia artificial} \textit{Watson}. \textit{IBM} ha desarrollado una solución al problema que queremos resolver, pero este proyecto de \textit{IBM} no es de código abierto.\\
 
-Para el uso de los datos he descargado la hoja de cálculo para poder trabajar localmente.
+Para el uso de los datos he descargado la hoja de cálculo y así poder trabajar localmente.
 Después la he convertido a \acrshort{csv} para poder manejar los datos de manera cómoda desde \textit{python}.\\
 
 
@@ -136,7 +109,7 @@ Así que tenemos que pasar las características de formato texto a numérico.
 \section{Análisis de los datos}
 En esta sección vamos a analizar los datos y ver si podemos crear más variables que nos puedan servir de utilidad  \cite{bowles_2015}.
 Es importante saber que todas las columnas a excepción de \textbf{Attrition} podrán ser usadas para la construcción del modelo. 
-La columna \textbf{Attrition} se usará para el entrenamiento y comprobar la precisión del modelo.\\
+La columna \textbf{Attrition} se usará para el entrenamiento y comprobación de la precisión del modelo.\\
 
 El primer dato en el que nos queremos fijar lógicamente es el abandono. De los 1470 empleados un total de 237 han abandonado la empresa, mientras que 1233 han permanecido en ella.
 Esto supone que en nuestros datos hay un 16,12 \% de abandono que podemos apreciar en la Figura \ref{fig:attrition}.\\
@@ -186,26 +159,24 @@ Cuando \textbf{OverTime\_Balance} tome valores altos significa que realiza horas
 
 
 La siguiente variable que vamos a observar es \textbf{Gender}. En los datos 882 empleados son hombres y 588 mujeres.
-Si comprobamos la tasa de abandono en hombres es de un 17 \% y en mujeres de un 14,79 \%, por lo que no parece ser una variable que aporte gran información.\\
+Si comprobamos la tasa de abandono en hombres es de un 17 \% y en mujeres de un 14,79 \%. Esto nos indica que la variable \textbf{Gender} no aporta gran información.\\
 
-
-En el caso de \textbf{YearsAtCompany} podemos comprobar que si separamos los datos en aquellos mayores y menores al valor de la mediana.
-Encontramos que la proporción de abandono es mayor en aquellos empleados que llevan menos de 5 años en la empresa.
+Ahora vamos a estudiar la característica \textbf{YearsAtCompany}. La mediana de esta característica es 5 años. Podemos comprobar que si separamos los datos en aquellos mayores y menores al valor de la mediana,
+encontramos que la proporción de abandono es mayor en aquellos empleados que llevan menos de 5 años en la empresa.
 Dada esta situación voy a crear una nueva variable \textbf{AtCompany\_Over} que tome el valor 1 si el empleado lleva más de 5 años en la empresa y 0 en caso contrario.\\
 
 Relacionando la variable \textbf{YearsAtCompany} con la variable \textbf{YearsInCurrentRole} podemos crear otra variable \textbf{YearsAtCurrRole\_Rate} que refleje
-la proporción de tiempo que lleva el empleado en el puesto actual en relación con el tiempo en la empresa, mediante la siguietne fórmula.\\
+la proporción de tiempo que lleva el empleado en el puesto actual en relación con el tiempo que lleva en la empresa. La siguiente fórmula lo consigue:\\
 
 \[ \mathit{YearsAtCurrRole\_Rate} = \frac{\mathit{YearsInCurrentRole}}{\mathit{YearsAtCompany}}\]
 \\
 
-Con la variable \textbf{MonthlyIncome} podemos ver que al dividir los empleados en aquellos que tienen un salario superior a la mediana de los que no. nos encontramos que la tasa de abandono en los que tienen un menor salario presentan un abandono del 21,76 \% mientras que los de mayor salario tienen un 10,47 \%. Puede ser interesante tener en cuenta esta variable para realizar las predicciones.\\
+Vamos a fijarnos en la características \textbf{MonthlyIncome}. Si dividimos los empleados en aquellos que tienen un salario superior a la mediana de los que no, nos encontramos que la tasa de abandono en los que tienen un menor salario es mayor. Estos presentan un abandono del 21,76 \% mientras que los de mayor salario tienen un 10,47 \% de abandono. Puede ser interesante tener en cuenta esta característica para realizar las predicciones.\\
 
+Dado que no es lo mismo que dos empleados que llevan distinto tiempo en la empresa, esten cobrando el mismo salario. Vamos a crear una nueva caracteríastica que refleje la realción entre las características \textbf{MonthlyIncome} y \textbf{YearsAtCompany}.\\
 
-Puede ser una buena idea crear una variable \textbf{IncomeYears\_Rate} que refleje la relación entre las variables \textbf{MonthlyIncome} \textbf{YearsAtCompany}.\\
-
-Poniendo atención en la variable \textbf{DistanceFromhome} podemos apreciar que aquellos trabajadores que se encuentran a mayor distancia de sus casas son más propensos a abandonar el trabajo.
-Por ejemplo un 18,35 \% de los trabajadores con una distancia mayor de 7 de sus casas abandonan el trabajo mientras que un 13,6 \% lo hace cuando la distancia es menor de 7. En la figura \ref{fig:attrition_distance} podemos visualizar estos datos. Como podemos observar no supone una gran diferencia, pero puede aportar información.\\
+Poniendo atención en la característica \textbf{DistanceFromHome} podemos apreciar que aquellos trabajadores que se encuentran a mayor distancia de sus casas son más propensos a abandonar el trabajo.
+Por ejemplo existe un abandono del 18,35 \% en los trabajadores con una distancia superior a 7, mientras que un 13,6 \% lo hace cuando la distancia es inferior a 7. En la figura \ref{fig:attrition_distance} podemos visualizar estos datos. Como podemos observar no es una diferencia muy significativa, pero puede aportar información.\\
 
 
 \begin{figure}
@@ -230,9 +201,12 @@ En la variable \textbf{Age}, podemos comprobar que la tasa de abandono es  mayor
 Por ejemplo existe un abandono del 21,94 \% en los empleados menores a 36 años, mientras que en los mayores de 36 es de 10,39 \%.\\
 
 Otro buen indicador de que un empleado tiene más posibilidades de marcharse de una empresa es su trayectoria previa. La variable \textbf{NumCompaniesWorked} nos da una idea de la trayectoria empresarial del trabajador.
-Sin embargo, por si sola parece que esta variable no nos aporta mucha información. Por ello podemos combinarla con la variable \textbf{TotalWorkingYears} para conseguir una nueva variable \textbf{YearsPerCompany} que muestre la media de años trabajados por empresa.\\
+Sin embargo, por si sola parece que esta característica puede ser insuficiente. Por ello podemos combinarla con la variable \textbf{TotalWorkingYears} para conseguir una nueva variable \textbf{YearsPerCompany} que muestre la media de años trabajados por 
+empresa.\\
 
+Podemos lograr fácilmente este objetivo con la siguiente fórmula:
 
+\[ \mathit{YearsPerCompany} = \frac{\mathit{TotalWorkingYears}}{\mathit{NumCompaniesWorked}}\]
 
 
 
@@ -258,9 +232,9 @@ Para construir un modelo es necesario determinar las características que se van
 \subsection{Cálculo de la precisión de un modelo}
 Una vez elegido el modelo existen distintas formas de evaluar dicho modelo. Esto es posible en problemas supervisados, como es nuestro caso en el que conocemos el resultado para ciertos datos.\\
 
-Con el modelo elegido es necesario entrenarlo con un conjunto de datos, si lo entrenamos con todos los datos con los que contamos, solo podremos realizar predicciones con muestras que pertenecen al conjunto de entrenamiento. lo cual no es muy revelador, pues es normal que el modelo se comporte bien ante muestras con las cuales se le ha entrenado.\\
+Con el modelo elegido es necesario entrenarlo con un conjunto de datos. Si lo entrenamos con todos los datos con los que contamos, solo podremos realizar predicciones con muestras que pertenecen al conjunto de entrenamiento. Lo cual no es muy revelador, pues es normal que el modelo se comporte bien ante muestras con las cuales se le ha entrenado.\\
 
-Para evitar caer en este error existe el método de separación de los datos en un conjunto de entrenamiento y otro de pruebas (\textbf{Split Training}). Podemos ver esta separación en la Figura \ref{fig:splittraining}.\\
+Para evitar caer en este error existe el método de separación de los datos en dos conjuntos, uno de entrenamiento y otro de pruebas. Este método es conocido como \textbf{Split Training}. Podemos ver esta separación en la Figura \ref{fig:splittraining}.\\
 
 Este método consiste en separar los datos en dos conjuntos: uno de entrenamiento (\textit{train}), y otro de pruebas (\textit{test}).	
 Se entrena al modelo con el conjunto de entrenamiento y se realiza la predicción con los datos de prueba. Una vez realizada la predicción se compara con el resultado correcto utilizando alguna sistema de puntuación (accuracy, f1, roc\_auc \ldots).
@@ -278,9 +252,9 @@ Se entrena al modelo con el conjunto de entrenamiento y se realiza la predicció
 \label{fig:splittraining}
 \end{figure}
 
-Sin embargo, puede que al hacer la separación en estos dos conjuntos se de un caso óptimo o por el contrario un caso fatal. Es por eso que se introduce otro nuevo método de evaluación, Validación Cruzada (\textbf{Cross Validation}).\\
+Sin embargo, puede que al hacer la separación en estos dos conjuntos se de un caso óptimo o por el contrario un caso fatal. Es por eso que se introduce otro nuevo método de evaluación, \textbf{Cross Validation} o Validación Cruzada.\\
 
-Este método consiste en dividir los datos en una partición con $k$ conjuntos. Y realizar $k$ veces el método \textit{Split Training}. En cada iteración, el conjunto \textit{test} va siendo un elemento distinto de la partición y el conjunto \textit{train} lo forman los $k-1$ elementos restantesde la partición.
+Este método consiste en dividir los datos en una partición con $k$ conjuntos. Y realizar $k$ veces el método \textit{Split Training}. En cada iteración, el conjunto \textit{test} va siendo un elemento distinto de la partición y el conjunto \textit{train} lo forman los $k-1$ elementos restantes de la partición.
 Una vez finalizadas cada una de las $k$ evaluaciones con \textit{Split training} se realiza la media de las puntuaciones obtenidas, dando lugar a la puntuación con \textit{Cross Validation}. Podemos ver un ejemplo en la Figura \ref{fig:crossvalidation}.
 
 
@@ -319,7 +293,7 @@ Una vez finalizadas cada una de las $k$ evaluaciones con \textit{Split training}
 	\draw ([xshift=-1cm]num_total.north west|-aux) -- ([xshift=1cm]num_total.north east|-aux);   
 		 
 \end{tikzpicture}
-\caption{Evaluación con el método Validación cruzada (\textit{Cross Validation})}
+\caption{Evaluación con el método \textit{Cross Validation} con $k=3$}
 \label{fig:crossvalidation}
 \end{figure}
 
@@ -353,16 +327,16 @@ Los diferente estimadores que he probado son:
 \item \textbf{Linear Support Vector Classification}. Perteneciente a la familia de estimadores \textit{lineales}, cuyo objetivo es la construcción de un hiperplano en el espacio donde se encuentran los datos. De manera que un punto se clasificará dependiendo de a que lado del hiperplano se encuentre.
 
 \item \textbf{K-vecinos más cercanos o K nearest neighbors Classifier}. Este estimador tiene como parámetros un valor $k$ que indica el número de vecinos en los que debe fijarse y otro parámetro \textit{weight\_options} que puede tomar los valores \textit{uniform} y \textit{distance}.
-A la hora de clasificar un punto el estimador se fija en los $k$ puntos de entrenamiento más cercano y detecta que clase es más común. Cuando el parámetro \textit{weight\_options} tiene el valor \textit{distance} se ponderan los valores con el inverso de la distancia al punto que deseamos clasificar.
+A la hora de clasificar un punto el estimador se fija en los $k$ puntos de entrenamiento más cercanos, detecta que clase es la más común en esos $k$ puntos, y esa clase es el resultado de la predicción. Cuando el parámetro \textit{weight\_options} tiene el valor \textit{distance} se ponderan los valores de los $k$ vecinos con el inverso de la distancia al punto que deseamos clasificar.
 
 \item \textbf{Regresión logística} se trata de un tipo de análisis de regresión usado para predecir el resultado de una variable categórica.
 
 \end{itemize}
 
 
-El resultado de todo el proceso ha dado lugar al modelo formado por el estimador Regresión logística, con las características obtenidas tras aplicar el método de \textit{Recursive Feature Elimination with cross validation}.\\
+El resultado de todo el proceso ha dado lugar al modelo formado por el estimador Regresión logística, con las características obtenidas tras aplicar el método de \textit{Recursive Feature Elimination}. Resultando ser 42 el número óptimo de características.\\
 
-Resultando ser 42 el número óptimo de características. La búsqueda de los parámetros con \textit{GridSearchCV} dio lugar a la siguiente configuración.\\
+La búsqueda de los parámetros con \textit{GridSearchCV} ha dado lugar a la siguiente configuración.\\
 
 %['OverTime_Yes', 'YearsAtCompany', 'JobInvolvement', 'JobLevel', 'JobSatisfaction', 'NumCompaniesWorked', 'BusinessTravel_Travel_Rarely', 'BusinessTravel_Travel_Frequently', 'Department_Research & Development', 'Department_Sales', 'EducationField_Life Sciences', 'EducationField_Marketing', 'EducationField_Medical', 'EducationField_Other', 'EducationField_Technical Degree', 'EnvironmentSatisfaction', 'Gender_Male', 'JobRole_Human Resources', 'JobRole_Laboratory Technician', 'JobRole_Manager', 'JobRole_Manufacturing Director', 'JobRole_Research Director', 'JobRole_Research Scientist', 'JobRole_Sales Executive', 'JobRole_Sales Representative', 'MaritalStatus_Single', 'MaritalStatus_Married', 'PerformanceRating', 'RelationshipSatisfaction', 'StockOptionLevel', 'TrainingTimesLastYear', 'WorkLifeBalance', 'YearsInCurrentRole', 'YearsSinceLastPromotion', 'YearsWithCurrManager', 'Age_Over', 'Income_Over', 'Distance_Over', 'AtCompany_Over', 'OverTime_Balance', 'YearsPerCompany', 'YearsAtCurrRole_Rate']
 
@@ -370,7 +344,13 @@ Resultando ser 42 el número óptimo de características. La búsqueda de los pa
 	LogisticRegression(penalty= 'l2',C=1, fit_intercept=True, intercept_scaling=0.1, tol=0.001, class_weight=None)
 \end{lstlisting}
 
-Dando lugar a un porcentaje de acierto de 89,38 \%
+Proporcionando una precisión de 89,38 \%\\
+
+
+Ahora que hemos elegido el modelo que vamos a usar para realizar las predicciones, tenemos que entrenarlo con todos los datos con los que contamos (con los 1470 empleados).
+De modo que podremos realizar predicciones sobre datos que esten fuera de nuestra población inicial, teniendo el modelo entrenado lo máximo posible.\\
+
+
 
 
 
