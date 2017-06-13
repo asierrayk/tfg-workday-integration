@@ -7,6 +7,7 @@ En este capítulo explicaremos en detalle los datos que vamos a utilizar. Estudi
 
 
 
+El estudio de los datos se ha hecho en \textit{python}. La librería que nos permite usar distintas técnicas de \textit{Machine Learning} es \textit{scikit-learn}\footnote{\url{http://scikit-learn.org/stable/}}.\\
 
 También se ha usado las librerías \textit{pandas}\footnote{\url{http://pandas.pydata.org/}} para la transformación y análisis de datos y la librería \textit{matplotlib}\footnote{\url{https://matplotlib.org/}} para la visualización de los datos.\\
 
@@ -334,21 +335,43 @@ A la hora de clasificar un punto el estimador se fija en los $k$ puntos de entre
 \end{itemize}
 
 
-El resultado de todo el proceso ha dado lugar al modelo formado por el estimador Regresión logística, con las características obtenidas tras aplicar el método de \textit{Recursive Feature Elimination}. Resultando ser 42 el número óptimo de características.\\
+\subsection{Resultado final}
 
-La búsqueda de los parámetros con \textit{GridSearchCV} ha dado lugar a la siguiente configuración.\\
+El resultado de todo el proceso ha dado lugar al modelo. Este modelo esta formado por un conjunto de caracterícticas, un estimador y sus parametros.
+
+\begin{itemize}
+	\item \textbf{Características}: El conjunto de características final es el obtenido por el método \textit{Recursive Feature Elimination}. Resultando ser 42 el número óptimo de características.\\
+	
+			Las características que han quedaron excluidas tras el método de \textit{Recursive Feature Elimination} son: \textit{Age}, \textit{DailyRate}, \textit{DistanceFromHome}, \textit{Education}, \textit{HourlyRate}, \textit{MonthlyIncome}, 		\textit{MonthlyRate}, 	\textit{PercentSalaryHike} y  \textit{TotalWorkingYears}. Cabe destacar que si que se han utilizado \textit{AgeOver}, \textit{DistanceOver} e \textit{IncomeOver}.\\
+			
+	\item \textbf{Estimador}: Tras comparar varios estimadores, se eligio el que daba lugar a un mejor resultado. Este estimador fue el de regresión logística.
+	
+	\item \textbf{Parametros}: La búsqueda de los parámetros con \textit{GridSearchCV} ha dado lugar a la siguiente configuración del Código \ref{lst:estimator_definition}.\\
+
+
+
+
+\end{itemize}
+
+%\begin{figure}[H]
+\begin{lstlisting}[language=python, breaklines, caption={Declaración del estimador},label={lst:estimator_definition}]
+	LogisticRegression(penalty= 'l2',C=1 ,fit_intercept=True, intercept_scaling=0.1, tol=0.001, class_weight=None)
+\end{lstlisting}
+%\end{figure}
+
 
 %['OverTime_Yes', 'YearsAtCompany', 'JobInvolvement', 'JobLevel', 'JobSatisfaction', 'NumCompaniesWorked', 'BusinessTravel_Travel_Rarely', 'BusinessTravel_Travel_Frequently', 'Department_Research & Development', 'Department_Sales', 'EducationField_Life Sciences', 'EducationField_Marketing', 'EducationField_Medical', 'EducationField_Other', 'EducationField_Technical Degree', 'EnvironmentSatisfaction', 'Gender_Male', 'JobRole_Human Resources', 'JobRole_Laboratory Technician', 'JobRole_Manager', 'JobRole_Manufacturing Director', 'JobRole_Research Director', 'JobRole_Research Scientist', 'JobRole_Sales Executive', 'JobRole_Sales Representative', 'MaritalStatus_Single', 'MaritalStatus_Married', 'PerformanceRating', 'RelationshipSatisfaction', 'StockOptionLevel', 'TrainingTimesLastYear', 'WorkLifeBalance', 'YearsInCurrentRole', 'YearsSinceLastPromotion', 'YearsWithCurrManager', 'Age_Over', 'Income_Over', 'Distance_Over', 'AtCompany_Over', 'OverTime_Balance', 'YearsPerCompany', 'YearsAtCurrRole_Rate']
 
-\begin{lstlisting}[language=python, breaklines]
-	LogisticRegression(penalty= 'l2',C=1, fit_intercept=True, intercept_scaling=0.1, tol=0.001, class_weight=None)
-\end{lstlisting}
 
-Proporcionando una precisión de 89,38 \%\\
+%Age, DailyRate, DistanceFromHome, Education, HourlyRate, MonthlyIncome, MonthlyRate, PercentSalaryHike, TotalWorkingYears, 
+
+
+Esta configuración nos proporciona una precisión del 89,38 \% estimada mediante el método de \textit{Cross Validation}.\\
+
 
 
 Ahora que hemos elegido el modelo que vamos a usar para realizar las predicciones, tenemos que entrenarlo con todos los datos con los que contamos (con los 1470 empleados).
-De modo que podremos realizar predicciones sobre datos que esten fuera de nuestra población inicial, teniendo el modelo entrenado lo máximo posible.\\
+De este modo podremos obtener el mejor resultado al realizar predicciones sobre datos que esten fuera de nuestra población inicial.\\
 
 
 

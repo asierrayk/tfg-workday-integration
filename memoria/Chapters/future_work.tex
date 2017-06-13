@@ -5,20 +5,33 @@ Es probable que en un futuro se mejore la \iface{} o se incluya directamente en 
 Para ello habría que usar la herramienta de \textit{Workday Studio}.
 Aún así siempre sería necesario tener algún servicio intermedio que continúe reenviando los mensajes provenientes \hs{} hacia \wday{}. \\
 
-A continuación se citan algunas ideas sobre el trabajo que se podría realizar en un futuro.
+A continuación se citan algunas ideas sobre el trabajo futuro que se podría realizar en la \iface{}.
 \begin{itemize}
-	\item Cuando un usuario introduce por error información duplicada en \hs{}, ésta se sincroniza en \wday{}. 
+	\item Cuando un usuario introduce por error información duplicada en \hs{}, esta se sincroniza en \wday{}. 
 	Un posible trabajo futuro sería diseñar algun mecanismo que evite la integración de información duplicada. 
 	Por ejemplo en la creación de un nuevo \textit{deal}, buscar si existe algún \textit{deal} con el nombre igual o muy parecido y avisar al usuario para que en última instancia decida como resolver el problema.
 	
-	\item Implementar un proceso recurrente que compruebe la integridad de los datos entre \hs{} y \wday{}. Si algún mensaje no se recibió, debe ser capaz 
+	\item Implementar un proceso recurrente que compruebe la integridad de los datos entre \hs{} y \wday{}. Si algún mensaje no se recibió, el proceso debe ser capaz de detectarlo y solucionarlo.
 	
-	\item Diseñar alguna interfaz de usuario para poder realizar ciertas acciones mientras la \iface{} está en ejecución. Por ejemplo una interzaz de usuario web para poder lanzar procesos para visualizar información sobre la base de datos local, o comprobar que todos los datos están correctamente sincronizados.
+	\item Diseñar alguna interfaz de usuario para poder realizar ciertas acciones mientras la \iface{} está en ejecución. Por ejemplo una interfaz de usuario web para poder lanzar procesos, visualizar información sobre la base de datos local, actualizar de forma manual la base de datos, o comprobar que todos los datos están correctamente sincronizados.
+	
+	
+\end{itemize}
+
+A continuación vamos a ver el trabajo futuro que podemos reali'ar con el prototipo predictor.
+
+
+\begin{itemize}
+	
+	\item Implementar un modelo basado en los datos reales de la empresa.
+	
+	\item Realizar un proceso de \textit{Feature engineering} más elaborado.
+	
+	\item Probar estimadores más complejos que puedan aportar un mejor resultado, por ejemplo  \textit{Ensemble methods}.
 	
 	\item Integrar el prototipo de predicción en el sistema de \wday{}.
 	
-	\item Tomar medidas que ayuden a recabar información necesaria para una mejor predicción del modelo. 
-	Por ejemplo si la característica \textit{WorkLifeBalance} (conciliación del trabajo y la vida familiar) es importante para la predicción y en la empresa no se cuenta con dicha información, entonces se puede hacer una encuesta a los empleados para poder conseguirla.
+
 
 \end{itemize}
 
