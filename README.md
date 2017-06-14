@@ -16,9 +16,10 @@ Es una buena práctica intentar tener unificadas en una aplicación múltiples f
 	El trabajo consiste en el desarrollo de una Interfaz que actúe de puente entre ambas aplicaciones y conseguir la integridad de los datos entre las dos. 
 	
 	
-	Para ello se ha desarrollado la Interfaz de integración entre HubSpot y Workday. Esta Interfaz escucha los mensajes enviados desde HubSpot, los trata y realiza las operaciones de integración correspondientes en Workday.\\
+	Para ello se ha desarrollado la Interfaz de integración entre HubSpot y Workday. Esta Interfaz escucha los mensajes enviados desde HubSpot, los trata y realiza las operaciones de integración correspondientes en Workday.
 
 	Adicionalmente en el trabajo se ha realizado un estudio de la plantilla de empresa.
 	Con las conclusiones de este estudio y usando técnicas de Machine Learning se ha construido
 	un modelo basado en la información de los empleados. Este modelo es capaz de predecir futuros casos de empleados que abandonan el trabajo.
+
 	
