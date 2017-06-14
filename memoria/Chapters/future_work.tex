@@ -1,39 +1,43 @@
 \chapter{Trabajo futuro}
 
+En un futuro se mejorará la \iface{} portandola a la plataforma de desarrollo propia de \wday{}, \textit{Workday Studio}. Aún así será necesario mantener un servicio intermedio que reenvíe los mensajes desde \hs{} hacia \wday{}.\\
 
-Es probable que en un futuro se mejore la \iface{} o se incluya directamente en el sistema de \wday{}.
-Para ello habría que usar la herramienta de \textit{Workday Studio}.
-Aún así siempre sería necesario tener algún servicio intermedio que continúe reenviando los mensajes provenientes \hs{} hacia \wday{}. \\
+Hasta que finalmente se haga dicha migración será necesario realizar algunas mejoras.
 
 A continuación se citan algunas ideas sobre el trabajo futuro que se podría realizar en la \iface{}.
 \begin{itemize}
-	\item Cuando un usuario introduce por error información duplicada en \hs{}, esta se sincroniza en \wday{}. 
-	Un posible trabajo futuro sería diseñar algun mecanismo que evite la integración de información duplicada. 
-	Por ejemplo en la creación de un nuevo \textit{deal}, buscar si existe algún \textit{deal} con el nombre igual o muy parecido y avisar al usuario para que en última instancia decida como resolver el problema.
+	\item Implementar una funcionalidad capaz de detectar la introducción de información duplicada. Cuando un usuario introduzca por error información duplicada en \hs{} se debe notificar al usuario sobre el problema. De esta forma se evitaría la sincronización de información duplicada en \wday{}.
 	
-	\item Implementar un proceso recurrente que compruebe la integridad de los datos entre \hs{} y \wday{}. Si algún mensaje no se recibió, el proceso debe ser capaz de detectarlo y solucionarlo.
+	Por ejemplo en la creación de un nuevo \textit{deal}, buscar si existe algún \textit{deal} con el nombre igual o muy parecido al que se esta creando y avisar al usuario para que en última instancia decida como resolver el problema.
 	
-	\item Diseñar alguna interfaz de usuario para poder realizar ciertas acciones mientras la \iface{} está en ejecución. Por ejemplo una interfaz de usuario web para poder lanzar procesos, visualizar información sobre la base de datos local, actualizar de forma manual la base de datos, o comprobar que todos los datos están correctamente sincronizados.
+	\item Realizar las pruebas necesarias en el proceso recurrente que comprueba la integridad de los datos entre \hs{} y \wday{}. De manera que pueda ser añadido al entorno de producción.
+	
+	\item Diseñar una interfaz de usuario para poder realizar ciertas acciones mientras la \iface{} está en ejecución. Esta interfaz de usuario por ejemplo podría ser accedida a través de una \textit{url} y permitiese lanzar procesos, visualizar información sobre la base de datos local, actualizar la base de datos manualmente o comprobar que todos los datos están correctamente sincronizados.
 	
 	
 \end{itemize}
 
-A continuación vamos a ver el trabajo futuro que podemos reali'ar con el prototipo predictor.
 
+Ahora vamos a ver el trabajo futuro que se podría hacer en el prototipo predictor.\\
+
+La idea principal sería implementar el modelo predictor en un entorno de producción. En dicho entorno debería operar en tiempo real, notificando con un aviso a las personas correspondiente cuando la probabilidad de abandono calculada para un empleado supere cierto umbral.
+
+Para conseguirlo habría que ir completando una serie de tareas.
 
 \begin{itemize}
-	
-	\item Implementar un modelo basado en los datos reales de la empresa.
-	
-	\item Realizar un proceso de \textit{Feature engineering} más elaborado.
-	
-	\item Probar estimadores más complejos que puedan aportar un mejor resultado, por ejemplo  \textit{Ensemble methods}.
-	
-	\item Integrar el prototipo de predicción en el sistema de \wday{}.
-	
+
+\item Una de las primeras tareas sería desarrollar un modelo utilizando los datos reales de la empresa. Para ello podría ser necesario recabar información que se desconozca sobre los empleados. Por ejemplo la conciliación de la vida laboral con la familiar, número de empresas en las que ha estado el empleado\ldots\\
+
+\item En este desarrollo del modelo predictor, se haría un estudio profundo sobre las características y un proceso de \textit{Feature engineering}.\\
+
+\item Como trabajo futuro también se podría tener en cuenta más estimadores o técnicas para elegir estimadores, como por ejemplo \textit{Ensemble methods}.\\
+
+
+
+\item Por último habría que integrar este modelo con el sistema de \wday{}. De manera que en tiempo real el modelo fuese entrenandose y realizando predicciones.
+
 
 
 \end{itemize}
-
 
 

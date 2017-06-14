@@ -184,12 +184,12 @@ Los pasos que hay que seguir son los siguientes \cite{hsapi}:
 %JSON enviado por el webhook
 
 \begin{enumerate}
-	\item Dirigirse a la url de autorización \footnote{\url{https://app.hubspot.com/oauth/authorize?client_id=<client_id>&scope=contacts&redirect_uri=https://www.hubspot.com/} sustituyendo \texttt{<client\_id>} por el su valor}.
+	\item Dirigirse a la \textit{url} de autorización \footnote{\url{https://app.hubspot.com/oauth/authorize?client_id=<client_id>&scope=contacts&redirect_uri=https://www.hubspot.com/} sustituyendo \texttt{<client\_id>} por el su valor}.
 	Iniciar sesión en el portal de \hs{} y así autorizar la instalación de la aplicación. Cabe destacar que solo se puede acceder a dicha \textit{url} y por tanto instalar la aplicación si se cuenta con el \texttt{Client ID}. también se necesita un usuario del portal con permisos para poder instalar aplicaciones.
 	Haciendo público el \texttt{Client ID} de la aplicación, esta puede ser instalada por cualquier persona en portales a los que tengan acceso. En nuestro caso este valor permanecerá en privado y solo nosotros haremos uso de la aplicación.
 		
 	\item Tras dar acceso al portal se te redirige a una página en la que aparece como parámetro de la \textit{url} un código.
-	\item Mediante este código, el \texttt{Client ID} y el \texttt{Client secret} podemos obtener un token de sesión con una llamada a la \acrshort{api}.
+	\item Mediante este código, el \texttt{Client ID} y el \texttt{Client secret} podemos obtener un \textit{token} de sesión con una llamada a la \acrshort{api}.
 	Tras hacer la petición a la \acrshort{api} de \hs{}, nos devolverá un mensaje \acrshort{json} con los siguientes valores.
 		\begin{itemize}
 			\item \texttt{access\_token} clave para realizar las peticiones a la \acrshort{api} de \hs{}.
@@ -328,7 +328,7 @@ Los pasos para realizar una operación concreta son los siguientes:
 \end{enumerate}
 
 Para el tratamiento de los mensajes \acrshort{soap} se ha realizado del siguiente modo.
-Se ha usado la libreria de \textit{python} \textit{lxml}\footnote{\url{http://lxml.de/}}. 
+Se ha usado la librería de \textit{python} \textit{lxml}\footnote{\url{http://lxml.de/}}. 
 \begin{enumerate}
 	\item Se genera el archivo \textit{xml} con ayuda de la librería \textit{lxml}. Este \textit{xml} cuanta con los parametros necesarios para la llamada al servicio web de \wday{}.
 	
@@ -622,7 +622,7 @@ Después dependiendo del valor del campo \textit{subscriptionType} comienza la e
 		\begin{enumerate}
 			\item Se comprueba si dicho \textit{deal} se encuentra en la tabla \texttt{deals\_excluded} de base de datos local. En tal caso, se para el proceso y no se sincronizan las modificaciones en \wday{}.
 			\item Se comprueba si el \textit{deal} existe en la tabla de correspondencias \texttt{deal\_project}. De no ser así se procede a la creación del \textit{deal} con el proceso detallado anteriormente.
-			\item Se obtiene el \textit{deal} de \hs{} con todas su propiedades mediante una llamada a la \acrshort{api} de \hs{}. También se obtiene el objeto \textit{project} de \wday{}. Dependiendo de la propiedad del \textit{deal} que haya cambiado se actualizan  localmente los correspondientes campos del \textit{project}. Por último se actualiza el objeto \textit{project} correspondiente de \wday{} enviando un mensaje \acrshort{soap}.
+			\item Se obtiene el \textit{deal} de \hs{} con todas su propiedades mediante una llamada a la \acrshort{api} de \hs{}. También se obtiene el objeto \textit{project} de \wday{}. Dependiendo de la propiedad del \textit{deal} que haya cambiado se actualizan localmente los correspondientes campos del \textit{project}. Por último se actualiza el objeto \textit{project} correspondiente de \wday{} enviando un mensaje \acrshort{soap}.
 		\end{enumerate}
 		
 		Podemos ver un diagrma del proceso en la Figura \ref{fig:deal_modification}
